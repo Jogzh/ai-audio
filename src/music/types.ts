@@ -1,6 +1,6 @@
 export const versions = ['full', 'hook', 'loop'] as const;
 export type Version = typeof versions[number];
-export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'riser' | 'impact' | 'guitar' | 'electricBass' | 'organ' | 'pluck' | 'shaker' | 'rim' | 'conga';
+export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'riser' | 'impact' | 'guitar' | 'electricBass' | 'organ' | 'pluck' | 'shaker' | 'rim' | 'conga' | 'piano' | 'vocal' | 'texture' | 'sweep';
 
 export interface RenderOptions {
   version: Version;
@@ -34,9 +34,13 @@ export interface TrackDefinition {
     tags: string[];
     description: string;
   };
-  production?: 'warm-house' | 'disco-house';
+  production?: 'warm-house' | 'disco-house' | 'emotional-pop';
   /** Relative drum, bass and rhythmic-organ level for a softer disco groove. */
   grooveIntensity?: number;
+  /** Short edits refer to the actual full score, measured in bars. */
+  edits?: { hook: { startBar: number; bars: number }; loop: { startBar: number; bars: number } };
+  /** Harmony index used for the final resolution; defaults to the first chord. */
+  resolveHarmony?: number;
   arrangement: Section[];
   hook: { offset: number; note: number; length: number; velocity: number }[][];
   harmony: { root: number; chord: number[] }[];

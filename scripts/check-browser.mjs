@@ -12,11 +12,13 @@ try {
   server = await createServer({ root, server: { host: '127.0.0.1', port: 0, open: false }, logLevel: 'error' });
   await server.listen();
   const address = server.httpServer.address();
+  const baseUrl = `http://127.0.0.1:${address.port}`;
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ acceptDownloads: true });
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(`http://127.0.0.1:${address.port}/?version=hook`);
+  // Keep the existing sampled-instrument and player regression explicit.
+  await page.goto(`${baseUrl}/?track=velvet-hour&version=hook`);
   await page.locator('#play').waitFor();
   assert.equal(await page.locator('#render-badge').textContent(), '等待合成');
 
@@ -26,6 +28,7 @@ try {
     const { amberTides } = await import('/src/tracks/amber-tides.ts');
     const { velvetHour } = await import('/src/tracks/velvet-hour.ts');
     const { moonlitSway } = await import('/src/tracks/moonlit-sway.ts');
+    const { afterglow } = await import('/src/tracks/afterglow.ts');
     const { encodeWav } = await import('/src/audio/wav.ts');
     const engineSource = await (await fetch('/src/engine/render.ts')).text();
     const toneUrl = engineSource.match(/from ["']([^"']*tone[^"']*)["']/)?.[1];
@@ -118,8 +121,28 @@ try {
     const discoHigh = await renderTrack(velvetHour, { ...discoOptions, bpm: 170, transpose: 12, seed: 0xffffffff });
     const light = await renderTrack(moonlitSway, { ...options, bpm: 116, seed: 261013 });
     const lightLoop = await renderTrack(moonlitSway, { ...options, bpm: 116, seed: 261013, version: 'loop' });
+    const popOptions = { ...options, bpm: 118, seed: 261013 };
+    const [pop, popRepeat] = await Promise.all([renderTrack(afterglow, popOptions), renderTrack(afterglow, popOptions)]);
+    let popDifference = 0;
+    let popSquaredDifference = 0;
+    let popFirstSignificantDifference = -1;
+    for (let channel = 0; channel < 2; channel++) {
+      const a = pop.buffer.getChannelData(channel);
+      const b = popRepeat.buffer.getChannelData(channel);
+      for (let index = 0; index < a.length; index++) {
+        const difference = Math.abs(a[index] - b[index]);
+        popDifference = Math.max(popDifference, difference);
+        popSquaredDifference += difference * difference;
+        if (difference > 1e-6 && (popFirstSignificantDifference < 0 || index < popFirstSignificantDifference)) popFirstSignificantDifference = index;
+      }
+    }
+    const popLoop = await renderTrack(afterglow, { ...popOptions, version: 'loop' });
+    const popLow = await renderTrack(afterglow, { ...popOptions, bpm: 90, transpose: -12, seed: 0 });
+    const popHigh = await renderTrack(afterglow, { ...popOptions, bpm: 170, transpose: 12, seed: 0xffffffff });
+    const finiteAudio = buffer => Array.from({ length: buffer.numberOfChannels }, (_, channel) => buffer.getChannelData(channel).every(Number.isFinite)).every(Boolean);
     const { loadSamples } = await import('/src/engine/sample-library.ts');
     const { createInstruments } = await import('/src/engine/instruments.ts');
+    const { createEmotionalPopInstruments } = await import('/src/engine/emotional-pop.ts');
     const { measureAudio } = await import('/src/audio/wav.ts');
     const palette = ['guitar', 'electricBass', 'organ', 'pluck', 'shaker', 'rim', 'conga'];
     const bank = await loadSamples(palette);
@@ -134,6 +157,45 @@ try {
     const paletteBuffer = paletteAudio.get();
     const paletteStats = palette.map((instrument, index) => ({ instrument, ...measureAudio({ numberOfChannels: 2, length: 44100, sampleRate: 44100, getChannelData: channel => paletteBuffer.getChannelData(channel).subarray(index * 88200, index * 88200 + 44100) }) }));
     paletteAudio.dispose();
+    const popPalette = ['piano', 'vocal', 'texture', 'sweep'];
+    let popPaletteRig;
+    let popPaletteAudio;
+    try {
+      popPaletteAudio = await Tone.Offline(() => {
+        popPaletteRig = createEmotionalPopInstruments(118, 261013);
+        // Three seconds between voices prevents the previous room tail from
+        // passing the next instrument's non-silence check.
+        popPalette.forEach((instrument, index) => popPaletteRig.hit({ instrument, beat: 0, duration: 1, velocity: 0.8, notes: ['piano', 'vocal'].includes(instrument) ? [73] : undefined }, index * 3));
+      }, popPalette.length * 3, 2, 44100);
+    } finally { Tone.setContext(originalContext); popPaletteRig?.dispose(); }
+    const popPaletteBuffer = popPaletteAudio.get();
+    const popPaletteStats = popPalette.map((instrument, index) => ({ instrument, ...measureAudio({ numberOfChannels: 2, length: 44100, sampleRate: 44100, getChannelData: channel => popPaletteBuffer.getChannelData(channel).subarray(index * 132300, index * 132300 + 44100) }) }));
+    const popPaletteFinite = finiteAudio(popPaletteBuffer);
+    popPaletteAudio.dispose();
+    const renderPianoFixture = async () => {
+      let rig;
+      let audio;
+      try {
+        audio = await Tone.Offline(() => {
+          rig = createEmotionalPopInstruments(118, 261013);
+          rig.hit({ instrument: 'piano', beat: 0, duration: 1.5, velocity: 0.7, notes: [73] }, 0);
+        }, 2.5, 2, 44100);
+        return audio.get();
+      } finally { Tone.setContext(originalContext); rig?.dispose(); audio?.dispose(); }
+    };
+    // The second dotted-eighth echo exposed intermittent feedback-loop
+    // differences. Repeat a short audible fixture to keep that regression
+    // independent of the chosen composition and its final peak trim.
+    const pianoFixture = await renderPianoFixture();
+    let pianoRepeatDifference = 0;
+    for (let repeat = 0; repeat < 4; repeat++) {
+      const next = await renderPianoFixture();
+      for (let channel = 0; channel < 2; channel++) {
+        const a = pianoFixture.getChannelData(channel);
+        const b = next.getChannelData(channel);
+        for (let index = 0; index < a.length; index++) pianoRepeatDifference = Math.max(pianoRepeatDifference, Math.abs(a[index] - b[index]));
+      }
+    }
     const peak = first.stats.peak;
     const bytes = encodeWav(first.buffer);
     return {
@@ -144,6 +206,18 @@ try {
       boundaries: [low.stats, high.stats, warmLow.stats, warmHigh.stats, discoLow.stats, discoHigh.stats],
       disco: { duration: disco.duration, stats: disco.stats, difference: discoDifference, credits: disco.credits, loopDuration: discoLoop.duration, loopStats: discoLoop.stats, start: discoLoop.buffer.getChannelData(0)[0], end: discoLoop.buffer.getChannelData(0).at(-1) },
       light: { duration: light.duration, stats: light.stats, credits: light.credits.length, loopDuration: lightLoop.duration, loopStats: lightLoop.stats, start: lightLoop.buffer.getChannelData(0)[0], end: lightLoop.buffer.getChannelData(0).at(-1) },
+      pop: {
+        duration: pop.duration, stats: pop.stats, difference: popDifference,
+        rmsDifference: Math.sqrt(popSquaredDifference / (pop.buffer.length * 2)),
+        firstSignificantDifference: popFirstSignificantDifference < 0 ? null : popFirstSignificantDifference / pop.buffer.sampleRate,
+        channels: pop.buffer.numberOfChannels, rate: pop.buffer.sampleRate, credits: pop.credits,
+        finite: [pop, popRepeat, popLoop, popLow, popHigh].every(rendered => finiteAudio(rendered.buffer)),
+        loopDuration: popLoop.duration, loopStats: popLoop.stats,
+        loopEdges: Array.from({ length: 2 }, (_, channel) => [popLoop.buffer.getChannelData(channel)[0], popLoop.buffer.getChannelData(channel).at(-1)]),
+        boundaries: [popLow.stats, popHigh.stats],
+        expectedLoopDuration: afterglow.edits.loop.bars * 4 * 60 / 118,
+        palette: popPaletteStats, paletteFinite: popPaletteFinite, pianoRepeatDifference,
+      },
       palette: paletteStats,
       sampleRates: Object.values(bank).flatMap(voices => Object.values(voices).map(buffer => buffer.sampleRate)),
       warm: { duration: warm.duration, stats: warm.stats, difference: warmDifference, loopDuration: warmLoop.duration, loopStats: warmLoop.stats, start: warmLoop.buffer.getChannelData(0)[0], end: warmLoop.buffer.getChannelData(0).at(-1) },
@@ -153,6 +227,7 @@ try {
       expectedChangedDuration: changed.sections.at(-1).end + getTailSeconds(neonRebound, 'hook'),
       expectedWarmDuration: warm.sections.at(-1).end + getTailSeconds(amberTides, 'hook'),
       expectedDiscoDuration: disco.sections.at(-1).end + getTailSeconds(velvetHour, 'hook'),
+      expectedPopDuration: pop.sections.at(-1).end + getTailSeconds(afterglow, 'hook'),
       contextRestored: Tone.getContext() === originalContext,
     };
   });
@@ -210,10 +285,32 @@ try {
   assert.equal(checks.light.loopStats.clippedSamples, 0);
   assert.equal(Math.abs(checks.light.start), 0);
   assert.equal(Math.abs(checks.light.end), 0);
-  console.log('PASS: real Tone.js audio, seven new timbres, local samples/credits, seeded repeatability, tempo/pitch limits, loop boundary, WAV and levels');
+  assert.equal(checks.pop.channels, 2);
+  assert.equal(checks.pop.rate, 44100);
+  assert.equal(checks.pop.finite, true, 'new pop render remains finite at both tempo/pitch limits');
+  assert.ok(checks.pop.stats.peak > 0.2 && checks.pop.stats.rms > 0.01, 'pop composition must produce non-silent audio');
+  assert.equal(checks.pop.stats.clippedSamples, 0);
+  assert.ok(checks.pop.stats.peakDb <= -1.19);
+  assert.ok(Math.abs(checks.pop.stats.dcOffset) < 0.001);
+  // Native pop bus compression can differ by a few float ULPs. Its maximum
+  // error must stay below half a PCM16 quantization step, with a separate
+  // RMS ceiling; the isolated echo regression and all old tracks stay strict.
+  assert.ok(checks.pop.difference < 1 / 65536, `pop repeat max PCM difference: ${checks.pop.difference}`);
+  assert.ok(checks.pop.rmsDifference < 1e-6, `pop repeat RMS difference: ${checks.pop.rmsDifference}`);
+  assert.ok(checks.pop.pianoRepeatDifference < 1e-6, `isolated pop echo repeat difference: ${checks.pop.pianoRepeatDifference}`);
+  assert.ok(Math.abs(checks.pop.duration - checks.expectedPopDuration) < 1 / 44100);
+  assert.deepEqual(checks.pop.credits, [], 'sample-free pop does not inherit guitar credits');
+  assert.ok(Math.abs(checks.pop.loopDuration - checks.pop.expectedLoopDuration) < 1 / 44100);
+  assert.ok(checks.pop.loopStats.rms > 0.01);
+  assert.equal(checks.pop.loopStats.clippedSamples, 0);
+  assert.ok(checks.pop.loopEdges.flat().every(value => Math.abs(value) === 0), 'both stereo loop channels have silent edge samples');
+  assert.ok(checks.pop.boundaries.every(stats => stats.clippedSamples === 0 && stats.rms > 0.01 && stats.peakDb <= -1.19));
+  assert.equal(checks.pop.paletteFinite, true);
+  assert.ok(checks.pop.palette.every(stats => stats.peak > 0.001 && stats.rms > 0.0001), 'each pop voice must create sound in its isolated segment');
+  console.log('PASS: five compositions, isolated sample/pop timbres, credits, seeded repeatability, tempo/pitch limits, finite PCM, stereo loop edges, WAV and levels');
 
   assert.equal(await page.locator('#track-select').inputValue(), 'velvet-hour');
-  assert.equal(await page.locator('#track-select option').count(), 4);
+  assert.equal(await page.locator('#track-select option').count(), 5);
   assert.equal(await page.locator('#bpm').inputValue(), '120');
   assert.equal(await page.locator('#player-title').textContent(), '微醺舞步');
   assert.equal(await page.locator('#bars-fact').textContent(), '56');
@@ -282,11 +379,36 @@ try {
   assert.equal(await page.locator('#cover-id').textContent(), 'MS—004');
   assert.equal(await page.locator('#bars-fact').textContent(), '48');
   assert.match(await page.title(), /MOONLIT SWAY/);
+
+  // A fresh navigation must open the new default, independent of the old
+  // regression page's explicit query and cached audio.
+  await page.goto(`${baseUrl}/`);
+  await page.locator('#play').waitFor();
+  assert.equal(await page.locator('#track-select').inputValue(), 'afterglow');
+  assert.equal(await page.locator('#track-select option').count(), 5);
+  assert.equal(await page.locator('#bpm').inputValue(), '118');
+  assert.equal(await page.locator('#player-title').textContent(), '余温');
+  assert.equal(await page.locator('#bars-fact').textContent(), '40');
+  assert.equal(await page.locator('#key-fact').textContent(), 'F# minor');
+  assert.match(await page.title(), /AFTERGLOW/);
+  assert.equal(await page.locator('#render-badge').textContent(), '等待合成');
+  assert.equal(await page.locator('#sample-credits li').count(), 0);
+  assert.equal(await page.locator('#export-credits').isHidden(), true);
+  await page.locator('#play').click();
+  await page.waitForFunction(() => document.querySelector('#render-badge')?.textContent === '合成完成', undefined, { timeout: 120000 });
+  await page.waitForFunction(() => document.querySelector('#play-state')?.textContent === '正在播放', undefined, { timeout: 20000 });
+  await page.waitForFunction(() => Number(document.querySelector('#seek')?.value) > 0.2);
+  await page.locator('#stop').click();
+  assert.equal(await page.locator('#seek').inputValue(), '0');
+  assert.equal(await page.locator('.timeline-section').count(), 1, 'default hook displays its actual full-score section');
+  await page.locator('[data-version="full"]').click();
+  assert.match(await page.locator('#score-title').textContent(), /40/);
+  assert.match(await page.locator('#version-description').textContent(), /40/);
   await page.setViewportSize({ width: 390, height: 844 });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   assert.equal(overflow, false, 'mobile layout must not overflow horizontally');
   assert.deepEqual(errors, []);
-  console.log('PASS: playback, pause, stop, seek, WAV download, loop selection, invalid inputs, seed zero and mobile layout');
+  console.log('PASS: sampled-track player/download regression, new default pop playback, cache reset, versions, invalid inputs, seed zero and mobile layout');
   console.log(JSON.stringify(checks, null, 2));
 } finally {
   try { await browser?.close(); } finally { await server?.close(); }

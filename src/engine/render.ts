@@ -3,6 +3,7 @@ import { finishAudio, measureAudio, waveformPeaks } from '../audio/wav';
 import { buildArrangement, validateOptions } from '../music/arrange';
 import type { RenderedTrack, RenderOptions, TrackDefinition, Version } from '../music/types';
 import { createInstruments } from './instruments';
+import { createEmotionalPopInstruments } from './emotional-pop';
 import { loadSamples, sampleCredits } from './sample-library';
 
 export const defaultOptions: RenderOptions = { version: 'full', bpm: 132, transpose: 0, seed: 260713 };
@@ -15,6 +16,7 @@ export function getTailSeconds(track: TrackDefinition, version: Version): number
     garage: { full: 2, hook: 0.45 },
     'warm-house': { full: 3, hook: 1.4 },
     'disco-house': { full: 2.5, hook: 0.9 },
+    'emotional-pop': { full: 2.4, hook: 0.8 },
   };
   return tails[track.production ?? 'garage'][version];
 }
@@ -45,7 +47,9 @@ async function render(track: TrackDefinition, options: RenderOptions): Promise<R
   try {
     try {
       offline = await Tone.Offline(() => {
-        rig = createInstruments(options.bpm, options.seed, track.production, samples);
+        rig = track.production === 'emotional-pop'
+          ? createEmotionalPopInstruments(options.bpm, options.seed)
+          : createInstruments(options.bpm, options.seed, track.production, samples);
         for (let cycle = 0; cycle < repetitions; cycle++) {
           for (const event of arrangement.events) {
             const at = event.beat * secondsPerBeat + cycle * musicalDuration;

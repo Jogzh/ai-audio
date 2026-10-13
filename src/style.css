@@ -53,7 +53,7 @@ svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width:
 .eyebrow { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; letter-spacing: 2px; color: var(--lime); display: flex; align-items: center; gap: 10px; }
 .tiny-line { width: 22px; height: 1px; background: var(--lime); }
 h1 { margin: 21px 0 16px; font-size: clamp(48px, 6.3vw, 86px); line-height: .95; letter-spacing: -4px; font-weight: 850; }
-h1 > span:first-of-type { color: var(--lime); }
+h1 > .title-second { color: var(--lime); }
 .title-dot { color: var(--purple); }
 .chinese-title { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: 3px; display: flex; align-items: center; gap: 18px; }
 .chinese-title span { font-size: 12px; color: #919bad; font-weight: 400; letter-spacing: 1px; }

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Reusable original music composition and offline WAV rendering with Tone.js",
+  "description": "Original emotional electronic pop and offline MP3/WAV rendering with Tone.js",
   "license": "MIT",
   "repository": { "type": "git", "url": "https://github.com/Jogzh/ai-audio.git" },
   "engines": { "node": ">=22.12.0" },
@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts tests/*.test.mjs",
     "test:browser": "node scripts/check-browser.mjs",
     "check": "npm test && npm run build",
     "render": "node scripts/render.mjs"

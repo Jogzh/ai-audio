@@ -7,6 +7,7 @@ import { neonRebound } from '../src/tracks/neon-rebound.ts';
 import { amberTides } from '../src/tracks/amber-tides.ts';
 import { velvetHour } from '../src/tracks/velvet-hour.ts';
 import { moonlitSway } from '../src/tracks/moonlit-sway.ts';
+import { afterglow } from '../src/tracks/afterglow.ts';
 import { defaultTrack, findTrack, trackRegistry } from '../src/tracks/registry.ts';
 
 const options: RenderOptions = { version: 'full', bpm: 132, transpose: 0, seed: 260713 };
@@ -126,13 +127,16 @@ test('warm production retains melody timing, key and deterministic humanization'
   assert.notDeepEqual(base.events, buildArrangement(amberTides, { ...options, version: 'hook', bpm: 112, seed: 0 }).events);
 });
 
-test('registry keeps its default and previous songs while exposing new works', () => {
-  assert.equal(defaultTrack, velvetHour);
+test('registry defaults to afterglow and preserves every previous song', () => {
+  assert.equal(defaultTrack, afterglow);
+  assert.equal(findTrack('afterglow'), afterglow);
   assert.equal(findTrack('velvet-hour'), velvetHour);
   assert.equal(findTrack('missing'), undefined);
   assert.equal(new Set(trackRegistry.map(track => track.meta.id)).size, trackRegistry.length);
   assert.equal(findTrack('moonlit-sway'), moonlitSway);
-  assert.equal(trackRegistry.length, 4);
+  assert.equal(findTrack('neon-rebound'), neonRebound);
+  assert.equal(findTrack('amber-tides'), amberTides);
+  assert.equal(trackRegistry.length, 5);
   for (const track of trackRegistry) {
     assert.ok(track.meta.bpm >= 90 && track.meta.bpm <= 170);
     assert.ok(track.hook.length > 0 && track.harmony.length > 0);
@@ -198,4 +202,115 @@ test('moonlit sway leaves melodic space and softens the rhythm without losing it
   const key = new Set([0, 2, 4, 5, 7, 9, 10]);
   assert.ok(full.events.every(event => !event.notes || event.notes.every(note => key.has(note % 12))), 'D natural minor throughout');
   for (const grooveIntensity of [0, -1, 1.1, NaN, Infinity]) assert.throws(() => validateTrack({ ...moonlitSway, grooveIntensity }), /强度/);
+});
+
+test('afterglow presents the motif immediately and reaches its main section in about four seconds', () => {
+  const input: RenderOptions = { ...options, bpm: afterglow.meta.bpm };
+  const full = buildArrangement(afterglow, input);
+  const hook = buildArrangement(afterglow, { ...input, version: 'hook' });
+  const signature = afterglow.hook[0][0];
+  assert.equal(full.beats, 160);
+  assert.equal(full.sections.length, 6);
+  assert.ok(full.events.some(event => event.instrument === 'piano' && event.beat === 0 && event.notes?.[0] === signature.note));
+  assert.ok(hook.events.some(event => event.instrument === 'lead' && event.beat === 0 && event.notes?.[0] === signature.note));
+  assert.ok(full.sections[1].start >= 3.5 && full.sections[1].start <= 4.5);
+  assert.equal(full.sections[1].start, 8 * 60 / input.bpm);
+  assert.equal(hook.beats, 32);
+  assert.deepEqual(hook.events.filter(event => event.instrument === 'lead').map(event => ({ beat: event.beat, notes: event.notes, duration: event.duration })),
+    afterglow.hook.flatMap((bar, index) => bar.map(note => ({ beat: index * 4 + note.offset, notes: [note.note], duration: note.length }))));
+  const key = new Set([1, 2, 4, 6, 8, 9, 11]); // F# natural minor
+  for (const score of [full, hook]) {
+    assert.ok(score.events.every(event => event.beat >= 0 && event.beat < score.beats && event.duration > 0 && event.velocity > 0 && event.velocity <= 1));
+    assert.ok(score.events.every((event, index) => index === 0 || event.beat >= score.events[index - 1].beat));
+    assert.ok(score.events.every(event => !event.notes || event.notes.every(note => key.has(note % 12))));
+    assert.ok(!score.events.some(event => event.instrument === 'riser'));
+  }
+});
+
+test('emotional pop short edits contain the real full score excerpt and clip notes at their endpoint', () => {
+  const input: RenderOptions = { ...options, bpm: afterglow.meta.bpm };
+  // Also crop a different final-chorus range, so an independently generated hook cannot pass.
+  for (const track of [afterglow, { ...afterglow, edits: { hook: { startBar: 26, bars: 3 }, loop: { startBar: 0, bars: 2 } } }]) {
+    const full = buildArrangement(track, input);
+    for (const version of ['hook', 'loop'] as const) {
+      const edit = track.edits![version];
+      const start = edit.startBar * 4;
+      const end = start + edit.bars * 4;
+      const excerpt = buildArrangement(track, { ...input, version });
+      const expected = full.events.filter(event => event.instrument !== 'texture' && event.beat >= start && event.beat < end)
+        .map(event => ({ ...event, beat: event.beat - start, duration: Math.min(event.duration, end - event.beat) }));
+      assert.deepEqual(excerpt.events.filter(event => event.instrument !== 'texture'), expected);
+      assert.equal(excerpt.beats, edit.bars * 4);
+      assert.ok(excerpt.events.every(event => event.beat + event.duration <= excerpt.beats + 1e-9));
+      assert.deepEqual(excerpt.events.filter(event => event.instrument === 'texture'), [{ instrument: 'texture', beat: 0, duration: excerpt.beats, velocity: 0.16 }]);
+      assert.equal(excerpt.sections[0].start, 0);
+      assert.equal(excerpt.sections.at(-1)!.end, excerpt.beats * 60 / input.bpm);
+      assert.ok(excerpt.sections.every(section => section.start >= 0 && section.end > section.start && section.end <= excerpt.beats * 60 / input.bpm));
+    }
+  }
+  assert.deepEqual(buildArrangement(afterglow, { ...input, version: 'hook' }), buildArrangement(afterglow, { ...input, version: 'loop' }));
+});
+
+test('afterglow gives the bridge space and resolves its final chord and melody to F# minor', () => {
+  const input: RenderOptions = { ...options, bpm: afterglow.meta.bpm };
+  const full = buildArrangement(afterglow, input);
+  const bridgeIndex = afterglow.arrangement.findIndex(section => section.energy === 'air');
+  const bridgeStart = afterglow.arrangement.slice(0, bridgeIndex).reduce((sum, section) => sum + section.bars * 4, 0);
+  const bridgeEnd = bridgeStart + afterglow.arrangement[bridgeIndex].bars * 4;
+  const bridge = full.events.filter(event => event.beat >= bridgeStart && event.beat < bridgeEnd);
+  assert.ok(bridge.some(event => event.instrument === 'piano'));
+  assert.ok(bridge.some(event => event.instrument === 'pad'));
+  assert.ok(!bridge.some(event => ['kick', 'clap', 'hat', 'openHat', 'bass', 'sub'].includes(event.instrument)));
+  assert.ok(full.events.some(event => event.instrument === 'kick' && event.beat === bridgeEnd), 'rhythm returns at the final chorus');
+  const resolution = afterglow.harmony[afterglow.resolveHarmony!];
+  assert.equal(resolution.root % 12, 6);
+  const ending = full.events.filter(event => event.beat >= full.beats - 4);
+  assert.deepEqual(ending.filter(event => event.instrument === 'chord').flatMap(event => event.notes ?? []), resolution.chord);
+  assert.ok(ending.some(event => event.instrument === 'piano' && event.beat === full.beats - 4 && event.notes?.[0] === resolution.root + 36));
+  assert.ok(!ending.some(event => ['kick', 'clap', 'bass', 'sub'].includes(event.instrument)));
+});
+
+test('emotional pop seed changes touch while preserving the tune, and transposition preserves all timing', () => {
+  const input: RenderOptions = { ...options, bpm: afterglow.meta.bpm, version: 'hook' };
+  const base = buildArrangement(afterglow, input);
+  assert.deepEqual(base, buildArrangement(afterglow, input));
+  const changed = buildArrangement(afterglow, { ...input, seed: 0 });
+  assert.notDeepEqual(base.events, changed.events);
+  assert.deepEqual(base.events.filter(event => event.instrument === 'lead'), changed.events.filter(event => event.instrument === 'lead'));
+  assert.deepEqual(base.events.filter(event => event.instrument === 'bass' || event.instrument === 'sub'), changed.events.filter(event => event.instrument === 'bass' || event.instrument === 'sub'));
+  assert.deepEqual(base.sections, changed.sections);
+  const shifted = buildArrangement(afterglow, { ...input, bpm: 100, transpose: 5 });
+  assert.equal(base.events.length, shifted.events.length);
+  base.events.forEach((event, index) => {
+    const expected = { ...event };
+    if (event.notes) expected.notes = event.notes.map(note => note + 5);
+    assert.deepEqual(shifted.events[index], expected);
+  });
+  assert.equal(shifted.sections.at(-1)!.end, shifted.beats * 60 / 100);
+});
+
+test('emotional pop rejects invalid edit ranges and resolutions even when rendering the full version', () => {
+  const input: RenderOptions = { ...options, bpm: afterglow.meta.bpm };
+  const missing = structuredClone(afterglow);
+  delete missing.edits;
+  assert.throws(() => buildArrangement(missing, input), /精华与循环/);
+  for (const version of ['hook', 'loop'] as const) {
+    for (const patch of [
+      { startBar: -1 }, { startBar: 0.5 }, { startBar: NaN }, { startBar: Infinity },
+      { startBar: 40 }, { startBar: 39, bars: 2 },
+      { bars: 0 }, { bars: -1 }, { bars: 1.5 }, { bars: NaN }, { bars: Infinity },
+    ]) {
+      const track = structuredClone(afterglow);
+      Object.assign(track.edits![version], patch);
+      assert.throws(() => buildArrangement(track, input), new RegExp(`${version}.*有效小节区间`));
+    }
+    const track = structuredClone(afterglow);
+    delete (track.edits as Partial<NonNullable<typeof track.edits>>)[version];
+    assert.throws(() => buildArrangement(track, input), new RegExp(`${version}.*有效小节区间`));
+  }
+  for (const resolveHarmony of [-1, 0.5, NaN, Infinity, afterglow.harmony.length]) {
+    assert.throws(() => validateTrack({ ...afterglow, resolveHarmony }), /结束和声/);
+  }
+  assert.throws(() => validateTrack({ ...velvetHour, edits: afterglow.edits }), /裁剪.*emotional-pop/);
+  assert.doesNotThrow(() => validateTrack({ ...afterglow, edits: { hook: { startBar: 0, bars: 40 }, loop: { startBar: 39, bars: 1 } }, resolveHarmony: 0 }));
 });

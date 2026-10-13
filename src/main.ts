@@ -56,7 +56,7 @@ app.innerHTML = `
           <div class="config-heading"><h3 id="config-title">塑造你的声音</h3><span>EDIT THE SIGNAL</span></div>
           <fieldset id="render-controls">
             <legend class="sr-only">合成版本与参数</legend>
-            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">选择作品，试听轻 DJ、温暖 House 与回弹节奏。</p></div>
+            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">情绪流行电子、轻 DJ、温暖 House 与回弹节奏。</p></div>
             <div class="field-heading"><span id="version-label">曲目版本</span><span>VERSION</span></div>
             <div class="version-switch" role="group" aria-labelledby="version-label"><button type="button" data-version="full" aria-pressed="true">完整 <small>FULL</small></button><button type="button" data-version="hook" aria-pressed="false">精华 <small>HOOK</small></button><button type="button" data-version="loop" aria-pressed="false">循环 <small>LOOP</small></button></div>
             <p id="version-description" class="field-help"></p>
@@ -126,6 +126,12 @@ const versionCopy = {
   loop: ['循环片段 / LOOP EDIT', '适合反复聆听的循环片段，播放时自动循环。'],
 };
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
+  'emotional-pop': {
+    coverId: 'AG—005',
+    melody: '电钢琴先说出主题，柔软电子主音与合成元音接过应答；重复一句，再让尾句向上展开。',
+    drums: '轻四拍与错位鼓点交替，拍手、细踩镲和短过渡推动情绪，桥段留出呼吸。',
+    bass: '低频保持居中，轻侧链让出底鼓；温暖泛音让手机扬声器也能听清律动。',
+  },
   'disco-house': {
     coverId: 'VH—003',
     melody: 'CC BY 本地原声吉他的拨弦质感，搭配风琴反拍；轻 DJ 听感，不靠猛烈 Drop。',
@@ -151,8 +157,8 @@ function syncTrack(): void {
   const copy = productionCopy[selectedTrack.production ?? 'default'] ?? productionCopy.default;
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
   const [first, ...rest] = meta.subtitle.split(' ');
-  element('#track-title').innerHTML = `${first}<br><span>${rest.join(' ')}</span><span class="title-dot">.</span>`;
-  element('#cover-title').innerHTML = `${first}<br>${rest.join(' ')}<span class="cover-period">.</span>`;
+  element('#track-title').innerHTML = `${first}${rest.length ? `<br><span class="title-second">${rest.join(' ')}</span>` : ''}<span class="title-dot">.</span>`;
+  element('#cover-title').innerHTML = `${first}${rest.length ? `<br>${rest.join(' ')}` : ''}<span class="cover-period">.</span>`;
   element('#chinese-title').textContent = meta.title;
   element('#track-description').textContent = meta.description;
   element('#player-title').textContent = meta.title;
@@ -195,7 +201,7 @@ function drawCredits(): void {
   creditsButton.hidden = !track?.credits.length;
   if (!track || !track.credits.length) {
     const note = document.createElement('p');
-    note.textContent = track ? '本次渲染未返回外部音源署名。' : '音频加载后展示实际音源署名；原创合成曲无外部音源。';
+    note.textContent = track ? '本曲使用原创合成音色，无外部采样。' : '音频加载后展示实际音源署名；原创合成曲无外部音源。';
     container.append(note);
     return;
   }
@@ -255,7 +261,10 @@ function syncVersion(): void {
   versions.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.version === version)));
   element('#version-caption').textContent = versionCopy[version][0];
   const bars = selectedTrack.arrangement.reduce((sum, section) => sum + section.bars, 0);
-  element('#version-description').textContent = version === 'full' ? `${bars} 小节完整旅程，层次逐步展开。` : versionCopy[version][1];
+  const edit = version === 'full' ? undefined : selectedTrack.edits?.[version];
+  element('#version-description').textContent = version === 'full'
+    ? `${bars} 小节完整旅程，层次逐步展开。`
+    : edit ? `${edit.bars} 小节主段，取自完整作品${version === 'loop' ? '，播放时自动循环。' : '；主题与应答一步进入。'}` : versionCopy[version][1];
   element('#score-note').hidden = version !== 'full';
   audio.loop = version === 'loop';
 }
