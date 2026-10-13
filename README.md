@@ -32,6 +32,7 @@ npm run render -- --track velvet-hour --out artifacts/audio/velvet-hour
 
 | 曲目 ID / 名称 | BPM | 原始调性 | full 小节数 | full | hook | loop |
 | --- | ---: | --- | ---: | ---: | ---: | ---: |
+| `moonlit-sway` / 月光轻摇 | 116 | D minor | 48 | 101.81 | 17.45 | 16.55 |
 | `velvet-hour` / 微醺舞步 | 120 | A minor | 56 | 114.50 | 16.90 | 16.00 |
 | `amber-tides` / 晚风来信 | 112 | F# minor | 48 | 105.86 | 18.54 | 17.14 |
 | `neon-rebound` / 霓虹回弹 | 132 | F minor | 48 | 89.27 | 15.00 | 14.55 |
@@ -45,13 +46,14 @@ npm run render -- --track velvet-hour --out artifacts/audio/velvet-hour
 ## 命令行参数与输出
 
 ```bash
+npm run render -- --track moonlit-sway --seed 261013 --out artifacts/audio/moonlit-sway
 npm run render -- --track amber-tides --version hook --bpm 112 --transpose 2 --seed 42 --out artifacts/audio/amber-tides
 npm run render -- --help
 ```
 
 | 参数 | 范围 / 含义 | 默认 |
 | --- | --- | --- |
-| `--track` | `velvet-hour`、`amber-tides`、`neon-rebound` | `velvet-hour` |
+| `--track` | `moonlit-sway`、`velvet-hour`、`amber-tides`、`neon-rebound` | `velvet-hour` |
 | `--version` | `all`、`full`、`hook`、`loop` | `all` |
 | `--bpm` | 90–170 的整数 | 所选曲目的 `meta.bpm` |
 | `--transpose` | −12–12 的整数，单位为半音 | 0 |
@@ -109,6 +111,8 @@ ai-audio/
 2. 在 `src/tracks/registry.ts` 导入并加入注册表，让界面与 CLI 使用同一曲目定义；需要改变默认曲目时同步调整默认入口。**只增加文件、不注册，入口仍会选择旧曲。**
 3. 当前 `production` 仅支持 `warm-house`、`disco-house`，或省略为 `undefined`（原有 garage），不能随意填写新风格。新增 style 需同步扩展类型、`src/music/arrange.ts` 编曲、`src/engine/instruments.ts` 音源及尾音处理；界面说明与测试也应跟随实际结构。
 
+《月光轻摇》使用 `disco-house` 的 `grooveIntensity: 0.72`，降低鼓、贝斯与节奏风琴力度，保留吉他主题和和声的音量。该可选字段范围为大于 0 且不超过 1，省略时为 1；只适用于 `disco-house`。可访问 `/?track=moonlit-sway&version=hook` 直接试听新作品。
+
 尾音规则集中在 `src/engine/render.ts` 的 `getTailSeconds(track, version)`，渲染与浏览器时长检查共用该规则。
 
 采样在进入 `Tone.Offline` 前预加载并以固定 44100 Hz 解码；Offline 任务串行执行，每次渲染独立拥有节点及每个单次 source，完成后释放节点并恢复原上下文。扩展音源时保留这些生命周期约束，避免在 Offline 回调内异步加载或依赖实时 sampler。
@@ -145,7 +149,7 @@ npm run test:browser
 
 ## 常见问题
 
-- **双击 `index.html` 打不开或报错**：不要使用 `file://`。运行 `npm run dev`，或构建后运行 `npm run preview`，访问终端输出的 HTTP 地址。
+- **双击 `index.html` 显示启动提示**：本地文件地址无法加载模块。运行 `npm run dev`，或构建后运行 `npm run preview`，访问终端输出的 HTTP 地址。
 - **找不到 Chromium / executable doesn't exist**：在 `npm ci` 后执行 `npx --yes playwright install chromium`。Linux CI 还需要系统依赖，工作流使用 `playwright install --with-deps chromium`。
 - **5173 无法访问**：端口可能被占用，或服务使用其他端口；以终端实际输出为准。CLI 临时服务使用动态端口。
 - **首次点击没有声音**：先等待合成完成，检查设备音量和页面提示；浏览器可能要求再次点击才能播放，不要绕过自动播放限制。

@@ -17,7 +17,7 @@ const { values } = parseArgs({ options: {
   help: { type: 'boolean', default: false },
 } });
 if (values.help) {
-  console.log('npm run render -- [--track velvet-hour|amber-tides|neon-rebound] [--version all|full|hook|loop] [--bpm 120] [--transpose 0] [--seed 260713] [--out artifacts/audio]');
+  console.log('npm run render -- [--track moonlit-sway|velvet-hour|amber-tides|neon-rebound] [--version all|full|hook|loop] [--bpm 120] [--transpose 0] [--seed 260713] [--out artifacts/audio]');
   console.log('Default track: velvet-hour; BPM defaults to the selected track metadata.');
   process.exit(0);
 }

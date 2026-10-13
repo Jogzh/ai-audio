@@ -94,11 +94,16 @@ export function createInstruments(bpm: number, seed: number, production?: TrackD
   })).connect(sparkPan) : undefined;
   const guitarFilter = samples.guitar ? own(new Tone.Filter(5200, 'lowpass')).connect(reverb) : undefined;
   const electricBassFilter = samples.electricBass ? own(new Tone.Filter(1400, 'lowpass')).connect(bassDuck) : undefined;
+  // Parse source sample pitches once per render instead of rebuilding this
+  // table for every guitar/electric-bass event.
+  const sampleCandidates: Record<'guitar' | 'electricBass', { midi: number; buffer: AudioBuffer }[]> = {
+    guitar: samples.guitar ? Object.entries(samples.guitar).map(([note, buffer]) => ({ midi: Tone.Frequency(note).toMidi(), buffer })) : [],
+    electricBass: samples.electricBass ? Object.entries(samples.electricBass).map(([note, buffer]) => ({ midi: Tone.Frequency(note).toMidi(), buffer })) : [],
+  };
   const sampleHit = (instrument: 'guitar' | 'electricBass', midi: number, duration: number, time: number, velocity: number): void => {
-    const bank = samples[instrument];
     const destination = instrument === 'guitar' ? guitarFilter : electricBassFilter;
-    if (!bank || !destination) throw new Error(`本地采样未加载: ${instrument}`);
-    const candidates = Object.entries(bank).map(([note, buffer]) => ({ midi: Tone.Frequency(note).toMidi(), buffer }));
+    const candidates = sampleCandidates[instrument];
+    if (!candidates.length || !destination) throw new Error(`本地采样未加载: ${instrument}`);
     const closest = candidates.reduce((best, entry) => Math.abs(entry.midi - midi) < Math.abs(best.midi - midi) ? entry : best);
     const playbackRate = 2 ** ((midi - closest.midi) / 12);
     // Own every source explicitly: Tone.Sampler releases its active-source list before Offline finishes.
@@ -178,9 +183,8 @@ export function createInstruments(bpm: number, seed: number, production?: TrackD
         url: player.buffer, fadeOut: 0.004, curve: 'exponential',
       }));
       const destination = event.instrument === 'perc' ? percFilter : event.instrument === 'impact' ? impactFilter : event.instrument === 'riser' ? riserFilter : event.instrument === 'shaker' ? shakerPan! : event.instrument === 'rim' ? rimPan! : event.instrument === 'conga' ? congaPan! : drums;
-      const gain = own(new Tone.Gain(Tone.dbToGain(player.volume.value) * event.velocity)).connect(destination);
-      source.connect(gain);
-      source.start(time, 0, Math.min(duration, player.buffer.duration));
+      source.connect(destination);
+      source.start(time, 0, Math.min(duration, player.buffer.duration), Tone.dbToGain(player.volume.value) * event.velocity);
       return;
     }
     const notes = event.notes?.map(note => Tone.Frequency(note, 'midi').toFrequency());

@@ -6,6 +6,7 @@ import type { RenderOptions } from '../src/music/types.ts';
 import { neonRebound } from '../src/tracks/neon-rebound.ts';
 import { amberTides } from '../src/tracks/amber-tides.ts';
 import { velvetHour } from '../src/tracks/velvet-hour.ts';
+import { moonlitSway } from '../src/tracks/moonlit-sway.ts';
 import { defaultTrack, findTrack, trackRegistry } from '../src/tracks/registry.ts';
 
 const options: RenderOptions = { version: 'full', bpm: 132, transpose: 0, seed: 260713 };
@@ -125,12 +126,13 @@ test('warm production retains melody timing, key and deterministic humanization'
   assert.notDeepEqual(base.events, buildArrangement(amberTides, { ...options, version: 'hook', bpm: 112, seed: 0 }).events);
 });
 
-test('registry defaults to the new song, keeps previous songs and rejects unknown IDs', () => {
+test('registry keeps its default and previous songs while exposing new works', () => {
   assert.equal(defaultTrack, velvetHour);
   assert.equal(findTrack('velvet-hour'), velvetHour);
   assert.equal(findTrack('missing'), undefined);
   assert.equal(new Set(trackRegistry.map(track => track.meta.id)).size, trackRegistry.length);
-  assert.equal(trackRegistry.length, 3);
+  assert.equal(findTrack('moonlit-sway'), moonlitSway);
+  assert.equal(trackRegistry.length, 4);
   for (const track of trackRegistry) {
     assert.ok(track.meta.bpm >= 90 && track.meta.bpm <= 170);
     assert.ok(track.hook.length > 0 && track.harmony.length > 0);
@@ -177,4 +179,23 @@ test('disco arrangement is seeded and transposes pitched voices without moving t
   const changed = buildArrangement(velvetHour, { ...baseOptions, seed: 0 });
   assert.notDeepEqual(base.events, changed.events);
   assert.deepEqual(base.events.filter(event => event.notes), changed.events.filter(event => event.notes), 'seed changes texture, not the written melody');
+});
+
+test('moonlit sway leaves melodic space and softens the rhythm without losing its four-beat pulse', () => {
+  const input: RenderOptions = { ...options, bpm: 116, version: 'hook' };
+  const hook = buildArrangement(moonlitSway, input);
+  const full = buildArrangement(moonlitSway, { ...input, version: 'full' });
+  assert.equal(full.beats, 192);
+  assert.equal(hook.beats, 32);
+  assert.ok(moonlitSway.hook.every(bar => bar.length <= 3 && bar.every(note => note.offset + note.length < 4)), 'every bar has room after the guitar phrase');
+  assert.deepEqual(hook.events.filter(event => event.instrument === 'kick').map(event => event.beat), Array.from({ length: 32 }, (_, beat) => beat));
+  assert.ok(!full.events.some(event => event.instrument === 'riser' || event.instrument === 'impact'));
+  assert.ok(!full.events.some(event => event.instrument === 'kick' && event.beat >= 96 && event.beat < 120), 'bridge has breathing room');
+  const regular = buildArrangement({ ...moonlitSway, grooveIntensity: 1 }, input);
+  const guitar = (score: typeof hook) => score.events.filter(event => event.instrument === 'guitar');
+  assert.deepEqual(guitar(hook), guitar(regular), 'light rhythm keeps the written guitar phrase in front');
+  assert.ok(hook.events.filter(event => event.instrument === 'kick').every(event => event.velocity < 0.65));
+  const key = new Set([0, 2, 4, 5, 7, 9, 10]);
+  assert.ok(full.events.every(event => !event.notes || event.notes.every(note => key.has(note % 12))), 'D natural minor throughout');
+  for (const grooveIntensity of [0, -1, 1.1, NaN, Infinity]) assert.throws(() => validateTrack({ ...moonlitSway, grooveIntensity }), /强度/);
 });

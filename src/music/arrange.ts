@@ -10,6 +10,9 @@ export function validateOptions(options: RenderOptions): void {
 
 export function validateTrack(track: TrackDefinition): void {
   if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
+  if (track.grooveIntensity !== undefined && (track.production !== 'disco-house' || !Number.isFinite(track.grooveIntensity) || track.grooveIntensity <= 0 || track.grooveIntensity > 1)) {
+    throw new RangeError('轻律动强度仅用于 disco-house，范围为大于 0 且不超过 1');
+  }
   const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
   for (const bar of track.hook) {
     for (const note of bar) {
@@ -249,9 +252,11 @@ function buildDiscoArrangement(track: TrackDefinition, options: RenderOptions): 
   const sections: Arrangement['sections'] = [];
   const selected = options.version === 'full' ? track.arrangement : [{ name: `HOOK / ${track.meta.title}`, bars: 8, energy: 'drop' as const }];
   const secondsPerBeat = 60 / options.bpm;
+  const grooveIntensity = track.grooveIntensity ?? 1;
+  const rhythmVoices = new Set<Instrument>(['kick', 'clap', 'hat', 'openHat', 'shaker', 'rim', 'conga', 'electricBass', 'sub', 'organ']);
   let barIndex = 0;
   const add = (instrument: Instrument, beat: number, duration: number, velocity: number, notes?: number[]) => {
-    events.push({ instrument, beat, duration, velocity, notes: notes?.map(note => note + options.transpose) });
+    events.push({ instrument, beat, duration, velocity: velocity * (rhythmVoices.has(instrument) ? grooveIntensity : 1), notes: notes?.map(note => note + options.transpose) });
   };
   for (const section of selected) {
     if (!Number.isInteger(section.bars) || section.bars < 1) throw new Error('小节数必须为正整数');

@@ -25,6 +25,7 @@ try {
     const { neonRebound } = await import('/src/tracks/neon-rebound.ts');
     const { amberTides } = await import('/src/tracks/amber-tides.ts');
     const { velvetHour } = await import('/src/tracks/velvet-hour.ts');
+    const { moonlitSway } = await import('/src/tracks/moonlit-sway.ts');
     const { encodeWav } = await import('/src/audio/wav.ts');
     const engineSource = await (await fetch('/src/engine/render.ts')).text();
     const toneUrl = engineSource.match(/from ["']([^"']*tone[^"']*)["']/)?.[1];
@@ -115,6 +116,8 @@ try {
     const discoLoop = await renderTrack(velvetHour, { ...discoOptions, version: 'loop' });
     const discoLow = await renderTrack(velvetHour, { ...discoOptions, bpm: 90, transpose: -12, seed: 0 });
     const discoHigh = await renderTrack(velvetHour, { ...discoOptions, bpm: 170, transpose: 12, seed: 0xffffffff });
+    const light = await renderTrack(moonlitSway, { ...options, bpm: 116, seed: 261013 });
+    const lightLoop = await renderTrack(moonlitSway, { ...options, bpm: 116, seed: 261013, version: 'loop' });
     const { loadSamples } = await import('/src/engine/sample-library.ts');
     const { createInstruments } = await import('/src/engine/instruments.ts');
     const { measureAudio } = await import('/src/audio/wav.ts');
@@ -140,6 +143,7 @@ try {
       changed: { duration: changed.duration, stats: changed.stats },
       boundaries: [low.stats, high.stats, warmLow.stats, warmHigh.stats, discoLow.stats, discoHigh.stats],
       disco: { duration: disco.duration, stats: disco.stats, difference: discoDifference, credits: disco.credits, loopDuration: discoLoop.duration, loopStats: discoLoop.stats, start: discoLoop.buffer.getChannelData(0)[0], end: discoLoop.buffer.getChannelData(0).at(-1) },
+      light: { duration: light.duration, stats: light.stats, credits: light.credits.length, loopDuration: lightLoop.duration, loopStats: lightLoop.stats, start: lightLoop.buffer.getChannelData(0)[0], end: lightLoop.buffer.getChannelData(0).at(-1) },
       palette: paletteStats,
       sampleRates: Object.values(bank).flatMap(voices => Object.values(voices).map(buffer => buffer.sampleRate)),
       warm: { duration: warm.duration, stats: warm.stats, difference: warmDifference, loopDuration: warmLoop.duration, loopStats: warmLoop.stats, start: warmLoop.buffer.getChannelData(0)[0], end: warmLoop.buffer.getChannelData(0).at(-1) },
@@ -198,10 +202,18 @@ try {
   assert.equal(checks.disco.credits.length, 2);
   assert.ok(checks.disco.credits.every(credit => credit.author && credit.license === 'CC BY 3.0' && credit.source.startsWith('https://') && credit.modifications));
   assert.ok(checks.palette.every(stats => stats.peak > 0.005 && stats.rms > 0.0005), 'each new timbre must produce measurable sound, not only appear in events');
+  assert.ok(checks.light.stats.rms > 0.01 && checks.light.stats.peakDb <= -1.19);
+  assert.equal(checks.light.stats.clippedSamples, 0);
+  assert.equal(checks.light.credits, 2);
+  assert.ok(Math.abs(checks.light.duration - (32 * 60 / 116 + 0.9)) < 1 / 44100);
+  assert.ok(Math.abs(checks.light.loopDuration - 32 * 60 / 116) < 1 / 44100);
+  assert.equal(checks.light.loopStats.clippedSamples, 0);
+  assert.equal(Math.abs(checks.light.start), 0);
+  assert.equal(Math.abs(checks.light.end), 0);
   console.log('PASS: real Tone.js audio, seven new timbres, local samples/credits, seeded repeatability, tempo/pitch limits, loop boundary, WAV and levels');
 
   assert.equal(await page.locator('#track-select').inputValue(), 'velvet-hour');
-  assert.equal(await page.locator('#track-select option').count(), 3);
+  assert.equal(await page.locator('#track-select option').count(), 4);
   assert.equal(await page.locator('#bpm').inputValue(), '120');
   assert.equal(await page.locator('#player-title').textContent(), '微醺舞步');
   assert.equal(await page.locator('#bars-fact').textContent(), '56');
@@ -264,6 +276,12 @@ try {
   await page.locator('[data-version="full"]').click();
   assert.match(await page.locator('#score-title').textContent(), /56/);
   assert.match(await page.locator('#version-description').textContent(), /56/);
+  await page.locator('#track-select').selectOption('moonlit-sway');
+  assert.equal(await page.locator('#bpm').inputValue(), '116');
+  assert.equal(await page.locator('#player-title').textContent(), '月光轻摇');
+  assert.equal(await page.locator('#cover-id').textContent(), 'MS—004');
+  assert.equal(await page.locator('#bars-fact').textContent(), '48');
+  assert.match(await page.title(), /MOONLIT SWAY/);
   await page.setViewportSize({ width: 390, height: 844 });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   assert.equal(overflow, false, 'mobile layout must not overflow horizontally');

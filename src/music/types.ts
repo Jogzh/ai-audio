@@ -35,6 +35,8 @@ export interface TrackDefinition {
     description: string;
   };
   production?: 'warm-house' | 'disco-house';
+  /** Relative drum, bass and rhythmic-organ level for a softer disco groove. */
+  grooveIntensity?: number;
   arrangement: Section[];
   hook: { offset: number; note: number; length: number; velocity: number }[][];
   harmony: { root: number; chord: number[] }[];

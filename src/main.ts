@@ -19,7 +19,7 @@ if (!app) throw new Error('页面挂载点不存在');
 app.innerHTML = `
   <header class="site-header">
     <a class="wordmark" href="#main" aria-label="原创音乐创作台"><span class="brand-symbol" aria-hidden="true">n/r</span> REBOUND<span class="wordmark-light"> / AUDIO LAB</span></a>
-    <span class="header-note"><i aria-hidden="true"></i> 原创声音实验 · 三种听感</span>
+    <span class="header-note"><i aria-hidden="true"></i> 原创声音实验 · ${trackRegistry.length} 种听感</span>
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="track-title">
@@ -56,7 +56,7 @@ app.innerHTML = `
           <div class="config-heading"><h3 id="config-title">塑造你的声音</h3><span>EDIT THE SIGNAL</span></div>
           <fieldset id="render-controls">
             <legend class="sr-only">合成版本与参数</legend>
-            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">默认试听微醺舞步精华；也可以切换其他作品对比。</p></div>
+            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">选择作品，试听轻 DJ、温暖 House 与回弹节奏。</p></div>
             <div class="field-heading"><span id="version-label">曲目版本</span><span>VERSION</span></div>
             <div class="version-switch" role="group" aria-labelledby="version-label"><button type="button" data-version="full" aria-pressed="true">完整 <small>FULL</small></button><button type="button" data-version="hook" aria-pressed="false">精华 <small>HOOK</small></button><button type="button" data-version="loop" aria-pressed="false">循环 <small>LOOP</small></button></div>
             <p id="version-description" class="field-help"></p>
@@ -130,7 +130,7 @@ const productionCopy: Record<string, { coverId: string; melody: string; drums: s
     coverId: 'VH—003',
     melody: 'CC BY 本地原声吉他的拨弦质感，搭配风琴反拍；轻 DJ 听感，不靠猛烈 Drop。',
     drums: '稳定四拍，沙锤、边击与康加鼓织成轻盈律动，段落自然推进。',
-    bass: 'CC BY 本地电贝斯音源，真实拨弦与柔韧低频托住微醺舞步。',
+    bass: 'CC BY 本地电贝斯音源，真实拨弦与柔韧低频托住旋律。',
   },
   'warm-house': {
     coverId: 'AT—002',
@@ -159,7 +159,7 @@ function syncTrack(): void {
   element('#key-fact').textContent = meta.key;
   element('#bpm-fact').textContent = bpmInput.value;
   element('#bars-fact').textContent = String(bars);
-  element('#cover-id').textContent = copy.coverId;
+  element('#cover-id').textContent = `${meta.subtitle.split(' ').map(word => word[0]).join('')}—${meta.artist.match(/\d+$/)?.[0] ?? copy.coverId.split('—')[1]}`;
   element('#cover-code').innerHTML = `${meta.bpm} / FREQ<br>STEREO FIELD`;
   element('#footer-title').textContent = `${meta.subtitle} / ${meta.title}`;
   element('#score-title').textContent = `FULL SCORE / ${bars} 小节`;
