@@ -22,7 +22,7 @@ const { values } = parseArgs({ options: {
   help: { type: 'boolean', default: false },
 } });
 if (values.help) {
-  console.log('npm run render -- [--track afterglow|moonlit-sway|velvet-hour|amber-tides|neon-rebound] [--version all|full|hook|loop] [--bpm 120] [--transpose 0] [--seed 260713] [--out artifacts/audio] [--format mp3|wav|both] [--master auto|off|loudness] [--overwrite]');
+  console.log('npm run render -- [--track afterglow] [--version all|full|hook|loop] [--bpm 118] [--transpose 0] [--seed 260713] [--out artifacts/audio] [--format mp3|wav|both] [--master auto|off|loudness] [--overwrite]');
   console.log('Defaults: registry default track, track BPM, MP3 320 kbps. auto masters MP3 with two-pass loudnorm (-14 LUFS / -1.5 dBTP / LRA 9) and preserves raw WAV. loudness also masters WAV; off disables mastering. Existing files require --overwrite.');
   process.exit(0);
 }
@@ -60,7 +60,7 @@ try {
   if (!values.overwrite) {
     const expectedFiles = ['manifest.json', ...selected.flatMap(version => {
       const stem = `${resolved.trackId}-${version}-${resolved.options.bpm}bpm-t${resolved.options.transpose}-s${resolved.options.seed}`;
-      return [...outputFormats.map(format => `${stem}.${format}`), `${stem}.credits.json`, `${stem}.mastering.json`];
+      return [...outputFormats.map(format => `${stem}.${format}`), `${stem}.mastering.json`];
     })];
     const existing = await Promise.all(expectedFiles.map(async filename => {
       try { await access(path.join(output, filename)); return filename; }
@@ -89,7 +89,7 @@ try {
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
-      return { track: track.meta.id, filename: result.filename, duration: result.duration, options: result.options, stats: result.stats, sections: result.sections, credits: result.credits, sampleRate: result.buffer.sampleRate, channels: result.buffer.numberOfChannels };
+      return { track: track.meta.id, filename: result.filename, duration: result.duration, options: result.options, stats: result.stats, sections: result.sections, sampleRate: result.buffer.sampleRate, channels: result.buffer.numberOfChannels };
     }, { input: { ...resolved.options, version }, trackId: resolved.trackId });
     const [download, metadata] = await Promise.all([downloadPromise, renderPromise]);
     const sourcePath = path.join(tempDirectory, metadata.filename);
@@ -97,9 +97,6 @@ try {
     const stem = metadata.filename.replace(/\.wav$/i, '');
     const exported = await exportAudio({ sourcePath, destinationDirectory: output, stem, format: values.format, master: values.master, binaries, overwrite: values.overwrite });
     const primary = exported.files.find(file => file.filename.endsWith('.mp3')) ?? exported.files[0];
-    if (metadata.credits.length) {
-      await writeFile(path.join(output, `${stem}.credits.json`), JSON.stringify({ track: metadata.track, credits: metadata.credits }, null, 2) + '\n', { flag: values.overwrite ? 'w' : 'wx' });
-    }
     let masteringFilename;
     if (exported.mastering) {
       masteringFilename = `${stem}.mastering.json`;
@@ -111,14 +108,9 @@ try {
       const measured = exported.mastering?.after[file.filename.endsWith('.mp3') ? 'mp3' : 'wav'];
       if (measured) console.log(`  ${file.filename}: ${measured.integratedLufs.toFixed(2)} LUFS, ${measured.truePeakDbtp.toFixed(2)} dBTP (measured after encoding)`);
     }
-    for (const credit of metadata.credits) {
-      console.log(`  ${credit.title} — ${credit.author}\n  Source: ${credit.source}\n  License: ${credit.license} (${credit.licenseUrl})\n  Modifications: ${credit.modifications}`);
-    }
-    if (!metadata.credits.length) console.log('  No external sample credits returned by this render.');
   }
-  const credits = [...new Map(manifest.flatMap(render => render.credits).map(credit => [JSON.stringify(credit), credit])).values()];
   await mkdir(output, { recursive: true });
-  await writeFile(path.join(output, 'manifest.json'), JSON.stringify({ track: resolved.trackId, credits, engine: 'Tone.js 15.1.22 / Chromium OfflineAudioContext', generatedAt: new Date().toISOString(), format: values.format === 'both' ? 'PCM16 WAV + MP3 320 kbps' : manifest[0].format, masteringMode: values.master, tools: binaries, note: 'Source stats are sample peak/RMS. Integrated LUFS and oversampled true peak are measured by FFmpeg when available. MP3 container duration includes encoder padding; audioContentDurationSeconds is the rendered PCM frame duration. Loudness target is a project choice, not a claimed platform standard.', renders: manifest }, null, 2) + '\n', { flag: values.overwrite ? 'w' : 'wx' });
+  await writeFile(path.join(output, 'manifest.json'), JSON.stringify({ track: resolved.trackId, engine: 'Tone.js 15.1.22 / Chromium OfflineAudioContext', generatedAt: new Date().toISOString(), format: values.format === 'both' ? 'PCM16 WAV + MP3 320 kbps' : manifest[0].format, masteringMode: values.master, tools: binaries, note: 'Source stats are sample peak/RMS. Integrated LUFS and oversampled true peak are measured by FFmpeg when available. MP3 container duration includes encoder padding; audioContentDurationSeconds is the rendered PCM frame duration. Loudness target is a project choice, not a claimed platform standard.', renders: manifest }, null, 2) + '\n', { flag: values.overwrite ? 'w' : 'wx' });
   console.log(`Saved to ${output}`);
 } catch (error) {
   console.error(error.message);

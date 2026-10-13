@@ -8,10 +8,8 @@ export function validateOptions(options: RenderOptions): void {
 }
 
 export function validateTrack(track: TrackDefinition): void {
+  if (track.production !== 'emotional-pop') throw new RangeError(`未知制作风格: ${track.production}`);
   if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
-  if (track.grooveIntensity !== undefined && (track.production !== 'disco-house' || !Number.isFinite(track.grooveIntensity) || track.grooveIntensity <= 0 || track.grooveIntensity > 1)) {
-    throw new RangeError('轻律动强度仅用于 disco-house，范围为大于 0 且不超过 1');
-  }
   const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
   for (const bar of track.hook) {
     for (const note of bar) {
@@ -21,9 +19,8 @@ export function validateTrack(track: TrackDefinition): void {
     }
   }
   for (const harmony of track.harmony) {
-    const minimum = track.production === undefined ? 1 : 4;
-    if (!midi(harmony.root) || harmony.chord.length < minimum || !Array.from(harmony.chord).every(midi)) {
-      throw new RangeError(`和声需要有效 MIDI 根音与至少 ${minimum} 个有效和弦音`);
+    if (!midi(harmony.root) || harmony.chord.length < 4 || !Array.from(harmony.chord).every(midi)) {
+      throw new RangeError('和声需要有效 MIDI 根音与至少 4 个有效和弦音');
     }
   }
   const energies = ['tease', 'groove', 'build', 'drop', 'air', 'final', 'outro'];
@@ -32,9 +29,8 @@ export function validateTrack(track: TrackDefinition): void {
     if (!energies.includes(section.energy)) throw new RangeError(`未知段落能量: ${section.energy}`);
   }
   if (track.resolveHarmony !== undefined && (!Number.isInteger(track.resolveHarmony) || track.resolveHarmony < 0 || track.resolveHarmony >= track.harmony.length)) throw new RangeError('结束和声必须引用已有和声');
-  if (track.production === 'emotional-pop' && !track.edits) throw new RangeError('情绪流行曲目需要指定精华与循环段落');
+  if (!track.edits) throw new RangeError('情绪流行曲目需要指定精华与循环段落');
   if (track.edits) {
-    if (track.production !== 'emotional-pop') throw new RangeError('段落裁剪目前用于 emotional-pop');
     const totalBars = track.arrangement.reduce((sum, section) => sum + section.bars, 0);
     for (const version of ['hook', 'loop'] as const) {
       const edit = track.edits[version];

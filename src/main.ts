@@ -18,8 +18,8 @@ const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) throw new Error('页面挂载点不存在');
 app.innerHTML = `
   <header class="site-header">
-    <a class="wordmark" href="#main" aria-label="原创音乐创作台"><span class="brand-symbol" aria-hidden="true">n/r</span> REBOUND<span class="wordmark-light"> / AUDIO LAB</span></a>
-    <span class="header-note"><i aria-hidden="true"></i> 原创声音实验 · ${trackRegistry.length} 种听感</span>
+    <a class="wordmark" href="#main" aria-label="余温音乐创作台"><span class="brand-symbol" aria-hidden="true">a/g</span> AFTERGLOW<span class="wordmark-light"> / AUDIO LAB</span></a>
+    <span class="header-note"><i aria-hidden="true"></i> 原创电子流行 · 余温</span>
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="track-title">
@@ -35,7 +35,7 @@ app.innerHTML = `
         <p class="description" id="track-description"></p>
         <div class="tags" id="track-tags" aria-label="曲目风格"></div>
         <dl class="track-facts"><div><dt>节奏</dt><dd><span id="bpm-fact"></span> <small>BPM</small></dd></div><div><dt>原始调性</dt><dd id="key-fact">—</dd></div><div><dt>完整结构</dt><dd><span id="bars-fact"></span> <small>小节</small></dd></div></dl>
-        <div class="original-note"><span aria-hidden="true">//</span> 原创编曲 · 合成与授权音源 <span class="note-end">ORIGINAL SCORE / LICENSED SOUNDS.</span></div>
+        <div class="original-note"><span aria-hidden="true">//</span> 原创编曲 · 原创合成音色 <span class="note-end">ORIGINAL SCORE / SYNTHESIZED SOUNDS.</span></div>
       </div>
     </section>
 
@@ -56,7 +56,7 @@ app.innerHTML = `
           <div class="config-heading"><h3 id="config-title">塑造你的声音</h3><span>EDIT THE SIGNAL</span></div>
           <fieldset id="render-controls">
             <legend class="sr-only">合成版本与参数</legend>
-            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">情绪流行电子、轻 DJ、温暖 House 与回弹节奏。</p></div>
+            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">原创情绪流行电子，完整、精华与循环三种版本。</p></div>
             <div class="field-heading"><span id="version-label">曲目版本</span><span>VERSION</span></div>
             <div class="version-switch" role="group" aria-labelledby="version-label"><button type="button" data-version="full" aria-pressed="true">完整 <small>FULL</small></button><button type="button" data-version="hook" aria-pressed="false">精华 <small>HOOK</small></button><button type="button" data-version="loop" aria-pressed="false">循环 <small>LOOP</small></button></div>
             <p id="version-description" class="field-help"></p>
@@ -69,11 +69,10 @@ app.innerHTML = `
       </div>
     </section>
 
-    <section class="sample-credits" aria-labelledby="credits-title"><h2 id="credits-title">音源署名</h2><button id="export-credits" class="export-button" type="button" hidden>单独下载音源署名</button><div id="sample-credits" aria-live="polite"></div></section>
 
     <section class="layers" aria-labelledby="layers-title"><div class="section-heading"><div><span class="section-number">02 /</span><h2 id="layers-title">拆开这段律动</h2></div><span class="section-aside">三层声音，一个夜晚。</span></div><div class="layer-list"><article class="layer"><div class="layer-art melody-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">01 / MELODY</span><h3>旋律 <span>主题与应答</span></h3><p id="melody-description"></p></div></article><article class="layer"><div class="layer-art drum-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">02 / DRUMS</span><h3>鼓 <span>节奏里的呼吸</span></h3><p id="drum-description"></p></div></article><article class="layer"><div class="layer-art bass-art" aria-hidden="true"><i></i><i></i><i></i></div><div><span class="layer-index">03 / BASS</span><h3>低音 <span>托住情绪</span></h3><p id="bass-description"></p></div></article></div></section>
   </main>
-  <footer><span class="footer-brand" id="footer-title"></span><span>原创编曲 / 授权音源 · 请以舒适音量聆听</span><a href="#main">回到顶部 ↑</a></footer>
+  <footer><span class="footer-brand" id="footer-title"></span><span>原创编曲 / 合成音色 · 请以舒适音量聆听</span><a href="#main">回到顶部 ↑</a></footer>
 `;
 
 function element<T extends HTMLElement>(selector: string): T {
@@ -84,7 +83,6 @@ function element<T extends HTMLElement>(selector: string): T {
 const playButton = element<HTMLButtonElement>('#play');
 const stopButton = element<HTMLButtonElement>('#stop');
 const exportButton = element<HTMLButtonElement>('#export');
-const creditsButton = element<HTMLButtonElement>('#export-credits');
 const controls = element<HTMLFieldSetElement>('#render-controls');
 const trackSelect = element<HTMLSelectElement>('#track-select');
 trackSelect.replaceChildren(...trackRegistry.map(({ meta }) => {
@@ -132,29 +130,10 @@ const productionCopy: Record<string, { coverId: string; melody: string; drums: s
     drums: '轻四拍与错位鼓点交替，拍手、细踩镲和短过渡推动情绪，桥段留出呼吸。',
     bass: '低频保持居中，轻侧链让出底鼓；温暖泛音让手机扬声器也能听清律动。',
   },
-  'disco-house': {
-    coverId: 'VH—003',
-    melody: 'CC BY 本地原声吉他的拨弦质感，搭配风琴反拍；轻 DJ 听感，不靠猛烈 Drop。',
-    drums: '稳定四拍，沙锤、边击与康加鼓织成轻盈律动，段落自然推进。',
-    bass: 'CC BY 本地电贝斯音源，真实拨弦与柔韧低频托住旋律。',
-  },
-  'warm-house': {
-    coverId: 'AT—002',
-    melody: '柔和主音与温暖电钢琴，八小节问答有展开，也有收束。',
-    drums: '克制四拍鼓点，踩镲稍稍靠后，段落之间留出呼吸。',
-    bass: '平稳根音与柔软低频，不用频繁八度跳进抢走旋律。',
-  },
-  default: {
-    coverId: 'NR—001',
-    melody: '四音动机与短促合成器，保留原版的弹跳感。',
-    drums: '错位底鼓、两步节奏与细碎打击乐。',
-    bass: '短促低音与 sub 叠加，强调反拍的回弹。',
-  },
 };
-const sectionNames: Record<string, string> = { open: '序幕', groove: '律动', build: '蓄能', drop: '回弹', air: '留白', outro: '尾声' };
 function syncTrack(): void {
   const { meta, arrangement } = selectedTrack;
-  const copy = productionCopy[selectedTrack.production ?? 'default'] ?? productionCopy.default;
+  const copy = productionCopy[selectedTrack.production];
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
   const [first, ...rest] = meta.subtitle.split(' ');
   element('#track-title').innerHTML = `${first}${rest.length ? `<br><span class="title-second">${rest.join(' ')}</span>` : ''}<span class="title-dot">.</span>`;
@@ -179,46 +158,6 @@ function syncTrack(): void {
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
 }
 
-function creditLink(label: string, value: string): HTMLElement {
-  const text = document.createElement('span');
-  text.textContent = label;
-  try {
-    const url = new URL(value);
-    if (url.protocol !== 'https:' && url.protocol !== 'http:') return text;
-    const link = document.createElement('a');
-    link.href = url.href;
-    link.textContent = label;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    return link;
-  } catch {
-    return text;
-  }
-}
-function drawCredits(): void {
-  const container = element('#sample-credits');
-  container.replaceChildren();
-  creditsButton.hidden = !track?.credits.length;
-  if (!track || !track.credits.length) {
-    const note = document.createElement('p');
-    note.textContent = track ? '本曲使用原创合成音色，无外部采样。' : '音频加载后展示实际音源署名；原创合成曲无外部音源。';
-    container.append(note);
-    return;
-  }
-  const list = document.createElement('ul');
-  for (const credit of track.credits) {
-    const item = document.createElement('li');
-    const title = document.createElement('strong');
-    title.textContent = `${credit.title} — ${credit.author}`;
-    const source = document.createElement('p');
-    source.append('出处：', creditLink(credit.source, credit.source), ' · ', creditLink(credit.license, credit.licenseUrl));
-    const modifications = document.createElement('p');
-    modifications.textContent = `修改：${credit.modifications}`;
-    item.append(title, source, modifications);
-    list.append(item);
-  }
-  container.append(list);
-}
 function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -246,7 +185,6 @@ function syncControls(): void {
   controls.disabled = busy;
   playButton.disabled = busy;
   exportButton.disabled = busy;
-  creditsButton.disabled = busy;
   stopButton.disabled = busy || !track;
   seek.disabled = busy || !track;
   element('#play-state').textContent = busy ? '合成处理中' : audio.paused ? '准备就绪' : '正在播放';
@@ -375,7 +313,7 @@ function drawSections(): void {
     button.style.flex = `${end - start} 1 0%`;
     button.dataset.start = String(start);
     button.dataset.end = String(end);
-    const name = sectionNames[section.name.toLowerCase()] || section.name;
+    const name = section.name;
     button.title = `${name} · ${formatTime(start)} — ${formatTime(end)}`;
     button.setAttribute('aria-label', `定位到${name}，${formatTime(start)}至${formatTime(end)}`);
     const label = document.createElement('span'); label.textContent = name;
@@ -405,7 +343,7 @@ function invalidate(): void {
   element('#peak').textContent = '— dBFS';
   element('#rms').textContent = '— dBFS';
   element('#wave-placeholder').hidden = false;
-  syncControls(); syncPosition(); drawSections(); drawWaveform(); drawCredits();
+  syncControls(); syncPosition(); drawSections(); drawWaveform();
 }
 function readOptions(): RenderOptions | null {
   const inputs = [bpmInput, transposeInput, seedInput];
@@ -440,7 +378,7 @@ async function ensureTrack(options: RenderOptions, token: number): Promise<void>
   element('#wave-placeholder').hidden = true;
   badge.textContent = '合成完成';
   badge.classList.add('is-ready');
-  drawWaveform(); drawSections(); syncPosition(); drawCredits();
+  drawWaveform(); drawSections(); syncPosition();
 }
 async function perform(action: 'play' | 'export'): Promise<void> {
   if (busy || !active) return;
@@ -475,14 +413,8 @@ async function perform(action: 'play' | 'export'): Promise<void> {
         setStatus('音频已就绪。浏览器未允许本次播放，请再次点击「播放」。', true);
       }
     } else {
-      // Keep WAV as the first download event; the attribution file follows it.
       downloadBlob(wavBlob, track.filename);
-      if (track.credits.length) {
-        const creditsFilename = `${track.filename.replace(/\.wav$/i, '')}.credits.json`;
-        const creditsBlob = new Blob([JSON.stringify({ track: selectedTrack.meta.id, credits: track.credits }, null, 2) + '\n'], { type: 'application/json' });
-        downloadBlob(creditsBlob, creditsFilename);
-      }
-      setStatus(`已发起下载：${track.filename}。立体声 WAV / 44.1 kHz / 16 bit。${track.credits.length ? '同时下载音源署名 JSON；浏览器可能需要允许多文件下载。' : ''}`);
+      setStatus(`已发起下载：${track.filename}。立体声 WAV / 44.1 kHz / 16 bit。`);
     }
   } catch (error) {
     if (!active || token !== generation) return;
@@ -495,12 +427,6 @@ async function perform(action: 'play' | 'export'): Promise<void> {
 }
 playButton.addEventListener('click', () => { void perform('play'); });
 exportButton.addEventListener('click', () => { void perform('export'); });
-creditsButton.addEventListener('click', () => {
-  if (busy || !track?.credits.length) return;
-  const filename = `${track.filename.replace(/\.wav$/i, '')}.credits.json`;
-  downloadBlob(new Blob([JSON.stringify({ track: selectedTrack.meta.id, credits: track.credits }, null, 2) + '\n'], { type: 'application/json' }), filename);
-  setStatus('已单独下载音源署名。对外分享音频时请一并保留署名。');
-});
 stopButton.addEventListener('click', () => {
   if (busy || !track) return;
   audio.pause(); audio.currentTime = 0; syncPosition(); syncControls();
@@ -581,4 +507,4 @@ window.addEventListener('pageshow', () => {
   if (!track) setStatus('首次试听请先调低设备音量。点击播放或导出生成音频。');
 });
 volume.style.setProperty('--range-progress', '65%');
-syncTrack(); syncVersion(); syncControls(); syncPosition(); drawWaveform(); drawCredits();
+syncTrack(); syncVersion(); syncControls(); syncPosition(); drawWaveform();

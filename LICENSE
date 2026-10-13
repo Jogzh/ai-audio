@@ -23,7 +23,6 @@ SOFTWARE.
 ---
 
 Scope clarification: The MIT license above applies only to software code owned
-by this project. It does not license third-party audio samples or rendered
-music outputs. Third-party samples and dependencies remain subject to their
-respective licenses; see README.md and generated .credits.json files for audio
-sources, authors, license links, and modifications.
+by this project. It does not license rendered music outputs, including the
+MP3 files in releases/. Third-party dependencies remain subject to their
+respective licenses. See README.md for the music release details.

@@ -167,13 +167,6 @@ fieldset { padding: 0; border: 0; margin: 0; min-width: 0; }
 .audio-metrics { display: flex; gap: 25px; border-top: 1px solid var(--line); margin: 20px 0 0; padding-top: 15px; }
 .audio-metrics dt { font-size: 9px; }
 .audio-metrics dd { font-size: 10px; color: #a3b1c4; margin-top: 6px; white-space: nowrap; }
-.sample-credits { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
-.sample-credits h2 { font-size: 13px; }
-.sample-credits ul { list-style: none; padding: 0; margin: 14px 0 0; }
-.sample-credits li + li { margin-top: 16px; }
-.sample-credits strong { font-size: 11px; font-weight: 550; }
-.sample-credits p { color: var(--muted); font-size: 10px; line-height: 1.8; margin: 6px 0; overflow-wrap: anywhere; }
-.sample-credits a { color: var(--lime); text-decoration: underline; text-underline-offset: 3px; }
 .layers { padding: 43px 0 50px; }
 .layer-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .layer { display: flex; align-items: center; gap: 18px; padding: 27px 22px; min-width: 0; }

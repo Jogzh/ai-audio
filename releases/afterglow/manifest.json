@@ -1,0 +1,218 @@
+{
+  "track": "afterglow",
+  "title": "余温 / AFTERGLOW",
+  "sourceCommit": "7fa027f",
+  "generatedAt": "2026-10-13T09:51:45.824Z",
+  "engine": "Tone.js 15.1.22 / Chromium OfflineAudioContext",
+  "format": "MP3 320 kbps",
+  "masteringMode": "auto",
+  "masteringTarget": {
+    "integratedLufs": -14,
+    "truePeakDbtp": -1.5,
+    "loudnessRangeLu": 9
+  },
+  "note": "Exact copies of the approved afterglow-v2 MP3 files. Loudness values are measured after encoding; the mastering target is a project choice. Only MP3 release files are tracked; regeneration outputs remain under artifacts/.",
+  "files": [
+    {
+      "version": "full",
+      "filename": "afterglow-full-118bpm-t0-s261013.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 83.755918,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 83.75591836734694,
+      "bytes": 3353120,
+      "mastered": true,
+      "sha256": "3c10cf837c68d681752cfe2bbf5756f0dd59aa6ed04ec653b4d447cf2b38334a",
+      "options": {
+        "bpm": 118,
+        "transpose": 0,
+        "seed": 261013,
+        "version": "full"
+      },
+      "sections": [
+        {
+          "name": "01 / 那句旋律",
+          "start": 0,
+          "end": 4.067796610169491
+        },
+        {
+          "name": "02 / 余温",
+          "start": 4.067796610169491,
+          "end": 20.338983050847457
+        },
+        {
+          "name": "03 / 走过街灯",
+          "start": 20.338983050847457,
+          "end": 36.610169491525426
+        },
+        {
+          "name": "04 / 想起你",
+          "start": 36.610169491525426,
+          "end": 44.7457627118644
+        },
+        {
+          "name": "05 / 再亮一点",
+          "start": 44.7457627118644,
+          "end": 69.15254237288136
+        },
+        {
+          "name": "06 / 留在晚风里",
+          "start": 69.15254237288136,
+          "end": 81.35593220338983
+        }
+      ],
+      "loudness": {
+        "integratedLufs": -14.02,
+        "truePeakDbtp": -1.46,
+        "loudnessRangeLu": 6.8,
+        "thresholdLufs": -24.31
+      },
+      "decodedCheck": {
+        "filename": "afterglow-full-118bpm-t0-s261013.mp3",
+        "durationSeconds": 83.75591836734694,
+        "sampleRate": 44100,
+        "channels": 2,
+        "clippedSamples": 0,
+        "peakDbfs": -1.4594033179053876,
+        "rmsDbfs": -15.48184274085781,
+        "stereoCorrelation": 0.997697382710525,
+        "monoRmsChangeDb": -0.005004996031428252,
+        "loudness": {
+          "integratedLufs": -14.02,
+          "truePeakDbtp": -1.46,
+          "loudnessRangeLu": 6.8,
+          "thresholdLufs": -24.31
+        },
+        "sectionRmsDbfs": [
+          {
+            "name": "01 / 那句旋律",
+            "rmsDbfs": -16.789801343580724
+          },
+          {
+            "name": "02 / 余温",
+            "rmsDbfs": -13.872147645772056
+          },
+          {
+            "name": "03 / 走过街灯",
+            "rmsDbfs": -15.946705822000304
+          },
+          {
+            "name": "04 / 想起你",
+            "rmsDbfs": -21.378014421443098
+          },
+          {
+            "name": "05 / 再亮一点",
+            "rmsDbfs": -13.9350521121967
+          },
+          {
+            "name": "06 / 留在晚风里",
+            "rmsDbfs": -18.854792355210158
+          }
+        ]
+      }
+    },
+    {
+      "version": "hook",
+      "filename": "afterglow-hook-118bpm-t0-s261013.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 17.071179,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 17.071179138321995,
+      "bytes": 685496,
+      "mastered": true,
+      "sha256": "333e893062462745f14f111edfffebed100a4e5c807b3b45c43ba4430fc29cfb",
+      "options": {
+        "bpm": 118,
+        "transpose": 0,
+        "seed": 261013,
+        "version": "hook"
+      },
+      "sections": [
+        {
+          "name": "02 / 余温",
+          "start": 0,
+          "end": 16.271186440677965
+        }
+      ],
+      "loudness": {
+        "integratedLufs": -14.12,
+        "truePeakDbtp": -1.48,
+        "loudnessRangeLu": 2.6,
+        "thresholdLufs": -24.51
+      },
+      "decodedCheck": {
+        "filename": "afterglow-hook-118bpm-t0-s261013.mp3",
+        "durationSeconds": 17.071179138321995,
+        "sampleRate": 44100,
+        "channels": 2,
+        "clippedSamples": 0,
+        "peakDbfs": -1.4798093208384797,
+        "rmsDbfs": -15.30905446145232,
+        "stereoCorrelation": 0.9990794588511772,
+        "monoRmsChangeDb": -0.002029472189338827,
+        "loudness": {
+          "integratedLufs": -14.12,
+          "truePeakDbtp": -1.48,
+          "loudnessRangeLu": 2.6,
+          "thresholdLufs": -24.51
+        }
+      }
+    },
+    {
+      "version": "loop",
+      "filename": "afterglow-loop-118bpm-t0-s261013.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 16.271179,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 16.271179138321994,
+      "bytes": 653104,
+      "mastered": true,
+      "sha256": "fa92bf7e07d03abec11cf6243d0952f42a3644393bf97308cf224cc88e54287d",
+      "options": {
+        "bpm": 118,
+        "transpose": 0,
+        "seed": 261013,
+        "version": "loop"
+      },
+      "sections": [
+        {
+          "name": "02 / 余温",
+          "start": 0,
+          "end": 16.271186440677965
+        }
+      ],
+      "loudness": {
+        "integratedLufs": -14.16,
+        "truePeakDbtp": -1.49,
+        "loudnessRangeLu": 1.3,
+        "thresholdLufs": -24.16
+      },
+      "decodedCheck": {
+        "filename": "afterglow-loop-118bpm-t0-s261013.mp3",
+        "durationSeconds": 16.271179138321994,
+        "sampleRate": 44100,
+        "channels": 2,
+        "clippedSamples": 0,
+        "peakDbfs": -1.4983732911965344,
+        "rmsDbfs": -15.072060661794406,
+        "stereoCorrelation": 0.9990666086872253,
+        "monoRmsChangeDb": -0.0020598661055494694,
+        "loudness": {
+          "integratedLufs": -14.16,
+          "truePeakDbtp": -1.49,
+          "loudnessRangeLu": 1.3,
+          "thresholdLufs": -24.16
+        }
+      }
+    }
+  ]
+}

@@ -11,9 +11,7 @@
 
 本次没有取得可核验的当日抖音 / 小红书歌曲排名，也没有依据榜单复制旋律。上述资料支持制作和验证方向，不能证明某一种和弦、速度或音色必然会火。
 
-## 旧版的问题与对应改动
-
-旧《月光轻摇》主段约在 33 秒进入；整曲实测约 −19.47 LUFS，精华版约 −18.13 LUFS。旋律长期重复相同节奏模板，单音拨弦缺少明显问答和演奏变化。D 小调音符与和声本身有效，主要问题在表达、段落入口和混音。
+## 制作目标
 
 | 制作目标 | 《余温 / AFTERGLOW》的具体实现 |
 | --- | --- |
@@ -25,7 +23,7 @@
 | 手机上保持清楚 | 单声道低频、带少量泛音的 bass、较暗的混响回送、并联干声与延迟，轻侧链让出底鼓。 |
 | 文件拿来即可使用 | 直接导出 320 kbps MP3。双遍 loudnorm 采用项目目标 −14 LUFS / −1.5 dBTP，编码后再次实测并记录；这不是声称平台要求的标准。 |
 
-速度为 118 BPM、F# minor。Dmaj9 → Amaj9 → E6/9 → F#m9 的两小节和声节奏，为主题保留展开空间。原有四首曲目保留；新编曲器与音源独立，避免把一种制作模板套给所有作品。
+速度为 118 BPM、F# minor。Dmaj9 → Amaj9 → E6/9 → F#m9 的两小节和声节奏，为主题保留展开空间。项目只维护《余温》与对应的 emotional-pop 编曲和合成音源。
 
 ## 如何验证传播潜力
 
@@ -41,9 +39,9 @@
 - `src/music/arrangements/emotional-pop.ts`：完整作曲与短版裁切。
 - `src/engine/emotional-pop.ts`：电钢琴、电子主音、合成元音和独立混音链。
 - [MP3 导出与测量说明](mp3-export.md)：编码、响度与格式选项。
-- `artifacts/audio/afterglow-v2/manifest.json`：本次输出文件、实际时长、源 PCM 检查与编码后测量；音频产物不进入 Git。
+- [release manifest](../releases/afterglow/manifest.json)：Git 追踪的定稿参数、实际时长、源 PCM 检查与编码后测量。三版 MP3 可直接播放：[full](../releases/afterglow/afterglow-full-118bpm-t0-s261013.mp3) / [hook](../releases/afterglow/afterglow-hook-118bpm-t0-s261013.mp3) / [loop](../releases/afterglow/afterglow-loop-118bpm-t0-s261013.mp3)，无需本地渲染。后续重新导出仍写入 Git 忽略的 `artifacts/`。
 
-回声链采用四个独立前向延迟。真实 Chromium 中，单音回声连续八次渲染的最大 PCM 差值不超过 2.98e-8；完整 hook 八次比较的最大差值为 1.37e-6，差值 RMS 不超过 2.59e-8。隔离验证显示剩余微小差异来自原生压缩处理，低于 PCM16 半个量化步长。新音源回归同时限制最大差 < 1/65536 与差值 RMS < 1e-6；旧音源保留 < 1e-6 最大差检查。该检查不承诺跨浏览器或文件逐位一致。
+回声链采用四个独立前向延迟。同 seed 回归同时限制最大 PCM 差 < 1/65536 与差值 RMS < 1e-6，容纳原生压缩处理的微小浮点差异；不承诺跨浏览器或文件逐位一致。
 
 本次定稿参数：118 BPM、移调 0、seed 261013、320 kbps / 44.1 kHz / 立体声 MP3。实际最终文件测量：
 
@@ -53,6 +51,6 @@
 | hook | 17.071 s | −14.12 | −1.48 | 0 |
 | loop | 16.271 s | −14.16 | −1.49 | 0 |
 
-最终 true peak 比 −1.5 dBTP 制作目标高约 0.01–0.04 dB，以上为编码后实测值。三个版本合并单声道的 RMS 变化均小于 0.01 dB。28 项自动测试、生产构建、真实 Chromium 音频与播放器检查通过；移动页面在 390 px 宽度没有横向溢出。详情在输出目录的 `manifest.json`、同名 `.mastering.json` 与 `decoded-check.json`。
+最终 true peak 比 −1.5 dBTP 制作目标高约 0.01–0.04 dB，以上为编码后实测值。三个版本合并单声道的 RMS 变化均小于 0.01 dB。定稿数据见 release manifest；代码验证运行 `npm run check` 与 `npm run test:browser`，后续修改需重新检查。
 
 没有进行人工耳听评审。本次交付的 MP3 是供实际试听与后续视频验证的原创候选作品。

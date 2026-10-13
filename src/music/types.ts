@@ -1,6 +1,6 @@
 export const versions = ['full', 'hook', 'loop'] as const;
 export type Version = typeof versions[number];
-export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'riser' | 'impact' | 'guitar' | 'electricBass' | 'organ' | 'pluck' | 'shaker' | 'rim' | 'conga' | 'piano' | 'vocal' | 'texture' | 'sweep';
+export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'impact' | 'piano' | 'vocal' | 'texture' | 'sweep';
 
 export interface RenderOptions {
   version: Version;
@@ -34,9 +34,7 @@ export interface TrackDefinition {
     tags: string[];
     description: string;
   };
-  production?: 'warm-house' | 'disco-house' | 'emotional-pop';
-  /** Relative drum, bass and rhythmic-organ level for a softer disco groove. */
-  grooveIntensity?: number;
+  production: 'emotional-pop';
   /** Short edits refer to the actual full score, measured in bars. */
   edits?: { hook: { startBar: number; bars: number }; loop: { startBar: number; bars: number } };
   /** Harmony index used for the final resolution; defaults to the first chord. */
@@ -61,16 +59,6 @@ export interface AudioStats {
   dcOffset: number;
 }
 
-export interface SampleCredit {
-  title: string;
-  author: string;
-  source: string;
-  license: string;
-  licenseUrl: string;
-  revision: string;
-  modifications: string;
-}
-
 export interface RenderedTrack {
   buffer: AudioBuffer;
   duration: number;
@@ -79,5 +67,4 @@ export interface RenderedTrack {
   sections: Arrangement['sections'];
   stats: AudioStats;
   filename: string;
-  credits: SampleCredit[];
 }
