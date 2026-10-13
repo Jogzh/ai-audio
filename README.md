@@ -1,6 +1,30 @@
 # ai-audio
 
-用 **Tone.js** 创作原创情绪流行电子音乐，内置《余温 / Afterglow》与《风起时 / When the Wind Rises》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
+用 **Tone.js** 创作原创音乐，内置情绪流行电子《余温 / Afterglow》《风起时 / When the Wind Rises》，以及中国风交响流行《山河醒 / Mountains Awake》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
+
+## 新作：《山河醒》
+
+**中国风 × 宏大交响 × 流行电子**的原创纯音乐，96 BPM、D 小调五声旋律、48 小节。筝声引子与二胡主歌渐次展开，40 秒进入笛子副歌，宽弦乐、铜管与深鼓托起主题；60 秒卸去节奏组，70 秒回归，最终副歌发展高音变奏，再落回安静的 D。新音色把筝泛音冻结为带钟玉与青铜质感的软颗粒。全部声音为原创合成，未使用外部录音采样。
+
+| 版本 | 内容 | PCM 时长 |
+| --- | --- | ---: |
+| full | 48 小节 + 3.6 秒尾音 | 123.600 s |
+| hook | 实际第 17–24 小节 + 1.6 秒尾音 | 21.600 s |
+| loop | 实际第 17–24 小节，跨轮空间尾音 | 20.000 s |
+
+定稿为移调 0、seed 261013，320 kbps / 44.1 kHz / 立体声 MP3：
+
+- [完整版 / full](releases/mountains-awake/mountains-awake-full-96bpm-t0-s261013.mp3)
+- [精华片段 / hook](releases/mountains-awake/mountains-awake-hook-96bpm-t0-s261013.mp3)
+- [循环配乐 / loop](releases/mountains-awake/mountains-awake-loop-96bpm-t0-s261013.mp3)
+- [实测 manifest](releases/mountains-awake/manifest.json)
+- [制作简报与验证边界](docs/mountains-awake-production.md)
+
+新增独立的 `cinematic-guofeng` 编曲和音源，含筝、笛、二胡、弦乐、铜管、深鼓、锣与冻结筝颗粒。试听台支持 `/?track=mountains-awake&version=full`；本地 raw WAV 和完整导出报告在 `artifacts/audio/mountains-awake-v1/`。
+
+```bash
+npm run render -- --track mountains-awake --seed 261013 --format both --out artifacts/audio/mountains-awake-local
+```
 
 ## 直接听 MP3
 
@@ -66,11 +90,11 @@ npm run render -- --version hook --format wav --out artifacts/audio/afterglow-wa
 npm run render -- --help
 ```
 
-CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；两首已交付作品的 MP3 保存在 `releases/` 对应曲目目录。只导出原始 WAV 时无需 FFmpeg。
+CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；三首已交付作品的 MP3 保存在 `releases/` 对应曲目目录。只导出原始 WAV 时无需 FFmpeg。
 
 | 参数 | 范围 / 含义 | 默认 |
 | --- | --- | --- |
-| `--track` | `afterglow`、`when-the-wind-rises` | `afterglow` |
+| `--track` | `afterglow`、`when-the-wind-rises`、`mountains-awake` | `afterglow` |
 | `--version` | `all`、`full`、`hook`、`loop` | `all` |
 | `--bpm` | 90–170 整数 | 所选曲目 BPM；余温为 118，风起时为 114 |
 | `--transpose` | −12–12 整数，单位为半音 | 0 |
@@ -88,18 +112,18 @@ MP3 默认两遍 loudnorm 的项目目标为 **−14 LUFS / −1.5 dBTP / LRA 9*
 
 ## 音频与工程约束
 
-每小节 4 拍，音乐时长为 `小节数 × 4 × 60 / BPM`。hook / loop 为 8 小节；full / hook 分别加 2.4 / 0.8 秒尾音。loop 渲染三轮、截取第三轮以保留跨轮空间尾音，并对边缘做约 3 ms 淡化；接缝仍需实际试听。固定 BPM、完整小节与精确秒数不一定能同时满足。
+每小节 4 拍，音乐时长为 `小节数 × 4 × 60 / BPM`。hook / loop 为 8 小节；情绪电子 full / hook 分别加 2.4 / 0.8 秒尾音，国风分别为 3.6 / 1.6 秒。loop 渲染三轮、截取第三轮以保留跨轮空间尾音，并对边缘做约 3 ms 淡化；接缝仍需实际试听。固定 BPM、完整小节与精确秒数不一定能同时满足。
 
 引擎去除 DC，采用 −1.2 dBFS 采样峰值 ceiling。源 `stats` 的 peak / RMS / 削波不能当作最终文件的 LUFS / true peak；后者在重新渲染报告的 `mastering.after`，定稿则在 release manifest 的 `files[].loudness`。相同环境、源码与参数的 PCM 复现检查限制最大差值 `< 1/65536`、差值 RMS `< 1e-6`，容纳原生处理的微小浮点差异，不保证跨浏览器或文件逐位一致。
 
 ```text
 ai-audio/
-├── releases/                # 两首作品各三版 MP3 与实测 manifest
+├── releases/                # 三首作品各三版 MP3 与实测 manifest
 ├── src/
-│   ├── tracks/              # 两首曲目定义与 registry.ts
+│   ├── tracks/              # 三首曲目定义与 registry.ts
 │   ├── music/               # 类型、校验、确定性随机源与编曲
-│   │   └── arrangements/emotional-pop.ts
-│   ├── engine/              # emotional-pop 音源与 Offline 渲染
+│   │   └── arrangements/     # emotional-pop / cinematic-guofeng
+│   ├── engine/              # 两种独立音源与 Offline 渲染
 │   ├── audio/wav.ts         # WAV 编码、PCM 电平与波形
 │   ├── main.ts              # 试听台
 │   └── style.css
@@ -114,7 +138,9 @@ ai-audio/
 
 新增曲目实现 `TrackDefinition`，填入 metadata、八小节 `hook`、逐小节 `harmony`、段落与 `edits`，再在 `src/tracks/registry.ts` 注册。新曲可选 `emotionalPop` 配置：`groove: 'syncopated'` 使用切分鼓和低音；`response` 在主题留白放入电钢琴应答；`finalHook` 从 final 段第九小节开始展开旋律；`bridgeHook` 为无鼓桥段提供稀疏旋律。三个乐句数组的小节数须与 `hook` 一致，配置音符须在各自小节内结束；应答须避开主题及 finalHook 的音符时段。省略这些字段时沿用《余温》的编曲行为。
 
-当前和弦与 pad 每两小节起音，`harmony` 中相邻两小节使用同一和声，以保持持续和弦与低音一致。`edits.hook` / `edits.loop` 的 `startBar` 从 0 计数；两首作品均设为 2、长度 8 小节，即实际第一主段。`resolveHarmony` 指向已有和声的索引，控制结尾落点。
+当前和弦与 pad 每两小节起音，`harmony` 中相邻两小节使用同一和声，以保持持续和弦与低音一致。`edits.hook` / `edits.loop` 的 `startBar` 从 0 计数；两首情绪电子作品设为 2，国风《山河醒》设为 16，均取实际第一主段的 8 小节。`resolveHarmony` 指向已有和声的索引，控制结尾落点。
+
+`cinematic-guofeng` 使用独立编曲器和音源；《山河醒》可选 `cinematicGuofeng.finalHook` / `bridgeHook` 作为最终旋律发展与桥段主题。两种风格均有 seed、BPM、移调和真实乐谱裁切；国风 full / hook 尾音为 3.6 / 1.6 秒，loop 不加尾音。
 
 Offline 任务串行执行，每次渲染独立拥有并释放节点，完成或失败后恢复原上下文。扩展音源时保留这些生命周期约束；尾音规则由 `src/engine/render.ts` 的 `getTailSeconds` 统一维护。
 

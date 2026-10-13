@@ -8,7 +8,7 @@ export function validateOptions(options: RenderOptions): void {
 }
 
 export function validateTrack(track: TrackDefinition): void {
-  if (track.production !== 'emotional-pop') throw new RangeError(`未知制作风格: ${track.production}`);
+  if (!['emotional-pop', 'cinematic-guofeng'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
   if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
   const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
   const validatePhrase = (phrase: HookBar[], name: string, withinBar = false) => {
@@ -23,6 +23,16 @@ export function validateTrack(track: TrackDefinition): void {
     }
   };
   validatePhrase(track.hook, 'Hook');
+  if (track.cinematicGuofeng !== undefined) {
+    if (track.production !== 'cinematic-guofeng' || !track.cinematicGuofeng || typeof track.cinematicGuofeng !== 'object') throw new RangeError('cinematic-guofeng 需要有效旋律发展配置');
+    validatePhrase(track.hook, 'Hook', true);
+    for (const name of ['finalHook', 'bridgeHook'] as const) {
+      const phrase = track.cinematicGuofeng[name];
+      if (phrase === undefined) continue;
+      if (!Array.isArray(phrase) || phrase.length !== track.hook.length) throw new RangeError(`${name} 小节数必须与 Hook 主题一致`);
+      validatePhrase(phrase, name, true);
+    }
+  }
   if (track.emotionalPop !== undefined) {
     const development = track.emotionalPop;
     if (!development || typeof development !== 'object') throw new RangeError('emotional-pop 需要有效旋律发展配置');
@@ -58,7 +68,7 @@ export function validateTrack(track: TrackDefinition): void {
     if (!energies.includes(section.energy)) throw new RangeError(`未知段落能量: ${section.energy}`);
   }
   if (track.resolveHarmony !== undefined && (!Number.isInteger(track.resolveHarmony) || track.resolveHarmony < 0 || track.resolveHarmony >= track.harmony.length)) throw new RangeError('结束和声必须引用已有和声');
-  if (!track.edits) throw new RangeError('情绪流行曲目需要指定精华与循环段落');
+  if (!track.edits) throw new RangeError('曲目需要指定精华与循环段落');
   if (track.edits) {
     const totalBars = track.arrangement.reduce((sum, section) => sum + section.bars, 0);
     for (const version of ['hook', 'loop'] as const) {

@@ -208,9 +208,10 @@ try {
   });
 
   assert.equal(checks.registry.defaultId, 'afterglow');
-  assert.equal(checks.registry.ids.length, 2);
+  assert.equal(checks.registry.ids.length, 3);
   assert.ok(checks.registry.ids.includes('afterglow'), 'registry keeps afterglow');
   assert.ok(checks.registry.ids.includes('when-the-wind-rises'), 'registry includes the new composition');
+  assert.ok(checks.registry.ids.includes('mountains-awake'), 'registry includes the cinematic guofeng composition');
   assert.ok(['moonlit-sway', 'velvet-hour', 'amber-tides', 'neon-rebound'].every(id => !checks.registry.ids.includes(id)), 'retired demos remain absent');
   assert.equal(checks.failureHandled, true, 'invalid score preserves the context');
   assert.equal(checks.callbackFailureHandled, true, 'native scheduling failure restores the context');
@@ -261,7 +262,7 @@ try {
   assert.equal(await page.locator('#track-select').inputValue(), 'afterglow');
   const selectableTracks = await page.locator('#track-select option').evaluateAll(options => options.map(option => option.value));
   assert.equal(selectableTracks.length, checks.registry.ids.length);
-  assert.deepEqual(selectableTracks, checks.registry.ids, 'player offers the same two compositions as the renderer');
+  assert.deepEqual(selectableTracks, checks.registry.ids, 'player offers the same registered compositions as the renderer');
   assert.ok(selectableTracks.includes('afterglow'));
   assert.ok(['moonlit-sway', 'velvet-hour', 'amber-tides', 'neon-rebound'].every(id => !selectableTracks.includes(id)));
   await page.locator('#track-select').selectOption('afterglow');

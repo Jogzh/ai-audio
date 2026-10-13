@@ -124,6 +124,12 @@ const versionCopy = {
   loop: ['循环片段 / LOOP EDIT', '适合反复聆听的循环片段，播放时自动循环。'],
 };
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
+  'cinematic-guofeng': {
+    coverId: 'MA—007',
+    melody: '筝声与笛声展开五声主题，二胡回应；弦乐和铜管托起副歌，最后一遍向更高处展开。',
+    drums: '深鼓与现代流行鼓组交替推动，铜锣标记段落；桥段卸去鼓点，让下一次齐奏更开阔。',
+    bass: '居中的电子低音连接民族旋律与流行和声，青铜脉冲在弱拍闪现，留下宽广的空间。',
+  },
   'when-the-wind-rises': {
     coverId: 'WTWR—006',
     melody: '独立问答电钢琴在柔软电子主音的留白里接话；后半段发展熟悉的主题，让旋律更明亮。',
@@ -139,6 +145,7 @@ const productionCopy: Record<string, { coverId: string; melody: string; drums: s
 };
 function syncTrack(): void {
   const { meta, arrangement } = selectedTrack;
+  element('.header-note').innerHTML = `<i aria-hidden="true"></i> 原创${selectedTrack.production === 'cinematic-guofeng' ? '国风交响流行' : '电子流行'} · ${meta.title}`;
   const copy = productionCopy[meta.id] ?? productionCopy[selectedTrack.production];
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
   const [first, ...rest] = meta.subtitle.split(' ');

@@ -1,0 +1,82 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { buildArrangement, validateTrack } from '../src/music/arrange.ts';
+import { mountainsAwake } from '../src/tracks/mountains-awake.ts';
+import { findTrack } from '../src/tracks/registry.ts';
+import type { Instrument, RenderOptions } from '../src/music/types.ts';
+
+const options: RenderOptions = { version: 'full', bpm: 96, transpose: 0, seed: 261013 };
+
+test('guofeng score has a full arc, pentatonic melody and safe musical event bounds', () => {
+  assert.equal(findTrack('mountains-awake'), mountainsAwake);
+  const score = buildArrangement(mountainsAwake, options);
+  assert.equal(score.beats, 192);
+  assert.equal(score.sections.at(-1)!.end, 120);
+  assert.equal(score.sections.length, 7);
+  const palette = new Set(score.events.map(event => event.instrument));
+  for (const voice of ['guzheng', 'dizi', 'erhu', 'taiko', 'gong', 'strings', 'brass', 'granular', 'kick', 'clap', 'bass'] as Instrument[]) assert.ok(palette.has(voice), voice);
+  const pentatonic = new Set([0, 2, 5, 7, 9]);
+  for (const [index, event] of score.events.entries()) {
+    assert.ok(event.beat >= 0 && event.beat < score.beats);
+    assert.ok(event.duration > 0 && event.beat + event.duration <= score.beats + 1e-9);
+    assert.ok(event.velocity > 0 && event.velocity <= 1);
+    if (index) assert.ok(event.beat >= score.events[index - 1].beat);
+    if (event.notes) assert.ok(event.notes.every(note => Number.isInteger(note) && note >= 0 && note <= 127));
+    if (['dizi', 'erhu'].includes(event.instrument)) assert.ok(event.notes!.every(note => pentatonic.has(note % 12)), 'folk melody remains pentatonic while harmony may add other notes');
+  }
+});
+
+test('short editions use the actual chorus and clip events at the edit boundary', () => {
+  const full = buildArrangement(mountainsAwake, options);
+  for (const version of ['hook', 'loop'] as const) {
+    const edit = mountainsAwake.edits![version];
+    const start = edit.startBar * 4;
+    const end = start + edit.bars * 4;
+    const score = buildArrangement(mountainsAwake, { ...options, version });
+    assert.equal(start, 64);
+    assert.equal(score.beats, 32);
+    assert.deepEqual(score.events, full.events.filter(event => event.beat >= start && event.beat < end).map(event => ({ ...event, beat: event.beat - start, duration: Math.min(event.duration, end - event.beat) })));
+    assert.deepEqual(score.sections.map(section => [section.start, section.end]), [[0, 20]]);
+    assert.ok(score.events.some(event => event.instrument === 'dizi' && event.beat === 0));
+    assert.ok(score.events.some(event => event.instrument === 'strings' && event.beat === 0));
+  }
+});
+
+test('bridge removes rhythmic weight, final theme develops, and outro resolves to D', () => {
+  const score = buildArrangement(mountainsAwake, options);
+  const bridge = score.events.filter(event => event.beat >= 96 && event.beat < 112);
+  assert.ok(bridge.some(event => event.instrument === 'erhu'));
+  assert.ok(!bridge.some(event => ['kick', 'clap', 'hat', 'taiko', 'bass', 'sub'].includes(event.instrument)));
+  const first = score.events.filter(event => event.instrument === 'dizi' && event.beat >= 112 && event.beat < 144);
+  const last = score.events.filter(event => event.instrument === 'dizi' && event.beat >= 144 && event.beat < 176);
+  assert.notDeepEqual(first.map(event => event.notes), last.map(event => event.notes));
+  assert.ok(Math.max(...last.flatMap(event => event.notes ?? [])) > Math.max(...first.flatMap(event => event.notes ?? [])));
+  const ending = score.events.filter(event => event.beat >= 188);
+  assert.ok(ending.some(event => event.instrument === 'guzheng' && event.notes && event.notes[0] % 12 === 2));
+  assert.ok(!ending.some(event => ['kick', 'clap', 'bass', 'sub'].includes(event.instrument)));
+});
+
+test('seed varies touch without rewriting the melody, pitch changes retain all timing', () => {
+  const base = buildArrangement(mountainsAwake, options);
+  assert.deepEqual(base, buildArrangement(mountainsAwake, options));
+  const changed = buildArrangement(mountainsAwake, { ...options, seed: 0 });
+  assert.notDeepEqual(base.events, changed.events);
+  const melody = (score: typeof base) => score.events.filter(event => ['dizi', 'erhu', 'bass'].includes(event.instrument));
+  assert.deepEqual(melody(base), melody(changed));
+  for (const transpose of [-12, 5, 12]) {
+    const shifted = buildArrangement(mountainsAwake, { ...options, transpose, bpm: 170 });
+    assert.deepEqual(shifted.events, base.events.map(event => ({ ...event, notes: event.notes?.map(note => note + transpose) })));
+    assert.equal(shifted.sections.at(-1)!.end, 192 * 60 / 170);
+  }
+});
+
+test('written development rejects invalid phrases before audio rendering', () => {
+  for (const field of ['finalHook', 'bridgeHook'] as const) {
+    const mismatch = structuredClone(mountainsAwake);
+    mismatch.cinematicGuofeng![field]!.pop();
+    assert.throws(() => validateTrack(mismatch), /小节数必须与 Hook/);
+    const crossBar = structuredClone(mountainsAwake);
+    crossBar.cinematicGuofeng![field]![0][0].length = 5;
+    assert.throws(() => validateTrack(crossBar), /小节内结束/);
+  }
+});

@@ -1,6 +1,6 @@
 export const versions = ['full', 'hook', 'loop'] as const;
 export type Version = typeof versions[number];
-export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'impact' | 'piano' | 'vocal' | 'texture' | 'sweep';
+export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'impact' | 'piano' | 'vocal' | 'texture' | 'sweep' | 'guzheng' | 'dizi' | 'erhu' | 'taiko' | 'gong' | 'brass' | 'strings' | 'granular';
 
 export interface RenderOptions {
   version: Version;
@@ -43,7 +43,12 @@ export interface TrackDefinition {
     tags: string[];
     description: string;
   };
-  production: 'emotional-pop';
+  production: 'emotional-pop' | 'cinematic-guofeng';
+  /** Written melody development for the separate cinematic Chinese palette. */
+  cinematicGuofeng?: {
+    finalHook?: HookBar[];
+    bridgeHook?: HookBar[];
+  };
   /** Optional written development for emotional-pop; omitted fields keep its original arrangement. */
   emotionalPop?: {
     groove?: 'syncopated';

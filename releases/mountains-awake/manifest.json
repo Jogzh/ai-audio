@@ -1,0 +1,509 @@
+{
+  "track": "mountains-awake",
+  "title": "山河醒 / MOUNTAINS AWAKE",
+  "sourceBaseCommit": "48799f5af2c950094dc316c39d62e3dc3a748532",
+  "sourceHashes": {
+    "src/tracks/mountains-awake.ts": "27befa0a044a740e863fbe5b8ffc183d0c8869d751b630c2c72fdeb8f2270d5b",
+    "src/tracks/registry.ts": "29d1add3db2c7866559a95641d18c626d0318a7415f9821b7e108426f871da2c",
+    "src/music/arrangements/cinematic-guofeng.ts": "44b61e30b48a6ca4d6c1cc9ffbf84a653ede79c1f5921a4f1b8458b8a50a4d08",
+    "src/music/types.ts": "19f2b29e9d4df3f80c988a2554a534473b203d96df68a39a7af9ced23eda2870",
+    "src/music/validation.ts": "12b95a8ee7cb662866aaf9b24df6cbedd663569553eaece84510fed54e59cef0",
+    "src/music/arrange.ts": "c9b406d2a0c7378a9836e6c8d741f841d40334a8102b8988f74080b257532b8c",
+    "src/music/random.ts": "591c598ac35a6d37d4003d8f262f228a61548d096a216478731e59b5b9873550",
+    "src/engine/cinematic-guofeng.ts": "8aaddaf36a6a7791f8184ea5c9aa5dc039e76768d24ebe28bab1d6e7ca5f5740",
+    "src/engine/render.ts": "22c7d7032065027b559851bc167b9954b98c712ad2d8f818b0c669adac88bdab",
+    "src/audio/wav.ts": "05fdff32c633ac48ced137a39263064de6c23706f23946bb92f733aa48d60ff6",
+    "scripts/render.mjs": "51c1bf4ffa242cd4c780ce6798eb7e87bc0ae4661b1bc6bf82f88149d1167f95",
+    "scripts/lib/audio-export.mjs": "27067cb60fd84d9da497e13be33c4535742174dbf85c22ad53c6ff9331f2f73d",
+    "scripts/check-guofeng.mjs": "2404ec0a42284889d01fad0855d6df4da7c5c5f58170dff9129c6cba2fb3b21c",
+    "scripts/check-browser.mjs": "7c4d650d1426c4d1c5e8171a8c10deaa2c45b99b806136cb7f278b11a9256fc0",
+    "package.json": "3688ad27ec9005f8f6d7b84b2e127fe0ef634f6b019886fb72c7630e348fe9e6",
+    "package-lock.json": "0dc3946577faf4e909733aaa4f56688e807b4187243bdeb5d78640470aaacbd1",
+    "src/main.ts": "aac3b8af1f63d0e56845511574b21b152d56235810bf4a635467e7077f0492e5",
+    "tests/guofeng.test.ts": "244f13b4ac1167c416c26c174a4e3be2aa36a42d32d1d481e289b4175657676d"
+  },
+  "generatedAt": "2026-10-13T11:50:54.309Z",
+  "engine": "Tone.js 15.1.22 / Chromium OfflineAudioContext",
+  "format": "MP3 320 kbps",
+  "masteringMode": "auto",
+  "masteringTarget": {
+    "integratedLufs": -14,
+    "truePeakDbtp": -1.5,
+    "loudnessRangeLu": 9
+  },
+  "note": "Exact copies of the mountains-awake-v1 MP3 exports. All instruments are original stylised synthesis, with no external samples or singer. Final-file loudness is measured after encoding. Raw WAV and detailed reports remain in artifacts/audio/mountains-awake-v1. Source hashes identify the score and renderer.",
+  "validation": {
+    "unitTests": {
+      "passed": 33,
+      "failed": 0,
+      "skipped": 0
+    },
+    "productionBuild": "passed",
+    "guofengBrowserChecks": "passed",
+    "guofengBrowserReport": {
+      "passed": true,
+      "generatedAt": "2026-10-13T11:57:30.512Z",
+      "renders": [
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 96,
+            "transpose": 0,
+            "seed": 261013
+          },
+          "duration": 21.6,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.14284367797515113,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -16.902779520222417,
+            "clippedSamples": 0,
+            "dcOffset": -2.989809674224968e-07
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 21.6
+        },
+        {
+          "options": {
+            "version": "loop",
+            "bpm": 96,
+            "transpose": 0,
+            "seed": 261013
+          },
+          "duration": 20,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.14847839759058595,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -16.566734561906404,
+            "clippedSamples": 0,
+            "dcOffset": 7.755341670865415e-08
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 20
+        },
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 90,
+            "transpose": -12,
+            "seed": 0
+          },
+          "duration": 22.933333333333334,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.13672893916463874,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -17.282791114733367,
+            "clippedSamples": 0,
+            "dcOffset": -2.9311383472322303e-07
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 22.933333333333334
+        },
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 170,
+            "transpose": 12,
+            "seed": 4294967295
+          },
+          "duration": 12.894104308390023,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.14974496693908618,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -16.492955314307633,
+            "clippedSamples": 0,
+            "dcOffset": -6.50045810513739e-07
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 12.894117647058824
+        }
+      ],
+      "repeat": {
+        "maximum": 2.980232238769531e-07,
+        "rms": 1.160582474894938e-08
+      },
+      "loopEdges": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "palette": [
+        {
+          "instrument": "guzheng",
+          "peak": 0.15574249625205994,
+          "rms": 0.04120009197612539,
+          "peakDb": -16.1518573736107,
+          "rmsDb": -27.70203628871637,
+          "clippedSamples": 0,
+          "dcOffset": 1.1316494884058088e-07
+        },
+        {
+          "instrument": "dizi",
+          "peak": 0.19116346538066864,
+          "rms": 0.06237298911606414,
+          "peakDb": -14.371902105182139,
+          "rmsDb": -24.10006885298218,
+          "clippedSamples": 0,
+          "dcOffset": 2.2415422363459518e-07
+        },
+        {
+          "instrument": "erhu",
+          "peak": 0.1771303415298462,
+          "rms": 0.04385858409860681,
+          "peakDb": -15.034140799876655,
+          "rmsDb": -27.15890785813466,
+          "clippedSamples": 0,
+          "dcOffset": 6.408240483397241e-07
+        },
+        {
+          "instrument": "strings",
+          "peak": 0.07699647545814514,
+          "rms": 0.019721053966975564,
+          "peakDb": -22.270583087228854,
+          "rmsDb": -34.10139756902199,
+          "clippedSamples": 0,
+          "dcOffset": 2.5738683150565865e-08
+        },
+        {
+          "instrument": "brass",
+          "peak": 0.11722767353057861,
+          "rms": 0.02550627743817035,
+          "peakDb": -18.619397076437888,
+          "rmsDb": -31.86705841387297,
+          "clippedSamples": 0,
+          "dcOffset": -4.5687993952075825e-08
+        },
+        {
+          "instrument": "granular",
+          "peak": 0.05966156721115112,
+          "rms": 0.015403445860365286,
+          "peakDb": -24.486106852460917,
+          "rmsDb": -36.24764227062308,
+          "clippedSamples": 0,
+          "dcOffset": 5.57795913355451e-08
+        },
+        {
+          "instrument": "taiko",
+          "peak": 0.4604072570800781,
+          "rms": 0.08805770219270961,
+          "peakDb": -6.737156790115401,
+          "rmsDb": -21.104653027097584,
+          "clippedSamples": 0,
+          "dcOffset": -3.220279819066963e-05
+        },
+        {
+          "instrument": "gong",
+          "peak": 0.21556223928928375,
+          "rms": 0.0454431735774122,
+          "peakDb": -13.328546270871884,
+          "rmsDb": -26.850626935452002,
+          "clippedSamples": 0,
+          "dcOffset": -4.383871844273614e-07
+        }
+      ],
+      "contextRestored": true,
+      "player": {
+        "directUrl": true,
+        "playbackProgress": true,
+        "wavDownload": true,
+        "mobileOverflow": false,
+        "pageErrors": []
+      },
+      "manualListening": "not performed"
+    },
+    "allTracksFinalBrowserChecks": "passed",
+    "decodedAudioChecks": "passed",
+    "manualListening": "not performed",
+    "priorLegacyRepeatCheckFailure": {
+      "track": "afterglow",
+      "maximumDifference": 6.20037317276001e-05,
+      "limit": 1.52587890625e-05,
+      "rerun": "passed",
+      "note": "Previously documented native-audio outlier; thresholds were not relaxed."
+    }
+  },
+  "files": [
+    {
+      "filename": "mountains-awake-full-96bpm-t0-s261013.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 123.6,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 123.6,
+      "bytes": 4946590,
+      "mastered": true,
+      "version": "full",
+      "options": {
+        "bpm": 96,
+        "transpose": 0,
+        "seed": 261013,
+        "version": "full"
+      },
+      "sha256": "6d263ed73a40e1328ee88270a53d4caa7d1869875522aaffce85a951ec5e31f8",
+      "sections": [
+        {
+          "name": "01 / 云开",
+          "start": 0,
+          "end": 10
+        },
+        {
+          "name": "02 / 沿山而行",
+          "start": 10,
+          "end": 30
+        },
+        {
+          "name": "03 / 风向高处",
+          "start": 30,
+          "end": 40
+        },
+        {
+          "name": "04 / 山河醒",
+          "start": 40,
+          "end": 60
+        },
+        {
+          "name": "05 / 一川月色",
+          "start": 60,
+          "end": 70
+        },
+        {
+          "name": "06 / 万象向光",
+          "start": 70,
+          "end": 110
+        },
+        {
+          "name": "07 / 余响入山",
+          "start": 110,
+          "end": 120
+        }
+      ],
+      "loudness": {
+        "integratedLufs": -13.76,
+        "truePeakDbtp": -1.47,
+        "loudnessRangeLu": 7.5,
+        "thresholdLufs": -24.01
+      },
+      "decodedCheck": {
+        "version": "full",
+        "filename": "mountains-awake-full-96bpm-t0-s261013.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 5450760,
+        "audioContentDurationSeconds": 123.6,
+        "finite": true,
+        "clippedSamples": 0,
+        "peakDbfs": -1.4713989138416697,
+        "rmsDbfs": -15.850287130869523,
+        "channelDcOffsets": [
+          4.0237144218097894e-05,
+          3.9450216338587015e-05
+        ],
+        "monoRmsChangeDb": -0.1815962757425087,
+        "stereoCorrelation": 0.918165664842671,
+        "durationDeltaVsManifestSeconds": 0.0,
+        "last100msPeakDbfs": -300.0,
+        "sectionLevels": [
+          {
+            "name": "01 / 云开",
+            "startSeconds": 0,
+            "endSeconds": 10,
+            "rmsDbfs": -17.50529874301434,
+            "peakDbfs": -1.958037828453231
+          },
+          {
+            "name": "02 / 沿山而行",
+            "startSeconds": 10,
+            "endSeconds": 30,
+            "rmsDbfs": -15.820606596780536,
+            "peakDbfs": -1.4803305222669034
+          },
+          {
+            "name": "03 / 风向高处",
+            "startSeconds": 30,
+            "endSeconds": 40,
+            "rmsDbfs": -14.276112648500126,
+            "peakDbfs": -1.4964799261466628
+          },
+          {
+            "name": "04 / 山河醒",
+            "startSeconds": 40,
+            "endSeconds": 60,
+            "rmsDbfs": -14.352725670435172,
+            "peakDbfs": -1.4896062612145649
+          },
+          {
+            "name": "05 / 一川月色",
+            "startSeconds": 60,
+            "endSeconds": 70,
+            "rmsDbfs": -22.94442021966813,
+            "peakDbfs": -6.72303972276338
+          },
+          {
+            "name": "06 / 万象向光",
+            "startSeconds": 70,
+            "endSeconds": 110,
+            "rmsDbfs": -14.857013879051843,
+            "peakDbfs": -1.4713989138416697
+          },
+          {
+            "name": "07 / 余响入山",
+            "startSeconds": 110,
+            "endSeconds": 120,
+            "rmsDbfs": -23.30627234388638,
+            "peakDbfs": -2.2463824227474953
+          }
+        ],
+        "sha256": "6d263ed73a40e1328ee88270a53d4caa7d1869875522aaffce85a951ec5e31f8",
+        "sectionEnergyComparison": {
+          "firstChorusVsVerseDb": 1.467880926345364,
+          "firstChorusVsBridgeDb": 8.59169454923296,
+          "finalVsBridgeDb": 8.087406340616289
+        }
+      }
+    },
+    {
+      "filename": "mountains-awake-hook-96bpm-t0-s261013.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 21.6,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 21.6,
+      "bytes": 866263,
+      "mastered": true,
+      "version": "hook",
+      "options": {
+        "bpm": 96,
+        "transpose": 0,
+        "seed": 261013,
+        "version": "hook"
+      },
+      "sha256": "9660bb2bfa75a3c33812c9599e68338fb55cb9e0b21123e5a57415b114892421",
+      "sections": [
+        {
+          "name": "04 / 山河醒",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "loudness": {
+        "integratedLufs": -14.12,
+        "truePeakDbtp": -1.49,
+        "loudnessRangeLu": 5.5,
+        "thresholdLufs": -24.55
+      },
+      "decodedCheck": {
+        "version": "hook",
+        "filename": "mountains-awake-hook-96bpm-t0-s261013.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 952560,
+        "audioContentDurationSeconds": 21.6,
+        "finite": true,
+        "clippedSamples": 0,
+        "peakDbfs": -1.4949971399055297,
+        "rmsDbfs": -15.923471916587486,
+        "channelDcOffsets": [
+          1.123356815451601e-05,
+          1.1627278822063842e-05
+        ],
+        "monoRmsChangeDb": -0.1374073475788844,
+        "stereoCorrelation": 0.9381964943552892,
+        "durationDeltaVsManifestSeconds": 0.0,
+        "last100msPeakDbfs": -300.0,
+        "sectionLevels": [
+          {
+            "name": "04 / 山河醒",
+            "startSeconds": 0,
+            "endSeconds": 20,
+            "rmsDbfs": -15.5893814320979,
+            "peakDbfs": -1.4949971399055297
+          }
+        ],
+        "sha256": "9660bb2bfa75a3c33812c9599e68338fb55cb9e0b21123e5a57415b114892421"
+      }
+    },
+    {
+      "filename": "mountains-awake-loop-96bpm-t0-s261013.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 20,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 20,
+      "bytes": 802524,
+      "mastered": true,
+      "version": "loop",
+      "options": {
+        "bpm": 96,
+        "transpose": 0,
+        "seed": 261013,
+        "version": "loop"
+      },
+      "sha256": "f1aa9a860708aed2222f11478feb79e885590cf2852c9a77b8061180d6dfaa12",
+      "sections": [
+        {
+          "name": "04 / 山河醒",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "loudness": {
+        "integratedLufs": -14.13,
+        "truePeakDbtp": -1.49,
+        "loudnessRangeLu": 1.6,
+        "thresholdLufs": -24.13
+      },
+      "decodedCheck": {
+        "version": "loop",
+        "filename": "mountains-awake-loop-96bpm-t0-s261013.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 882000,
+        "audioContentDurationSeconds": 20.0,
+        "finite": true,
+        "clippedSamples": 0,
+        "peakDbfs": -1.4951435007424139,
+        "rmsDbfs": -15.589842630080668,
+        "channelDcOffsets": [
+          1.2637711460302333e-05,
+          1.2526854273532864e-05
+        ],
+        "monoRmsChangeDb": -0.13679982142009095,
+        "stereoCorrelation": 0.9384485760597522,
+        "durationDeltaVsManifestSeconds": 0.0,
+        "last100msPeakDbfs": -21.059065364905074,
+        "sectionLevels": [
+          {
+            "name": "04 / 山河醒",
+            "startSeconds": 0,
+            "endSeconds": 20,
+            "rmsDbfs": -15.589842630080668,
+            "peakDbfs": -1.4951435007424139
+          }
+        ],
+        "sha256": "f1aa9a860708aed2222f11478feb79e885590cf2852c9a77b8061180d6dfaa12",
+        "loopEdgeDifferenceByChannel": [
+          6.716922280247672e-05,
+          -3.0718398420503945e-06
+        ]
+      }
+    }
+  ]
+}
