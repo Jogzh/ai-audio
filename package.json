@@ -1,0 +1,24 @@
+{
+  "name": "ai-audio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Reusable original music composition and offline WAV rendering with Tone.js",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test:browser": "node scripts/check-browser.mjs",
+    "render": "node scripts/render.mjs"
+  },
+  "dependencies": { "tone": "15.1.22" },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "playwright": "1.64.0",
+    "typescript": "5.9.3",
+    "vite": "6.4.4"
+  }
+}
