@@ -2,28 +2,28 @@
 
 用 **Tone.js** 创作原创音乐，内置情绪流行电子《余温 / Afterglow》《风起时 / When the Wind Rises》，以及中国风交响流行《山河醒 / Mountains Awake》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
 
-## 新作：《山河醒》
+## 新作：《山河醒》第二版
 
-**中国风 × 宏大交响 × 流行电子**的原创纯音乐，96 BPM、D 小调五声旋律、48 小节。筝声引子与二胡主歌渐次展开，40 秒进入笛子副歌，宽弦乐、铜管与深鼓托起主题；60 秒卸去节奏组，70 秒回归，最终副歌发展高音变奏，再落回安静的 D。新音色把筝泛音冻结为带钟玉与青铜质感的软颗粒。全部声音为原创合成，未使用外部录音采样。
+**中国风 × 交响流行**的原创纯音乐，104 BPM、D 小调五声旋律、48 小节。本版针对第一版“配器乱、节奏不稳”的反馈重新制作：副歌主旋律由 35 个音减少到 24 个音，低音与一三拍底鼓对齐，二四拍拍手加入短军鼓主体。每段只有一种领奏，持续和声改为三声部单层，铜管仅在最后八小节进入，深鼓只作转段，减少筝与笛的回声。
 
 | 版本 | 内容 | PCM 时长 |
 | --- | --- | ---: |
-| full | 48 小节 + 3.6 秒尾音 | 123.600 s |
-| hook | 实际第 17–24 小节 + 1.6 秒尾音 | 21.600 s |
-| loop | 实际第 17–24 小节，跨轮空间尾音 | 20.000 s |
+| full | 48 小节 + 3.6 秒尾音 | 114.369 s |
+| hook | 实际第 17–24 小节 + 1.6 秒尾音 | 20.062 s |
+| loop | 实际第 17–24 小节，跨轮空间尾音 | 18.462 s |
 
 定稿为移调 0、seed 261013，320 kbps / 44.1 kHz / 立体声 MP3：
 
-- [完整版 / full](releases/mountains-awake/mountains-awake-full-96bpm-t0-s261013.mp3)
-- [精华片段 / hook](releases/mountains-awake/mountains-awake-hook-96bpm-t0-s261013.mp3)
-- [循环配乐 / loop](releases/mountains-awake/mountains-awake-loop-96bpm-t0-s261013.mp3)
-- [实测 manifest](releases/mountains-awake/manifest.json)
-- [制作简报与验证边界](docs/mountains-awake-production.md)
+- [第二版完整版 / full](releases/mountains-awake-v2/mountains-awake-full-104bpm-t0-s261013.mp3)
+- [第二版精华片段 / hook](releases/mountains-awake-v2/mountains-awake-hook-104bpm-t0-s261013.mp3)
+- [第二版循环配乐 / loop](releases/mountains-awake-v2/mountains-awake-loop-104bpm-t0-s261013.mp3)
+- [第二版实测 manifest](releases/mountains-awake-v2/manifest.json)
+- [第二版制作说明](docs/mountains-awake-v2-production.md)
 
-新增独立的 `cinematic-guofeng` 编曲和音源，含筝、笛、二胡、弦乐、铜管、深鼓、锣与冻结筝颗粒。试听台支持 `/?track=mountains-awake&version=full`；本地 raw WAV 和完整导出报告在 `artifacts/audio/mountains-awake-v1/`。
+第一版以 commit `97cfa6c` 保存，96 BPM MP3 位于 `releases/mountains-awake/`，可直接对比。试听台 `/?track=mountains-awake&version=full` 使用第二版；本地 raw WAV 和详细导出报告在 `artifacts/audio/mountains-awake-v2/`。全部声音为原创合成，未使用外部录音采样。
 
 ```bash
-npm run render -- --track mountains-awake --seed 261013 --format both --out artifacts/audio/mountains-awake-local
+npm run render -- --track mountains-awake --seed 261013 --format both --out artifacts/audio/mountains-awake-v2-local
 ```
 
 ## 直接听 MP3

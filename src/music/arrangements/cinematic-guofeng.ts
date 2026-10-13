@@ -1,162 +1,113 @@
 import { createRandom } from '../random.ts';
 import type { Arrangement, Instrument, RenderOptions, TrackDefinition } from '../types.ts';
 
-/** Written pentatonic voices, two-bar harmony and a restrained pop/orchestral rhythm. */
+/** One foreground voice, stable pop backbeat, and orchestral layers that enter by phrase. */
 export function buildCinematicGuofengArrangement(track: TrackDefinition, options: RenderOptions): Arrangement {
   const random = createRandom(options.seed);
   const events: Arrangement['events'] = [];
   const sections: Arrangement['sections'] = [];
   const secondsPerBeat = 60 / options.bpm;
   const resolution = track.harmony[track.resolveHarmony ?? 0];
-  const development = track.cinematicGuofeng;
   const add = (instrument: Instrument, beat: number, duration: number, velocity: number, notes?: number[], touch = false) => {
-    const timing = touch ? random() * 0.014 : 0;
-    const strength = touch ? 0.95 + random() * 0.08 : 1;
-    events.push({ instrument, beat: beat + timing, duration, velocity: Math.min(1, velocity * strength), notes: notes?.map(note => note + options.transpose) });
+    // Touch varies only dynamics; drum, bass and pluck entrances keep a common grid.
+    const strength = touch ? 0.94 + random() * 0.1 : 1;
+    events.push({ instrument, beat, duration, velocity: Math.min(1, velocity * strength), notes: notes?.map(note => note + options.transpose) });
   };
   let bar = 0;
-
   for (const section of track.arrangement) {
     sections.push({ name: section.name, start: bar * 4 * secondsPerBeat, end: (bar + section.bars) * 4 * secondsPerBeat });
     for (let local = 0; local < section.bars; local++, bar++) {
       const beat = bar * 4;
       const intro = section.energy === 'tease';
-      const groove = section.energy === 'groove';
+      const verse = section.energy === 'groove';
       const build = section.energy === 'build';
       const bridge = section.energy === 'air';
       const final = section.energy === 'final';
       const chorus = section.energy === 'drop' || final;
       const outro = section.energy === 'outro';
-      const last = local === section.bars - 1;
       const developed = final && local >= 8;
+      const last = local === section.bars - 1;
       const phrase = local % track.hook.length;
-      const theme = bridge && development?.bridgeHook
-        ? development.bridgeHook
-        : developed && development?.finalHook ? development.finalHook : track.hook;
+      const theme = bridge && track.cinematicGuofeng?.bridgeHook
+        ? track.cinematicGuofeng.bridgeHook
+        : developed && track.cinematicGuofeng?.finalHook ? track.cinematicGuofeng.finalHook : track.hook;
       const harmony = outro ? resolution : build
-        ? track.harmony[(local < 2 ? 2 : 6) % track.harmony.length]
-        : track.harmony[local % track.harmony.length];
+        ? track.harmony[local < 2 ? 2 % track.harmony.length : 6 % track.harmony.length]
+        : track.harmony[phrase % track.harmony.length];
       const fade = outro ? 1 - local / (section.bars + 0.5) : 1;
+      const voicing = harmony.chord.slice(1); // Three voices; no duplicate sustained pad.
 
-      // The introduction quotes the motif on strings; the verse sings it an octave lower.
       if (intro) {
-        for (const [index, note] of track.hook[phrase].entries()) {
-          if (index > 1) continue;
-          add('guzheng', beat + index * 1.5, 1.2, note.velocity * 0.64, [note.note - 12]);
-        }
-        if (local === 2) add('dizi', beat + 1, 2.6, 0.46, [resolution.root + 36]);
+        add('guzheng', beat, 1.5, 0.6, [track.hook[phrase][0].note - 12]);
+        if (local % 2 === 0) add('guzheng', beat + 2, 1.35, 0.43, [resolution.root + 31]);
+      } else if (verse) {
+        const first = theme[phrase][0];
+        const answer = theme[phrase].at(-1)!;
+        add('erhu', beat, local % 2 === 1 ? 2.8 : 1.4, 0.64, [Math.max(62, first.note - 12)]);
+        if (local % 2 === 0) add('erhu', beat + 2, 1.45, 0.56, [Math.max(62, answer.note - 12)]);
       } else if (build) {
-        const climb = [36, 39, 41, 43];
-        add('dizi', beat, last ? 1.3 : 2.9, 0.59 + local * 0.055, [resolution.root + climb[local % 4]]);
-        if (last) {
-          add('dizi', beat + 1.5, 0.75, 0.72, [resolution.root + 46]);
-          add('dizi', beat + 2.5, 0.65, 0.66, [resolution.root + 43]);
-        }
+        add('dizi', beat, 2.8, 0.63 + local * 0.025, [[74, 77, 79, 81][local % 4]]);
       } else if (outro) {
-        if (local === 0) add('dizi', beat, 2.6, 0.48, [resolution.root + 36]);
-        if (local === 1) add('erhu', beat + 1, 2.1, 0.43, [resolution.root + 24]);
-        if (last) add('guzheng', beat, 3.65, 0.58, [resolution.root + 24]);
+        if (local === 0) add('dizi', beat, 2.8, 0.47, [74]);
+        if (local === 1) add('guzheng', beat + 2, 1.5, 0.44, [69]);
+        if (last) add('guzheng', beat, 3.6, 0.55, [62]);
       } else {
-        const voice: Instrument = bridge || groove ? 'erhu' : 'dizi';
-        for (const [index, note] of theme[phrase].entries()) {
-          // Thin the low verse into an outline; the complete turns arrive in the chorus.
-          if (groove && ((local % 2 === 0 && index === 1) || (local % 2 === 1 && note.offset >= 3))) continue;
-          const octave = groove ? -12 : 0;
-          // The erhu's low phrase resolves to its open D rather than reaching below it.
-          const pitch = groove ? Math.max(resolution.root + 24, note.note + octave) : note.note;
-          add(voice, beat + note.offset, note.length, note.velocity * (bridge ? 0.79 : groove ? 0.73 : developed ? 0.97 : 0.9), [pitch]);
-          // Only the long summit notes gain an orchestral octave; leave the small turns clear.
-          if (developed && note.length > 1 && note.note >= 81) {
-            add('strings', beat + note.offset, note.length, 0.28, [note.note - 12]);
-          }
-        }
-        if (groove && local % 4 === 3) {
-          add('dizi', beat + 3.125, 0.65, 0.48, [theme[phrase][theme[phrase].length - 1].note]);
+        for (const note of theme[phrase]) {
+          add(bridge ? 'erhu' : 'dizi', beat + note.offset, note.length, note.velocity * (bridge ? 0.85 : developed ? 0.95 : 0.9), [note.note]);
         }
       }
 
       if (local % 2 === 0) {
-        const duration = Math.min(7.75, (section.bars - local) * 4 - 0.1);
-        add('pad', beat, duration, (intro ? 0.14 : bridge ? 0.18 : chorus ? 0.22 : 0.16) * fade, harmony.chord);
-        add('strings', beat, duration, (intro ? 0.17 : bridge ? 0.2 : chorus ? developed ? 0.43 : 0.36 : build ? 0.28 : 0.22) * fade, harmony.chord);
-        if (chorus) add('brass', beat + 0.08, 2.65, developed ? 0.31 : 0.24, [harmony.root + 24, harmony.root + 31]);
+        const duration = Math.min(7.5, (section.bars - local) * 4 - 0.4);
+        const voice: Instrument = chorus || build ? 'strings' : 'pad';
+        add(voice, beat, duration, (chorus ? developed ? 0.42 : 0.35 : build ? 0.22 : bridge ? 0.16 : verse ? 0.1 : 0.11) * fade, voicing);
+        // Brass belongs to the final eight bars, and only punctuates phrase beginnings.
+        if (developed && local % 4 === 0) add('brass', beat, 1.8, 0.21, [harmony.root + 24, harmony.root + 31]);
       }
 
-      // Quiet alternating plucks, with one rapid roll at each orchestral entrance.
-      const plucks = outro ? last ? [] : [0.75, 2.5]
-        : bridge ? [0.5, 3] : build ? [0, 0.5, 1, 1.5, 2, 2.5, 3]
-        : intro ? [0.5, 2.5, 3.25] : local % 2 === 0 ? [0.5, 1.5, 2.75] : [0.25, 1.75, 3.25];
-      for (const [index, offset] of plucks.entries()) {
-        add('guzheng', beat + offset, bridge ? 1.1 : 0.65, (intro ? 0.22 : bridge ? 0.24 : build ? 0.22 + local * 0.02 : 0.18) * fade, [harmony.chord[(index + local) % harmony.chord.length] + 12], true);
+      // Accompaniment plucks answer between beats; no chorus glissando or competing solo.
+      if (!intro && !outro) {
+        const offsets = bridge ? [3] : chorus ? [0.5, 2.5] : [3];
+        for (const [index, offset] of offsets.entries()) {
+          add('guzheng', beat + offset, 0.55, bridge ? 0.22 : chorus ? 0.17 : 0.2, [voicing[(index + local) % voicing.length] + 12], true);
+        }
       }
-      if (chorus && local === 0) {
-        for (const [index, note] of harmony.chord.entries()) add('guzheng', beat + index * 0.075, 0.8, 0.3, [note + 12]);
-      }
-      if ((intro || bridge) && local % 2 === 0) add('granular', beat + 0.25, 3.4, bridge ? 0.22 : 0.18, [harmony.root + 36]);
-      if (chorus && local % 4 === 2) add('granular', beat + 2.5, 1.1, 0.15, [harmony.root + 36]);
+      if ((intro && local === 2) || (bridge && local === 2)) add('granular', beat + 2, 1.5, 0.14, [74]);
+      if (outro && local < 2) add('guzheng', beat + 0.5, 1.2, 0.22 * fade, [resolution.root + 24]);
 
-      if (groove || chorus || build) {
-        const space = last;
-        const orchestralDownbeat = chorus && local % 4 === 0;
-        const kicks = build ? local < 2 ? [0] : [0, 2]
-          : chorus ? local % 2 === 0 ? [0, 1.75, 2.5] : [0, 2.25]
-          : local % 2 === 0 ? [0, 2.5] : [0, 1.75];
-        for (const offset of kicks) {
-          if (orchestralDownbeat && offset === 0) continue;
-          add('kick', beat + offset, 0.42, chorus ? 0.79 : build ? 0.65 : 0.65);
+      if (verse || chorus || build) {
+        // All choruses retain the same beat-one kick; orchestral drums never replace it.
+        const kicks = build && last ? [0] : [0, 2];
+        for (const offset of kicks) add('kick', beat + offset, 0.4, chorus ? 0.78 : verse ? 0.62 : 0.65);
+        for (const offset of [1, 3]) {
+          if (build && last && offset === 3) continue;
+          add('clap', beat + offset, 0.2, chorus ? 0.72 : verse ? 0.5 : 0.58);
         }
         if (!build) {
-          for (const offset of [1, 3]) {
-            if (space && offset === 3) continue;
-            add('clap', beat + offset, 0.24, chorus ? 0.57 : 0.43);
-          }
-          for (const offset of [0.5, 1.5, 2.5, 3.5]) {
-            if ((space && offset > 2.5) || (groove && offset === 1.5)) continue;
-            add('hat', beat + offset, 0.12, chorus ? 0.2 : 0.15, undefined, true);
-          }
-          if (developed && local % 2 === 1 && !space) add('openHat', beat + 3.5, 0.32, 0.16);
+          const hats = chorus ? [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5] : [0.5, 1.5, 2.5, 3.5];
+          for (const offset of hats) add('hat', beat + offset, 0.1, (offset % 1 ? 0.27 : 0.14) * (chorus ? 1 : 0.8), undefined, true);
         }
-        if (chorus) {
-          if (orchestralDownbeat) add('taiko', beat, 0.92, developed ? 0.79 : 0.7, [resolution.root]);
-          if (local % 2 === 0) add('taiko', beat + 2, 0.74, 0.52, [resolution.root + 7]);
-          if (local % 4 === 3 && !last) {
-            add('taiko', beat + 2.75, 0.48, 0.43, [resolution.root + 7]);
-            add('perc', beat + 3.25, 0.18, 0.29, undefined, true);
-          }
-        } else if (build) {
-          const roll = local < 2 ? [2] : last ? [1, 1.5, 2, 2.5] : [1, 2, 3];
-          for (const offset of roll) add('taiko', beat + offset, 0.45, 0.29 + local * 0.055, [resolution.root + 7], true);
-        }
-
-        const bassNotes = build ? [0.5] : chorus ? [0.5, 1.75, 3.25] : [0.5, 2.75];
-        for (const [index, offset] of bassNotes.entries()) {
-          if (space && offset > 3) continue;
-          add('bass', beat + offset, index === 0 ? 0.88 : 0.55, chorus ? 0.63 : 0.46, [harmony.root]);
-          if (index === 0) add('sub', beat + offset, 1.05, chorus ? 0.35 : 0.23, [harmony.root - 12]);
+        // Bass roots reinforce the kick on beats one and three. No extra sub octave.
+        for (const offset of kicks) add('bass', beat + offset, 1.55, chorus ? 0.61 : 0.44, [harmony.root]);
+        if (build && last) {
+          for (const offset of [2.5, 3, 3.5]) add('taiko', beat + offset, 0.28, 0.3 + (offset - 2.5) * 0.09, undefined, true);
+        } else if (chorus && local % 4 === 3 && !last) {
+          add('taiko', beat + 3.5, 0.32, 0.28);
         }
       }
-
-      // Gongs mark form, not every bar. End each transition with a real breath.
-      if (local === 0 && (intro || chorus || outro)) {
-        add('gong', beat, intro ? 3.5 : 3.8, outro ? 0.16 : intro ? 0.19 : final ? 0.45 : 0.36, [resolution.root + 24]);
-      }
-      if (last && (build || bridge)) add('sweep', beat + 3, 0.8, build ? 0.24 : 0.15);
+      if (local === 0 && (section.energy === 'drop' || final)) add('gong', beat, 2, 0.14);
+      if (last && (build || bridge)) add('sweep', beat + 3.5, 0.4, 0.12);
     }
   }
-
   const beats = bar * 4;
   events.sort((a, b) => a.beat - b.beat);
   if (options.version === 'full') return { events, beats, sections };
-
-  // Each short version is the actual first chorus, including its chord and gong attack.
   const edit = track.edits![options.version];
   const start = edit.startBar * 4;
   const end = start + edit.bars * 4;
-  const cropped = events.filter(event => event.beat >= start && event.beat < end).map(event => ({
-    ...event, beat: event.beat - start, duration: Math.min(event.duration, end - event.beat),
-  }));
   return {
-    events: cropped, beats: end - start,
+    events: events.filter(event => event.beat >= start && event.beat < end).map(event => ({ ...event, beat: event.beat - start, duration: Math.min(event.duration, end - event.beat) })),
+    beats: end - start,
     sections: sections.filter(section => section.end > start * secondsPerBeat && section.start < end * secondsPerBeat).map(section => ({
       name: section.name,
       start: Math.max(0, section.start - start * secondsPerBeat),

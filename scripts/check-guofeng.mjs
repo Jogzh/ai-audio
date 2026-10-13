@@ -27,7 +27,7 @@ try {
     const toneUrl = engineSource.match(/from ["']([^"']*tone[^"']*)["']/)?.[1];
     const Tone = await import(toneUrl);
     const original = Tone.getContext();
-    const options = { version: 'hook', bpm: 96, transpose: 0, seed: 261013 };
+    const options = { version: 'hook', bpm: track.meta.bpm, transpose: 0, seed: 261013 };
     const [hook, repeat] = await Promise.all([renderTrack(track, options), renderTrack(track, options)]);
     const loop = await renderTrack(track, { ...options, version: 'loop' });
     const low = await renderTrack(track, { ...options, bpm: 90, transpose: -12, seed: 0 });
@@ -88,19 +88,19 @@ try {
 
   assert.equal(await page.locator('#track-select').inputValue(), 'mountains-awake');
   assert.equal(await page.locator('#player-title').textContent(), '山河醒');
-  assert.equal(await page.locator('#bpm').inputValue(), '96');
+  assert.equal(await page.locator('#bpm').inputValue(), '104');
   assert.equal(await page.locator('#bars-fact').textContent(), '48');
   assert.match(await page.locator('#melody-description').textContent(), /筝声与笛声/);
   await page.locator('#play').click();
   await page.waitForFunction(() => document.querySelector('#render-badge')?.textContent === '合成完成', undefined, { timeout: 120000 });
   await page.waitForFunction(() => document.querySelector('#play-state')?.textContent === '正在播放', undefined, { timeout: 20000 });
   await page.waitForFunction(() => Number(document.querySelector('#seek')?.value) > 0.2);
-  assert.equal(await page.locator('#total-time').textContent(), '00:21');
+  assert.equal(await page.locator('#total-time').textContent(), '00:20');
   await page.locator('#stop').click();
   const downloadPromise = page.waitForEvent('download');
   await page.locator('#export').click();
   const download = await downloadPromise;
-  assert.match(download.suggestedFilename(), /mountains-awake-hook-96bpm-t0-s260713\.wav/);
+  assert.match(download.suggestedFilename(), /mountains-awake-hook-104bpm-t0-s260713\.wav/);
   const bytes = await readFile(await download.path());
   assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
   assert.equal(bytes.readUInt16LE(22), 2);
@@ -110,8 +110,8 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   assert.deepEqual(errors, []);
   const report = { passed: true, generatedAt: new Date().toISOString(), ...checks, player: { directUrl: true, playbackProgress: true, wavDownload: true, mobileOverflow: false, pageErrors: errors }, manualListening: 'not performed' };
-  await mkdir(`${root}/artifacts/audio/mountains-awake-qa`, { recursive: true });
-  await writeFile(`${root}/artifacts/audio/mountains-awake-qa/browser-check.json`, JSON.stringify(report, null, 2) + '\n');
+  await mkdir(`${root}/artifacts/audio/mountains-awake-v2-qa`, { recursive: true });
+  await writeFile(`${root}/artifacts/audio/mountains-awake-v2-qa/browser-check.json`, JSON.stringify(report, null, 2) + '\n');
   console.log('PASS: guofeng voices, seeded PCM, pitch/tempo limits, loop edges, context cleanup and player/download');
   console.log(JSON.stringify(report, null, 2));
 } finally {

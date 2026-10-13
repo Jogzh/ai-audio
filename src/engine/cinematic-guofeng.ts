@@ -85,16 +85,16 @@ export function createCinematicGuofengInstruments(bpm: number, seed: number) {
   room.buffer = impulse;
   const roomLow = filter('highpass', 320);
   const roomHigh = filter('lowpass', 4700);
-  const roomReturn = gain(0.4);
+  const roomReturn = gain(0.28);
   roomSend.connect(room);
   room.connect(roomLow);
   roomLow.connect(roomHigh);
   roomHigh.connect(roomReturn);
   roomReturn.connect(orchestraDuck);
   const echoSend = gain();
-  for (const [index, level] of [0.34, 0.08, 0.018].entries()) {
+  for (const [index, level] of [0.2, 0.035].entries()) {
     const tap = own(context.createDelay(3));
-    tap.delayTime.value = beat * 0.75 * (index + 1);
+    tap.delayTime.value = beat * 0.5 * (index + 1);
     const dark = filter('lowpass', 2900 - index * 300);
     const tapLevel = gain(level);
     const position = pan(index % 2 ? 0.48 : -0.48);
@@ -124,14 +124,14 @@ export function createCinematicGuofengInstruments(bpm: number, seed: number) {
     route(last, destination, roomLevel, echoLevel);
     return first;
   };
-  const zhengBus = bus(165, 6100, 0.22, 0.16);
-  const diziBus = bus(220, 6200, 0.21, 0.09);
-  const erhuBus = bus(180, 4300, 0.2);
-  const stringBus = bus(245, 4300, 0.31);
-  const brassBus = bus(280, 3400, 0.2);
-  const granularBus = bus(340, 4700, 0.28, 0.21);
-  const taikoBus = bus(40, 2700, 0.11, 0, drums);
-  const gongBus = bus(175, 5300, 0.25, 0, drums);
+  const zhengBus = bus(165, 5200, 0.16, 0.055);
+  const diziBus = bus(220, 4300, 0.13);
+  const erhuBus = bus(180, 3400, 0.14);
+  const stringBus = bus(245, 3100, 0.2);
+  const brassBus = bus(280, 2900, 0.14);
+  const granularBus = bus(340, 4000, 0.18, 0.06);
+  const taikoBus = bus(55, 2300, 0.07, 0, drums);
+  const gongBus = bus(250, 4000, 0.16, 0, drums);
   const clapBus = bus(570, 6900, 0.075, 0, drums);
   const hatBus = bus(4900, 11000, 0.025, 0, drums);
   const textureBus = bus(1600, 6200, 0.18);
@@ -155,7 +155,7 @@ export function createCinematicGuofengInstruments(bpm: number, seed: number) {
     imaginary.set(levels, 1);
     return context.createPeriodicWave(real, imaginary);
   };
-  const fluteWave = periodic([1, 0.17, 0.39, 0.105, 0.17, 0.065, 0.06, 0.024]);
+  const fluteWave = periodic([1, 0.11, 0.2, 0.06, 0.07, 0.025, 0.02]);
   const erhuWave = periodic([1, 0.53, 0.36, 0.21, 0.17, 0.1, 0.075, 0.045, 0.028]);
   const brassWave = periodic([1, 0.63, 0.43, 0.29, 0.16, 0.09, 0.055]);
   const oscillator = (wave: OscillatorType | PeriodicWave, hz: number, time: number, seconds: number, destination: AudioNode) => {
@@ -279,13 +279,13 @@ export function createCinematicGuofengInstruments(bpm: number, seed: number) {
     expression.connect(position);
     position.connect(diziBus);
     const reed = oscillator(fluteWave, frequency(midi), time, seconds, expression);
-    reed.detune.setValueAtTime(-14, time);
+    reed.detune.setValueAtTime(-6, time);
     reed.detune.linearRampToValueAtTime(0, time + Math.min(0.045, duration * 0.35));
-    vibrato(reed.detune, time, seconds, duration > 0.38 ? 11 : 4, 0.26);
+    vibrato(reed.detune, time, seconds, duration > 0.38 ? 6 : 2, 0.32);
     // Dimo-membrane buzz is in the asymmetric harmonic spectrum; breath is
     // separately band-limited so the tune remains clear on small speakers.
     const breathColor = filter('bandpass', 3400, 0.58);
-    const breath = gain(0.08);
+    const breath = gain(0.045);
     breathColor.connect(breath);
     breath.connect(expression);
     noise(time, seconds, breathColor, 0.83 + random() * 0.12);
@@ -300,9 +300,9 @@ export function createCinematicGuofengInstruments(bpm: number, seed: number) {
     color.connect(position);
     position.connect(erhuBus);
     const bow = oscillator(erhuWave, frequency(midi), time, seconds, expression);
-    bow.detune.setValueAtTime(-35, time);
+    bow.detune.setValueAtTime(-14, time);
     bow.detune.linearRampToValueAtTime(0, time + Math.min(0.12, duration * 0.45));
-    vibrato(bow.detune, time, seconds, 18, 0.23);
+    vibrato(bow.detune, time, seconds, 9, 0.3);
     const friction = filter('bandpass', 2100, 0.62);
     const bowNoise = gain(0.027);
     friction.connect(bowNoise);
@@ -434,6 +434,11 @@ export function createCinematicGuofengInstruments(bpm: number, seed: number) {
     noise(time, 0.015, color);
   };
   const clap = (time: number, velocity: number) => {
+    // A short snare body gives beats two and four a solid centre under the noise snap.
+    const body = gain(0);
+    shape(body.gain, time, 0.025, velocity * 0.12, { attack: 0.002, decay: 0.02, sustain: 0.27, release: 0.09 });
+    body.connect(drums);
+    oscillator('triangle', 185, time, 0.13, body);
     const expression = gain(0);
     const color = filter('bandpass', 1670, 0.58);
     color.connect(expression);

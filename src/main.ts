@@ -126,9 +126,9 @@ const versionCopy = {
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
   'cinematic-guofeng': {
     coverId: 'MA—007',
-    melody: '筝声与笛声展开五声主题，二胡回应；弦乐和铜管托起副歌，最后一遍向更高处展开。',
-    drums: '深鼓与现代流行鼓组交替推动，铜锣标记段落；桥段卸去鼓点，让下一次齐奏更开阔。',
-    bass: '居中的电子低音连接民族旋律与流行和声，青铜脉冲在弱拍闪现，留下宽广的空间。',
+    melody: '筝声与笛声各自领奏，二胡唱主歌；三音主题留出呼吸，弦乐逐步展开，最后一遍向更高处推进。',
+    drums: '稳定的一三拍底鼓与二四拍军鼓感建立流行律动，深鼓只用于转段；桥段卸去节奏，让主题再次展开。',
+    bass: '居中的低音根音与底鼓同拍，三声部和弦托住主旋律；减少叠层与回声，让节奏和旋律都更清楚。',
   },
   'when-the-wind-rises': {
     coverId: 'WTWR—006',

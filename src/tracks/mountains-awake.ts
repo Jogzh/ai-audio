@@ -1,66 +1,25 @@
-import type { HookBar, TrackDefinition } from '../music/types.ts';
+import type { HookBar, HookNote, TrackDefinition } from '../music/types.ts';
 
-/** D / F / G / A / C: an original pentatonic call, with room to breathe. */
+const n = (offset: number, note: number, length: number, velocity = 0.8): HookNote => ({ offset, note, length, velocity });
+
+// A three-note call, then a descending answer: all entrances follow the half-beat grid.
 const hook: HookBar[] = [
-  [
-    { offset: 0, note: 74, length: 0.68, velocity: 0.8 },
-    { offset: 0.75, note: 77, length: 0.42, velocity: 0.73 },
-    { offset: 1.25, note: 79, length: 0.56, velocity: 0.79 },
-    { offset: 2, note: 81, length: 1.12, velocity: 0.87 },
-    { offset: 3.5, note: 79, length: 0.32, velocity: 0.67 },
-  ],
-  [
-    { offset: 0, note: 77, length: 0.88, velocity: 0.78 },
-    { offset: 1, note: 74, length: 0.8, velocity: 0.72 },
-    { offset: 2.25, note: 72, length: 1.18, velocity: 0.73 },
-  ],
-  [
-    { offset: 0, note: 72, length: 0.42, velocity: 0.72 },
-    { offset: 0.5, note: 74, length: 0.42, velocity: 0.74 },
-    { offset: 1, note: 77, length: 0.84, velocity: 0.8 },
-    { offset: 2, note: 81, length: 0.84, velocity: 0.85 },
-    { offset: 3, note: 79, length: 0.76, velocity: 0.76 },
-  ],
-  [
-    { offset: 0, note: 79, length: 0.86, velocity: 0.79 },
-    { offset: 1, note: 84, length: 0.82, velocity: 0.88 },
-    { offset: 2.25, note: 81, length: 0.65, velocity: 0.8 },
-    { offset: 3.25, note: 79, length: 0.5, velocity: 0.71 },
-  ],
-  [
-    { offset: 0, note: 74, length: 0.68, velocity: 0.79 },
-    { offset: 0.75, note: 77, length: 0.42, velocity: 0.75 },
-    { offset: 1.25, note: 79, length: 0.56, velocity: 0.8 },
-    { offset: 2, note: 81, length: 1.3, velocity: 0.89 },
-    { offset: 3.5, note: 79, length: 0.32, velocity: 0.69 },
-  ],
-  [
-    { offset: 0, note: 77, length: 0.86, velocity: 0.79 },
-    { offset: 1, note: 74, length: 0.4, velocity: 0.72 },
-    { offset: 1.5, note: 77, length: 0.4, velocity: 0.76 },
-    { offset: 2, note: 81, length: 0.82, velocity: 0.85 },
-    { offset: 3, note: 84, length: 0.7, velocity: 0.87 },
-  ],
-  [
-    { offset: 0, note: 81, length: 0.86, velocity: 0.84 },
-    { offset: 1, note: 79, length: 0.86, velocity: 0.79 },
-    { offset: 2, note: 77, length: 0.42, velocity: 0.73 },
-    { offset: 2.5, note: 79, length: 0.42, velocity: 0.78 },
-    { offset: 3, note: 81, length: 0.76, velocity: 0.83 },
-  ],
-  [
-    { offset: 0, note: 79, length: 0.86, velocity: 0.78 },
-    { offset: 1, note: 77, length: 0.86, velocity: 0.74 },
-    { offset: 2, note: 74, length: 1.68, velocity: 0.81 },
-  ],
+  [n(0, 74, 1.4), n(1.5, 77, 0.4, 0.72), n(2, 81, 1.5, 0.85)],
+  [n(0, 79, 0.85, 0.76), n(1, 77, 0.85, 0.73), n(2, 74, 1.6)],
+  [n(0, 77, 1.6), n(2, 79, 0.4, 0.72), n(2.5, 77, 0.4, 0.7), n(3, 74, 0.8, 0.75)],
+  [n(0, 77, 1.6, 0.77), n(2, 74, 1.6, 0.75)],
+  [n(0, 81, 1.4, 0.85), n(1.5, 79, 0.4, 0.73), n(2, 77, 1.6)],
+  [n(0, 77, 1.4, 0.76), n(1.5, 81, 0.4, 0.8), n(2, 79, 1.6, 0.78)],
+  [n(0, 79, 1.4), n(1.5, 81, 0.4, 0.75), n(2, 79, 0.8, 0.76), n(3, 72, 0.8, 0.7)],
+  [n(0, 72, 1.4, 0.73), n(2, 74, 1.6)],
 ];
 
 export const mountainsAwake: TrackDefinition = {
   meta: {
     id: 'mountains-awake', title: '山河醒', subtitle: 'MOUNTAINS AWAKE',
-    artist: 'AI AUDIO / ORIGINAL 007', bpm: 96, key: 'D minor pentatonic',
-    tags: ['CINEMATIC GUOFENG', 'EPIC POP', 'NEW TIMBRES'],
-    description: '筝弦划开晨雾，笛与二胡把五声旋律递向远山。流行和声与切分低音托住堂鼓、铜管和宽阔弦乐，凝结筝音的钟玉颗粒在留白中闪过；最后一次主题登高，落回一个安静的 D。',
+    artist: 'AI AUDIO / ORIGINAL 007', bpm: 104, key: 'D minor pentatonic',
+    tags: ['CINEMATIC GUOFENG', 'STEADY POP GROOVE', 'REVISION 02'],
+    description: '筝声开场，二胡低声陈述，笛子唱出清晰的三音主题。稳定的流行鼓与同拍低音带动副歌，弦乐逐步展开，深鼓只在转段出现；留白后再向高处推进，最后落回安静的 D。',
   },
   production: 'cinematic-guofeng',
   resolveHarmony: 0,
@@ -74,72 +33,38 @@ export const mountainsAwake: TrackDefinition = {
     { name: '06 / 万象向光', bars: 16, energy: 'final' },
     { name: '07 / 余响入山', bars: 4, energy: 'outro' },
   ],
-  // Two-bar pop harmony under a pentatonic melody; sustained layers agree with the bass.
+  // Simple triads, with one doubled chord tone to retain the four-note harmony contract.
   harmony: [
-    { root: 38, chord: [57, 62, 65, 69] }, // Dm
     { root: 38, chord: [57, 62, 65, 69] },
-    { root: 34, chord: [58, 62, 65, 69] }, // Bbmaj7
-    { root: 34, chord: [58, 62, 65, 69] },
-    { root: 41, chord: [57, 60, 65, 67] }, // Fadd9
-    { root: 41, chord: [57, 60, 65, 67] },
-    { root: 36, chord: [55, 60, 62, 64] }, // Cadd9
-    { root: 36, chord: [55, 60, 62, 64] },
+    { root: 38, chord: [57, 62, 65, 69] },
+    { root: 34, chord: [53, 58, 62, 65] },
+    { root: 34, chord: [53, 58, 62, 65] },
+    { root: 41, chord: [57, 60, 65, 69] },
+    { root: 41, chord: [57, 60, 65, 69] },
+    { root: 36, chord: [55, 60, 64, 67] },
+    { root: 36, chord: [55, 60, 64, 67] },
   ],
   hook,
   cinematicGuofeng: {
     finalHook: [
       hook[0],
-      [
-        { offset: 0, note: 74, length: 0.84, velocity: 0.81 },
-        { offset: 1, note: 77, length: 0.84, velocity: 0.8 },
-        { offset: 2, note: 81, length: 1.36, velocity: 0.89 },
-      ],
-      [
-        { offset: 0, note: 77, length: 0.42, velocity: 0.8 },
-        { offset: 0.5, note: 79, length: 0.42, velocity: 0.82 },
-        { offset: 1, note: 81, length: 0.84, velocity: 0.85 },
-        { offset: 2, note: 84, length: 1.36, velocity: 0.9 },
-      ],
-      [
-        { offset: 0, note: 86, length: 1.32, velocity: 0.91 },
-        { offset: 1.5, note: 84, length: 0.6, velocity: 0.84 },
-        { offset: 2.25, note: 81, length: 0.7, velocity: 0.81 },
-        { offset: 3.25, note: 79, length: 0.5, velocity: 0.75 },
-      ],
-      [
-        { offset: 0, note: 81, length: 0.84, velocity: 0.86 },
-        { offset: 1, note: 79, length: 0.84, velocity: 0.82 },
-        { offset: 2, note: 77, length: 0.7, velocity: 0.78 },
-        { offset: 3, note: 74, length: 0.7, velocity: 0.79 },
-      ],
-      [
-        { offset: 0, note: 77, length: 0.84, velocity: 0.8 },
-        { offset: 1, note: 79, length: 0.84, velocity: 0.83 },
-        { offset: 2, note: 81, length: 0.82, velocity: 0.87 },
-        { offset: 3, note: 84, length: 0.7, velocity: 0.9 },
-      ],
-      [
-        { offset: 0, note: 81, length: 0.84, velocity: 0.86 },
-        { offset: 1, note: 79, length: 0.84, velocity: 0.81 },
-        { offset: 2, note: 77, length: 0.42, velocity: 0.78 },
-        { offset: 2.5, note: 79, length: 0.42, velocity: 0.81 },
-        { offset: 3, note: 81, length: 0.7, velocity: 0.85 },
-      ],
-      [
-        { offset: 0, note: 84, length: 1.55, velocity: 0.9 },
-        { offset: 1.75, note: 81, length: 0.8, velocity: 0.83 },
-        { offset: 2.75, note: 86, length: 0.93, velocity: 0.89 },
-      ],
+      [n(0, 79, 0.85, 0.8), n(1, 77, 0.85, 0.75), n(2, 81, 1.6, 0.85)],
+      hook[2],
+      [n(0, 77, 1.4, 0.8), n(1.5, 79, 0.4, 0.76), n(2, 81, 1.6, 0.86)],
+      [n(0, 81, 1.4, 0.86), n(1.5, 84, 0.4, 0.82), n(2, 81, 1.6, 0.85)],
+      hook[5],
+      [n(0, 84, 1.4, 0.87), n(1.5, 81, 0.4, 0.8), n(2, 79, 0.8, 0.77), n(3, 72, 0.8, 0.73)],
+      hook[7],
     ],
     bridgeHook: [
-      [{ offset: 0, note: 74, length: 2.6, velocity: 0.67 }],
-      [{ offset: 0.75, note: 72, length: 1.65, velocity: 0.61 }],
-      [{ offset: 0, note: 69, length: 2.5, velocity: 0.64 }],
-      [{ offset: 1, note: 67, length: 1.6, velocity: 0.6 }],
-      [{ offset: 0, note: 65, length: 2.6, velocity: 0.61 }],
-      [{ offset: 0.75, note: 67, length: 1.65, velocity: 0.59 }],
-      [{ offset: 0, note: 69, length: 2.5, velocity: 0.64 }],
-      [{ offset: 1, note: 74, length: 1.6, velocity: 0.65 }],
+      [n(0, 69, 2.8, 0.65)],
+      [n(0, 67, 2.8, 0.6)],
+      [n(0, 65, 2.8, 0.62)],
+      [n(0, 62, 2.8, 0.6)],
+      [n(0, 65, 2.8, 0.62)],
+      [n(0, 67, 2.8, 0.6)],
+      [n(0, 69, 2.8, 0.65)],
+      [n(0, 62, 2.8, 0.62)],
     ],
   },
 };
