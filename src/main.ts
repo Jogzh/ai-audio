@@ -1,6 +1,6 @@
 import './style.css';
 import * as Tone from 'tone';
-import { renderTrack } from './engine/render';
+import { defaultOptions, renderTrack } from './engine/render';
 import { trackRegistry, defaultTrack, findTrack } from './tracks/registry.ts';
 import { encodeWav, measureAudio } from './audio/wav';
 import type { RenderOptions, RenderedTrack } from './music/types';
@@ -61,7 +61,7 @@ app.innerHTML = `
             <div class="version-switch" role="group" aria-labelledby="version-label"><button type="button" data-version="full" aria-pressed="true">完整 <small>FULL</small></button><button type="button" data-version="hook" aria-pressed="false">精华 <small>HOOK</small></button><button type="button" data-version="loop" aria-pressed="false">循环 <small>LOOP</small></button></div>
             <p id="version-description" class="field-help"></p>
             <div class="parameter-grid"><div class="number-field"><label for="bpm">速度 <span>BPM</span></label><input id="bpm" type="number" min="90" max="170" step="1" value="${selectedTrack.meta.bpm}" required><small>90 — 170</small></div><div class="number-field"><label for="transpose">移调 <span>SEMITONES</span></label><input id="transpose" type="number" min="-12" max="12" step="1" value="0" required><small>−12 — +12 半音</small></div></div>
-            <div class="number-field seed-field"><label for="seed">随机种子 <span>SEED</span></label><input id="seed" type="number" min="0" max="4294967295" step="1" value="260713" required><small>同一组参数，同一段原创声音。</small></div>
+            <div class="number-field seed-field"><label for="seed">随机种子 <span>SEED</span></label><input id="seed" type="number" min="0" max="4294967295" step="1" value="${defaultOptions.seed}" required><small>同一组参数，同一段原创声音。</small></div>
           </fieldset>
           <div class="export-area"><button id="export" class="export-button" type="button">${icons.download}<span>导出 WAV</span><span class="button-arrow" aria-hidden="true">↗</span></button><p>立体声 / 44.1 kHz / 16 bit PCM</p></div>
           <dl class="audio-metrics"><div><dt>峰值</dt><dd id="peak">— <small>dBFS</small></dd></div><div><dt>平均电平</dt><dd id="rms">— <small>dBFS</small></dd></div></dl>
@@ -164,7 +164,6 @@ function syncTrack(): void {
   element('#footer-title').textContent = `${meta.subtitle} / ${meta.title}`;
   element('#score-title').textContent = `FULL SCORE / ${bars} 小节`;
   element('#score-sections').textContent = arrangement.map(section => `${section.name.split('/').at(-1)?.trim()} ${section.bars}`).join(' · ');
-  versionCopy.full[1] = `${bars} 小节完整旅程，层次逐步展开。`;
   element('#track-tags').replaceChildren(...meta.tags.map(tag => { const span = document.createElement('span'); span.textContent = tag; return span; }));
   element('#melody-description').textContent = copy.melody;
   element('#drum-description').textContent = copy.drums;
@@ -255,7 +254,8 @@ function syncControls(): void {
 function syncVersion(): void {
   versions.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.version === version)));
   element('#version-caption').textContent = versionCopy[version][0];
-  element('#version-description').textContent = versionCopy[version][1];
+  const bars = selectedTrack.arrangement.reduce((sum, section) => sum + section.bars, 0);
+  element('#version-description').textContent = version === 'full' ? `${bars} 小节完整旅程，层次逐步展开。` : versionCopy[version][1];
   element('#score-note').hidden = version !== 'full';
   audio.loop = version === 'loop';
 }

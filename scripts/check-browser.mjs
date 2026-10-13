@@ -21,7 +21,7 @@ try {
   assert.equal(await page.locator('#render-badge').textContent(), '等待合成');
 
   const checks = await page.evaluate(async () => {
-    const { renderTrack } = await import('/src/engine/render.ts');
+    const { getTailSeconds, renderTrack } = await import('/src/engine/render.ts');
     const { neonRebound } = await import('/src/tracks/neon-rebound.ts');
     const { amberTides } = await import('/src/tracks/amber-tides.ts');
     const { velvetHour } = await import('/src/tracks/velvet-hour.ts');
@@ -36,6 +36,51 @@ try {
     let failureHandled = false;
     try { await renderTrack(invalidTrack, { version: 'hook', bpm: 132, transpose: 0, seed: 260713 }); }
     catch { failureHandled = Tone.getContext() === originalContext; }
+    let callbackFailureHandled = false;
+    const originalKick = Tone.MembraneSynth.prototype.triggerAttackRelease;
+    Tone.MembraneSynth.prototype.triggerAttackRelease = () => { throw new Error('intentional scheduling failure'); };
+    try { await renderTrack(neonRebound, { version: 'hook', bpm: 132, transpose: 0, seed: 260713 }); }
+    catch { callbackFailureHandled = Tone.getContext() === originalContext; }
+    finally { Tone.MembraneSynth.prototype.triggerAttackRelease = originalKick; }
+    let postProcessingDisposed = false;
+    const originalGet = Tone.ToneAudioBuffer.prototype.get;
+    const originalDispose = Tone.ToneAudioBuffer.prototype.dispose;
+    const observedBuffers = new Set();
+    Tone.ToneAudioBuffer.prototype.get = function () { observedBuffers.add(this); return undefined; };
+    Tone.ToneAudioBuffer.prototype.dispose = function () {
+      if (observedBuffers.has(this)) postProcessingDisposed = true;
+      return originalDispose.call(this);
+    };
+    const noSources = structuredClone(neonRebound);
+    noSources.arrangement = [{ name: 'silent test', bars: 1, energy: 'air' }];
+    let missingBufferHandled = false;
+    try { await renderTrack(noSources, { version: 'full', bpm: 132, transpose: 0, seed: 260713 }); }
+    catch { missingBufferHandled = Tone.getContext() === originalContext; }
+    finally {
+      Tone.ToneAudioBuffer.prototype.get = originalGet;
+      Tone.ToneAudioBuffer.prototype.dispose = originalDispose;
+    }
+    let silentOutputHandled = false;
+    let silentOutputDisposed = false;
+    const silentBuffers = new Set();
+    Tone.ToneAudioBuffer.prototype.get = function () {
+      const buffer = originalGet.call(this);
+      if (buffer) {
+        silentBuffers.add(this);
+        for (let channel = 0; channel < buffer.numberOfChannels; channel++) buffer.getChannelData(channel).fill(0);
+      }
+      return buffer;
+    };
+    Tone.ToneAudioBuffer.prototype.dispose = function () {
+      if (silentBuffers.has(this)) silentOutputDisposed = true;
+      return originalDispose.call(this);
+    };
+    try { await renderTrack(noSources, { version: 'full', bpm: 132, transpose: 0, seed: 260713 }); }
+    catch (error) { silentOutputHandled = error.message.includes('静音') && Tone.getContext() === originalContext; }
+    finally {
+      Tone.ToneAudioBuffer.prototype.get = originalGet;
+      Tone.ToneAudioBuffer.prototype.dispose = originalDispose;
+    }
     const options = { version: 'hook', bpm: 132, transpose: 0, seed: 260713 };
     const [first, second] = await Promise.all([renderTrack(neonRebound, options), renderTrack(neonRebound, options)]);
     let maxDifference = 0;
@@ -99,10 +144,20 @@ try {
       sampleRates: Object.values(bank).flatMap(voices => Object.values(voices).map(buffer => buffer.sampleRate)),
       warm: { duration: warm.duration, stats: warm.stats, difference: warmDifference, loopDuration: warmLoop.duration, loopStats: warmLoop.stats, start: warmLoop.buffer.getChannelData(0)[0], end: warmLoop.buffer.getChannelData(0).at(-1) },
       signal: peak > 0.2 && first.stats.rms > 0.01,
-      failureHandled, contextRestored: Tone.getContext() === originalContext,
+      failureHandled, callbackFailureHandled, missingBufferHandled, postProcessingDisposed, silentOutputHandled, silentOutputDisposed,
+      expectedDuration: first.sections.at(-1).end + getTailSeconds(neonRebound, 'hook'),
+      expectedChangedDuration: changed.sections.at(-1).end + getTailSeconds(neonRebound, 'hook'),
+      expectedWarmDuration: warm.sections.at(-1).end + getTailSeconds(amberTides, 'hook'),
+      expectedDiscoDuration: disco.sections.at(-1).end + getTailSeconds(velvetHour, 'hook'),
+      contextRestored: Tone.getContext() === originalContext,
     };
   });
-  assert.equal(checks.failureHandled, true, 'failed render restores original context');
+  assert.equal(checks.failureHandled, true, 'invalid track fails without switching the audio context');
+  assert.equal(checks.callbackFailureHandled, true, 'failed scheduling restores original context');
+  assert.equal(checks.missingBufferHandled, true, 'missing output buffer is handled');
+  assert.equal(checks.postProcessingDisposed, true, 'missing-buffer failure disposes the offline wrapper');
+  assert.equal(checks.silentOutputHandled, true, 'silent output fails in finishAudio');
+  assert.equal(checks.silentOutputDisposed, true, 'failed finishAudio still disposes the offline wrapper');
   assert.equal(checks.contextRestored, true, 'next render succeeds without poisoning queue');
   assert.equal(checks.channels, 2);
   assert.equal(checks.rate, 44100);
@@ -112,18 +167,18 @@ try {
   assert.ok(checks.stats.peakDb <= -1.19);
   assert.ok(checks.maxDifference < 1e-6, `same seed difference: ${checks.maxDifference}`);
   assert.equal(checks.wavSize, checks.expectedWavSize);
-  assert.ok(Math.abs(checks.duration - (32 * 60 / 132 + 0.45)) < 1 / 44100);
+  assert.ok(Math.abs(checks.duration - checks.expectedDuration) < 1 / 44100);
   assert.ok(Math.abs(checks.loop.duration - 32 * 60 / 132) < 1 / 44100);
   assert.equal(checks.loop.start, 0);
   assert.equal(checks.loop.end, 0);
   assert.equal(checks.loop.stats.clippedSamples, 0);
-  assert.ok(Math.abs(checks.changed.duration - (32 * 60 / 100 + 0.45)) < 1 / 44100);
+  assert.ok(Math.abs(checks.changed.duration - checks.expectedChangedDuration) < 1 / 44100);
   assert.ok(checks.boundaries.every(stats => stats.clippedSamples === 0 && stats.rms > 0.01));
   assert.ok(checks.warm.stats.rms > 0.01);
   assert.equal(checks.warm.stats.clippedSamples, 0);
   assert.ok(checks.warm.stats.peakDb <= -1.19);
   assert.ok(checks.warm.difference < 1e-6, `warm same seed difference: ${checks.warm.difference}`);
-  assert.ok(Math.abs(checks.warm.duration - (32 * 60 / 112 + 1.4)) < 1 / 44100);
+  assert.ok(Math.abs(checks.warm.duration - checks.expectedWarmDuration) < 1 / 44100);
   assert.ok(Math.abs(checks.warm.loopDuration - 32 * 60 / 112) < 1 / 44100);
   assert.equal(checks.warm.loopStats.clippedSamples, 0);
   // IEEE-754 negative zero is also a silent sample; compare its magnitude.
@@ -135,7 +190,7 @@ try {
   assert.equal(checks.disco.stats.clippedSamples, 0);
   assert.ok(checks.disco.stats.peakDb <= -1.19);
   assert.ok(checks.disco.difference < 1e-6, `sampled disco repeat difference: ${checks.disco.difference}`);
-  assert.ok(Math.abs(checks.disco.duration - 16.9) < 1 / 44100);
+  assert.ok(Math.abs(checks.disco.duration - checks.expectedDiscoDuration) < 1 / 44100);
   assert.equal(checks.disco.loopDuration, 16);
   assert.equal(checks.disco.loopStats.clippedSamples, 0);
   assert.equal(Math.abs(checks.disco.start), 0);

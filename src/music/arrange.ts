@@ -3,14 +3,37 @@ import { versions, type Arrangement, type Instrument, type RenderOptions, type T
 
 export function validateOptions(options: RenderOptions): void {
   if (!versions.includes(options.version)) throw new RangeError('版本必须为 full / hook / loop');
-  if (!Number.isFinite(options.bpm) || options.bpm < 90 || options.bpm > 170) throw new RangeError('BPM 必须为 90–170');
+  if (!Number.isInteger(options.bpm) || options.bpm < 90 || options.bpm > 170) throw new RangeError('BPM 必须为 90–170 的整数');
   if (!Number.isInteger(options.transpose) || Math.abs(options.transpose) > 12) throw new RangeError('移调必须为 -12–12 的整数');
   if (!Number.isInteger(options.seed) || options.seed < 0 || options.seed > 0xffffffff) throw new RangeError('Seed 必须为 0–4294967295 的整数');
 }
 
+export function validateTrack(track: TrackDefinition): void {
+  if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
+  const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
+  for (const bar of track.hook) {
+    for (const note of bar) {
+      if (!midi(note.note) || !Number.isFinite(note.offset) || note.offset < 0 || note.offset >= 4 || !Number.isFinite(note.length) || note.length <= 0 || !Number.isFinite(note.velocity) || note.velocity <= 0 || note.velocity > 1) {
+        throw new RangeError('Hook 需要有效 MIDI 音高、0–4 拍内起音、正时值和 0–1 力度');
+      }
+    }
+  }
+  for (const harmony of track.harmony) {
+    const minimum = track.production === undefined ? 1 : 4;
+    if (!midi(harmony.root) || harmony.chord.length < minimum || !Array.from(harmony.chord).every(midi)) {
+      throw new RangeError(`和声需要有效 MIDI 根音与至少 ${minimum} 个有效和弦音`);
+    }
+  }
+  const energies = ['tease', 'groove', 'build', 'drop', 'air', 'final', 'outro'];
+  for (const section of track.arrangement) {
+    if (!Number.isInteger(section.bars) || section.bars < 1) throw new RangeError('小节数必须为正整数');
+    if (!energies.includes(section.energy)) throw new RangeError(`未知段落能量: ${section.energy}`);
+  }
+}
+
 export function buildArrangement(track: TrackDefinition, options: RenderOptions): Arrangement {
   validateOptions(options);
-  if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
+  validateTrack(track);
   if (track.production === 'warm-house') return buildWarmArrangement(track, options);
   if (track.production === 'disco-house') return buildDiscoArrangement(track, options);
   if (track.production !== undefined) throw new Error(`未知制作风格: ${track.production}`);

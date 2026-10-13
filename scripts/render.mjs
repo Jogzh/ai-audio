@@ -22,15 +22,14 @@ if (values.help) {
   process.exit(0);
 }
 const options = { bpm: values.bpm === undefined ? undefined : Number(values.bpm), transpose: Number(values.transpose), seed: Number(values.seed) };
-if (!['all', 'full', 'hook', 'loop'].includes(values.version) || (values.bpm !== undefined && (!values.bpm.trim() || !Number.isFinite(options.bpm) || options.bpm < 90 || options.bpm > 170)) || !values.transpose.trim() || !Number.isInteger(options.transpose) || Math.abs(options.transpose) > 12 || !values.seed.trim() || !Number.isInteger(options.seed) || options.seed < 0 || options.seed > 0xffffffff) {
-  throw new Error('无效参数：version=all/full/hook/loop，bpm=90–170，transpose=-12–12 整数，seed=uint32');
+if (!['all', 'full', 'hook', 'loop'].includes(values.version) || (values.bpm !== undefined && (!values.bpm.trim() || !Number.isInteger(options.bpm) || options.bpm < 90 || options.bpm > 170)) || !values.transpose.trim() || !Number.isInteger(options.transpose) || Math.abs(options.transpose) > 12 || !values.seed.trim() || !Number.isInteger(options.seed) || options.seed < 0 || options.seed > 0xffffffff) {
+  throw new Error('无效参数：version=all/full/hook/loop，bpm=90–170 整数，transpose=-12–12 整数，seed=uint32');
 }
 const output = path.resolve(process.cwd(), values.out);
 const selected = values.version === 'all' ? ['full', 'hook', 'loop'] : [values.version];
 let server;
 let browser;
 try {
-  await mkdir(output, { recursive: true });
   server = await createServer({ root, server: { host: '127.0.0.1', port: 0, open: false }, logLevel: 'error' });
   await server.listen();
   const address = server.httpServer.address();
@@ -43,9 +42,11 @@ try {
     const track = trackId === undefined ? defaultTrack : findTrack(trackId);
     if (!track) throw new Error(`未知曲目：${trackId}；可选曲目：${trackRegistry.map(entry => entry.meta.id).join(' / ')}`);
     const bpm = input.bpm ?? track.meta.bpm;
-    if (!Number.isFinite(bpm) || bpm < 90 || bpm > 170) throw new Error(`曲目 BPM 无效：${bpm}`);
+    const { validateOptions } = await import('/src/music/arrange.ts');
+    validateOptions({ ...input, bpm, version: 'full' });
     return { trackId: track.meta.id, options: { ...input, bpm } };
   }, { trackId: values.track, input: options });
+  await mkdir(output, { recursive: true });
   const manifest = [];
   for (const version of selected) {
     console.log(`Rendering ${resolved.trackId} / ${version}: ${resolved.options.bpm} BPM, transpose ${resolved.options.transpose}, seed ${resolved.options.seed}...`);

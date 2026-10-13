@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildArrangement, validateOptions } from '../src/music/arrange.ts';
+import { buildArrangement, validateOptions, validateTrack } from '../src/music/arrange.ts';
 import { createRandom } from '../src/music/random.ts';
 import type { RenderOptions } from '../src/music/types.ts';
 import { neonRebound } from '../src/tracks/neon-rebound.ts';
@@ -53,11 +53,42 @@ test('transpose changes pitched voices but not drums, tempo changes seconds but 
 });
 
 test('invalid inputs fail, rather than silently clamp or create huge renders', () => {
-  for (const invalid of [{ bpm: NaN }, { bpm: 0 }, { bpm: Infinity }, { transpose: 1.5 }, { seed: -1 }, { seed: 2 ** 32 }, { version: 'other' }]) {
+  for (const invalid of [{ bpm: NaN }, { bpm: 0 }, { bpm: Infinity }, { bpm: 120.5 }, { transpose: 1.5 }, { seed: -1 }, { seed: 2 ** 32 }, { version: 'other' }]) {
     assert.throws(() => validateOptions({ ...options, ...invalid } as RenderOptions));
   }
   validateOptions({ ...options, bpm: 90, transpose: -12, seed: 0 });
   validateOptions({ ...options, bpm: 170, transpose: 12, seed: 0xffffffff });
+});
+
+test('invalid track data fails before creating audio nodes, including unused full sections', () => {
+  for (const patch of [
+    { note: NaN }, { note: -1 }, { note: 128 }, { note: 60.5 },
+    { offset: -0.5 }, { offset: 4 }, { offset: Infinity },
+    { length: 0 }, { length: NaN }, { velocity: 0 }, { velocity: 1.1 }, { velocity: NaN },
+  ]) {
+    const track = structuredClone(velvetHour);
+    Object.assign(track.hook[0][0], patch);
+    assert.throws(() => buildArrangement(track, { ...options, version: 'hook' }), /Hook/);
+  }
+  for (const root of [NaN, -1, 128]) {
+    const track = structuredClone(velvetHour);
+    track.harmony[0].root = root;
+    assert.throws(() => validateTrack(track), /和声/);
+  }
+  const chord = structuredClone(velvetHour);
+  chord.harmony[0].chord = [60, 64, 67];
+  assert.throws(() => validateTrack(chord), /至少 4 个/);
+  const sparse = structuredClone(velvetHour);
+  delete sparse.harmony[0].chord[2];
+  assert.throws(() => validateTrack(sparse), /和声/);
+  const triad = structuredClone(neonRebound);
+  triad.harmony = triad.harmony.map(harmony => ({ ...harmony, chord: harmony.chord.slice(0, 3) }));
+  assert.doesNotThrow(() => buildArrangement(triad, options));
+  for (const bars of [0, -1, 1.5, Infinity]) {
+    const track = structuredClone(velvetHour);
+    track.arrangement[0].bars = bars;
+    assert.throws(() => buildArrangement(track, { ...options, version: 'hook' }), /小节数/);
+  }
 });
 
 test('warm score has a complete eight-bar theme, sustained harmony and quieter bridge', () => {
