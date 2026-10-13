@@ -124,6 +124,12 @@ const versionCopy = {
   loop: ['循环片段 / LOOP EDIT', '适合反复聆听的循环片段，播放时自动循环。'],
 };
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
+  'when-the-wind-rises': {
+    coverId: 'WTWR—006',
+    melody: '独立问答电钢琴在柔软电子主音的留白里接话；后半段发展熟悉的主题，让旋律更明亮。',
+    drums: '切分轻鼓以两小节交替变化，细碎打击乐让节奏向前走，句尾和桥段留出呼吸。',
+    bass: '居中的温暖低音贴着和声前行，错开底鼓起音，让主题与律动都有空间。',
+  },
   'emotional-pop': {
     coverId: 'AG—005',
     melody: '电钢琴先说出主题，柔软电子主音与合成元音接过应答；重复一句，再让尾句向上展开。',
@@ -133,7 +139,7 @@ const productionCopy: Record<string, { coverId: string; melody: string; drums: s
 };
 function syncTrack(): void {
   const { meta, arrangement } = selectedTrack;
-  const copy = productionCopy[selectedTrack.production];
+  const copy = productionCopy[meta.id] ?? productionCopy[selectedTrack.production];
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
   const [first, ...rest] = meta.subtitle.split(' ');
   element('#track-title').innerHTML = `${first}${rest.length ? `<br><span class="title-second">${rest.join(' ')}</span>` : ''}<span class="title-dot">.</span>`;

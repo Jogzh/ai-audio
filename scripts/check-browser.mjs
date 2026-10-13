@@ -24,6 +24,7 @@ try {
   const checks = await page.evaluate(async () => {
     const { getTailSeconds, renderTrack } = await import('/src/engine/render.ts');
     const { afterglow } = await import('/src/tracks/afterglow.ts');
+    const { whenTheWindRises } = await import('/src/tracks/when-the-wind-rises.ts');
     const { defaultTrack, trackRegistry } = await import('/src/tracks/registry.ts');
     const { createEmotionalPopInstruments } = await import('/src/engine/emotional-pop.ts');
     const { encodeWav, measureAudio } = await import('/src/audio/wav.ts');
@@ -133,6 +134,12 @@ try {
       return { maximum, rms: Math.sqrt(squares / (first.length * first.numberOfChannels)) };
     };
 
+    const windOptions = { ...options, bpm: whenTheWindRises.meta.bpm };
+    const [windHook, windRepeat] = await Promise.all([renderTrack(whenTheWindRises, windOptions), renderTrack(whenTheWindRises, windOptions)]);
+    const windLoop = await renderTrack(whenTheWindRises, { ...windOptions, version: 'loop' });
+    const windLow = await renderTrack(whenTheWindRises, { ...windOptions, bpm: 90, transpose: -12, seed: 0 });
+    const windHigh = await renderTrack(whenTheWindRises, { ...windOptions, bpm: 170, transpose: 12, seed: 0xffffffff });
+
     const palette = ['piano', 'vocal', 'texture', 'sweep'];
     let paletteRig;
     let paletteAudio;
@@ -171,14 +178,22 @@ try {
 
     const bytes = encodeWav(hook.buffer);
     const versions = [full, hook, hookRepeat, loop, low, high];
-    const details = rendered => ({
+    const details = (rendered, track = afterglow) => ({
       stats: rendered.stats, duration: rendered.duration, rate: rendered.buffer.sampleRate,
       channels: rendered.buffer.numberOfChannels, finite: finiteAudio(rendered.buffer),
-      expectedDuration: rendered.sections.at(-1).end + getTailSeconds(afterglow, rendered.options.version),
+      expectedDuration: rendered.sections.at(-1).end + getTailSeconds(track, rendered.options.version),
     });
     return {
       registry: { defaultId: defaultTrack.meta.id, ids: trackRegistry.map(track => track.meta.id) },
       hook: details(hook), full: details(full), loop: details(loop), boundaries: [details(low), details(high)],
+      wind: {
+        hook: details(windHook, whenTheWindRises), loop: details(windLoop, whenTheWindRises),
+        boundaries: [details(windLow, whenTheWindRises), details(windHigh, whenTheWindRises)],
+        repeat: compare(windHook.buffer, windRepeat.buffer),
+        allFinite: [windHook, windRepeat, windLoop, windLow, windHigh].every(rendered => finiteAudio(rendered.buffer)),
+        loopEdges: Array.from({ length: 2 }, (_, channel) => [windLoop.buffer.getChannelData(channel)[0], windLoop.buffer.getChannelData(channel).at(-1)]),
+        expectedLoopDuration: whenTheWindRises.edits.loop.bars * 4 * 60 / windOptions.bpm,
+      },
       repeat: compare(hook.buffer, hookRepeat.buffer), pianoRepeatDifference,
       wavSize: bytes.byteLength, expectedWavSize: 44 + hook.buffer.length * 4,
       loopEdges: Array.from({ length: 2 }, (_, channel) => [loop.buffer.getChannelData(channel)[0], loop.buffer.getChannelData(channel).at(-1)]),
@@ -193,7 +208,9 @@ try {
   });
 
   assert.equal(checks.registry.defaultId, 'afterglow');
+  assert.equal(checks.registry.ids.length, 2);
   assert.ok(checks.registry.ids.includes('afterglow'), 'registry keeps afterglow');
+  assert.ok(checks.registry.ids.includes('when-the-wind-rises'), 'registry includes the new composition');
   assert.ok(['moonlit-sway', 'velvet-hour', 'amber-tides', 'neon-rebound'].every(id => !checks.registry.ids.includes(id)), 'retired demos remain absent');
   assert.equal(checks.failureHandled, true, 'invalid score preserves the context');
   assert.equal(checks.callbackFailureHandled, true, 'native scheduling failure restores the context');
@@ -225,10 +242,26 @@ try {
   assert.ok(checks.loopEdges.flat().every(value => Math.abs(value) === 0), 'both stereo loop channels have silent edge samples');
   assert.equal(checks.paletteFinite, true);
   assert.ok(checks.palette.every(stats => stats.peak > 0.001 && stats.rms > 0.0001), 'each new voice must sound in its isolated segment');
-  console.log('PASS: full/hook/loop, four isolated voices, seeded repeatability, finite PCM, parameter limits, context cleanup, echo regression, WAV and levels');
+  assert.equal(checks.wind.allFinite, true, 'new composition remains finite at tempo/pitch limits');
+  for (const rendered of [checks.wind.hook, checks.wind.loop, ...checks.wind.boundaries]) {
+    assert.equal(rendered.channels, 2);
+    assert.equal(rendered.rate, 44100);
+    assert.equal(rendered.finite, true);
+    assert.ok(rendered.stats.peak > 0.2 && rendered.stats.rms > 0.01, 'new composition produces non-silent audio');
+    assert.equal(rendered.stats.clippedSamples, 0);
+    assert.ok(rendered.stats.peakDb <= -1.19 && Math.abs(rendered.stats.dcOffset) < 0.001);
+    assert.ok(Math.abs(rendered.duration - rendered.expectedDuration) < 1 / 44100);
+  }
+  assert.ok(checks.wind.repeat.maximum < 1 / 65536, `wind same seed max difference: ${checks.wind.repeat.maximum}`);
+  assert.ok(checks.wind.repeat.rms < 1e-6, `wind same seed RMS difference: ${checks.wind.repeat.rms}`);
+  assert.ok(Math.abs(checks.wind.loop.duration - checks.wind.expectedLoopDuration) < 1 / 44100);
+  assert.ok(checks.wind.loopEdges.flat().every(value => Math.abs(value) === 0), 'new loop fades both stereo edge samples');
+  console.log('PASS: two compositions, full/hook/loop, four isolated voices, seeded repeatability, finite PCM, parameter limits, context cleanup, echo regression, WAV and levels');
 
   assert.equal(await page.locator('#track-select').inputValue(), 'afterglow');
   const selectableTracks = await page.locator('#track-select option').evaluateAll(options => options.map(option => option.value));
+  assert.equal(selectableTracks.length, checks.registry.ids.length);
+  assert.deepEqual(selectableTracks, checks.registry.ids, 'player offers the same two compositions as the renderer');
   assert.ok(selectableTracks.includes('afterglow'));
   assert.ok(['moonlit-sway', 'velvet-hour', 'amber-tides', 'neon-rebound'].every(id => !selectableTracks.includes(id)));
   await page.locator('#track-select').selectOption('afterglow');
@@ -284,10 +317,38 @@ try {
   await page.locator('#transpose').fill('3');
   assert.equal(await page.locator('#render-badge').textContent(), '等待合成');
   assert.equal(await page.locator('#seek').isDisabled(), true);
+  await page.goto(`${baseUrl}/?track=when-the-wind-rises&version=hook`);
+  await page.locator('#play').waitFor();
+  assert.equal(await page.locator('#track-select').inputValue(), 'when-the-wind-rises', 'direct track URL opens the new composition');
+  assert.equal(await page.locator('#bpm').inputValue(), '114');
+  assert.equal(await page.locator('#player-title').textContent(), '风起时');
+  assert.equal(await page.locator('#cover-id').textContent(), 'WTWR—006');
+  assert.equal(await page.locator('#bars-fact').textContent(), '44');
+  assert.equal(await page.locator('#key-fact').textContent(), 'D major');
+  assert.match(await page.title(), /WHEN THE WIND RISES/);
+  assert.equal(await page.locator('[data-version="hook"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await page.locator('#melody-description').textContent(), /独立问答电钢琴/);
+  assert.match(await page.locator('#drum-description').textContent(), /切分轻鼓/);
+  assert.equal(await page.locator('#render-badge').textContent(), '等待合成');
+  await page.locator('#play').click();
+  await page.waitForFunction(() => document.querySelector('#render-badge')?.textContent === '合成完成', undefined, { timeout: 120000 });
+  await page.waitForFunction(() => document.querySelector('#play-state')?.textContent === '正在播放', undefined, { timeout: 20000 });
+  await page.waitForFunction(() => Number(document.querySelector('#seek')?.value) > 0.2);
+  assert.equal(await page.locator('#total-time').textContent(), '00:17');
+  await page.locator('#stop').click();
+  assert.equal(await page.locator('#seek').inputValue(), '0');
+  assert.equal(await page.locator('.timeline-section').count(), 1);
+  const windDownloadPromise = page.waitForEvent('download');
+  await page.locator('#export').click();
+  const windDownload = await windDownloadPromise;
+  assert.match(windDownload.suggestedFilename(), /when-the-wind-rises-hook-114bpm-t0-s260713\.wav/);
+  await page.locator('[data-version="full"]').click();
+  assert.match(await page.locator('#score-title').textContent(), /44/);
+  assert.match(await page.locator('#version-description').textContent(), /44/);
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'mobile layout must not overflow horizontally');
   assert.deepEqual(errors, []);
-  console.log('PASS: afterglow default, retired demos absent, playback/pause/stop/seek, WAV download, cache reset, versions, invalid inputs, seed zero and mobile layout');
+  console.log('PASS: afterglow default, wind direct URL/playback/download, retired demos absent, cache reset, versions, invalid inputs, seed zero and mobile layout');
   console.log(JSON.stringify(checks, null, 2));
 } finally {
   try { await browser?.close(); } finally { await server?.close(); }

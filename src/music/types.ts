@@ -23,6 +23,15 @@ export interface Section {
   energy: 'tease' | 'groove' | 'build' | 'drop' | 'air' | 'final' | 'outro';
 }
 
+export interface HookNote {
+  offset: number;
+  note: number;
+  length: number;
+  velocity: number;
+}
+
+export type HookBar = HookNote[];
+
 export interface TrackDefinition {
   meta: {
     id: string;
@@ -35,12 +44,22 @@ export interface TrackDefinition {
     description: string;
   };
   production: 'emotional-pop';
+  /** Optional written development for emotional-pop; omitted fields keep its original arrangement. */
+  emotionalPop?: {
+    groove?: 'syncopated';
+    /** Piano replies placed in the main theme's rests, with the same number of bars. */
+    response?: HookBar[];
+    /** A new melody for the final section from its ninth bar onward. */
+    finalHook?: HookBar[];
+    /** A separate, sparse melody for the drum-free bridge. */
+    bridgeHook?: HookBar[];
+  };
   /** Short edits refer to the actual full score, measured in bars. */
   edits?: { hook: { startBar: number; bars: number }; loop: { startBar: number; bars: number } };
   /** Harmony index used for the final resolution; defaults to the first chord. */
   resolveHarmony?: number;
   arrangement: Section[];
-  hook: { offset: number; note: number; length: number; velocity: number }[][];
+  hook: HookBar[];
   harmony: { root: number; chord: number[] }[];
 }
 

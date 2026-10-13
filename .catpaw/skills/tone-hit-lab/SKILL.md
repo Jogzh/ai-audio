@@ -5,11 +5,13 @@ description: 使用 ai-audio 仓库与 Tone.js 创作、改编、试听和导出
 
 # Tone Hit Lab
 
-当前仓库只维护《余温 / Afterglow》与 `emotional-pop` 制作风格。音乐任务需交付可播放的作品，自动检查不等于人工试听，也不能保证作品流行。此 Skill 随仓库共享，不自动安装到用户全局；按会话授权处理 Git 与外部发布。
+当前仓库维护《余温 / Afterglow》《风起时 / When the Wind Rises》与 `emotional-pop` 制作风格。音乐任务需交付可播放的作品，自动检查不等于人工试听，也不能保证作品流行。此 Skill 随仓库共享，不自动安装到用户全局；按会话授权处理 Git 与外部发布。
 
 ## 先选择已有成品或重新制作
 
 `releases/afterglow/` 的 full / hook / loop MP3 与 `manifest.json` 由 Git 追踪，克隆后直接播放，无需渲染。定稿为 118 BPM / F# minor / 移调 0 / seed **261013**，320 kbps、44.1 kHz、立体声；测量入口为仓库 [release manifest](../../../releases/afterglow/manifest.json)。
+
+《风起时》的 full / hook / loop MP3 与实测 manifest 位于 `releases/when-the-wind-rises/`，同样由 Git 追踪并可直接播放；定稿为 114 BPM / D major / 移调 0 / seed 261013。
 
 需要改编或重新渲染时先检查已有改动。运行环境为 Node.js >=22.12、npm、Web Audio 浏览器；CLI 需要 Playwright Chromium，MP3 或响度母带另需 FFmpeg / FFprobe，MP3 需 libmp3lame。已有依赖可直接使用，缺少依赖时执行 `npm ci` / `npx --yes playwright install chromium`。
 
@@ -29,7 +31,7 @@ description: 使用 ai-audio 仓库与 Tone.js 创作、改编、试听和导出
 
 ## 工程入口与约束
 
-- `src/tracks/afterglow.ts` / `registry.ts`：唯一曲目、主题、和声、段落；`edits` 用 startBar / bars 定位短版，`resolveHarmony` 指定结尾和声。
+- `src/tracks/afterglow.ts`、`when-the-wind-rises.ts` / `registry.ts`：两首曲目、主题、和声、段落；`edits` 用 startBar / bars 定位短版，`resolveHarmony` 指定结尾和声。
 - `src/music/types.ts`、`validation.ts`、`arrange.ts`：类型、参数和裁切边界校验，入口调用 `arrangements/emotional-pop.ts`。事件按 beat 表示，BPM 改变时间换算；seed 改变触感与合成噪声，不随意打乱旋律。
 - `src/engine/emotional-pop.ts`：电钢琴、柔软主音、元音合成、鼓与低音、短空间及四个前向回声。`vocal` 只是合成乐器事件名。底鼓与 sub 保持单声道，公共混音链改变仍可能影响鼓的最终波形。
 - `src/engine/render.ts`：真实 Tone.Offline 任务串行执行；每次渲染自有节点，成功或失败均释放并恢复原上下文。`renderTrack(track)` 默认 full / 曲目 BPM；`defaultOptions.bpm=118`。尾音由 `getTailSeconds` 维护。
@@ -49,3 +51,7 @@ description: 使用 ai-audio 仓库与 Tone.js 创作、改编、试听和导出
 改曲后运行 `npm test`、`npm run build` 与 `npm run test:browser`，覆盖编曲、非静音、参数边界、同 seed 复现、循环、WAV、MP3 编码与播放器。缺少 FFmpeg 的集成测试会明确 skip。检查通过不能宣称人工耳听或保证好听。
 
 交付实际音频，列出参数、真实时长与实测电平，说明人工试听状态。用户只要现有 MP3 时直接提供 `releases/afterglow/` 成品；仅文档任务不额外渲染。MIT 适用于软件代码，输出音乐授权需另行明确，仓库公开不自动把音频授权为 MIT。
+
+## 曲目级旋律发展
+
+《风起时》为 114 BPM / D major / 44 小节，结构 2 + 8 + 8 + 4 + 16 + 6，短版取第 3–10 小节。`emotionalPop.response` 在主句休止处放入电钢琴应答，伴奏避让答句；`finalHook` 从最终主段第九小节起展开主题；`bridgeHook` 提供稀疏低音区桥段；`groove: syncopated` 选两小节切分鼓与错位低音。省略配置保持《余温》行为。三个乐句数组小节数需与 hook 相同，音符在本小节内结束，应答避开主题及最终变奏。当前和弦每两小节触发，harmony 相邻两栏需同和声。新增作品应写原创主题和段落发展，不只换 seed；检索与改进记录保存在 docs/when-the-wind-rises-research.md。

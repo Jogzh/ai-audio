@@ -1,4 +1,4 @@
-import { versions, type RenderOptions, type TrackDefinition } from './types.ts';
+import { versions, type HookBar, type RenderOptions, type TrackDefinition } from './types.ts';
 
 export function validateOptions(options: RenderOptions): void {
   if (!versions.includes(options.version)) throw new RangeError('版本必须为 full / hook / loop');
@@ -11,10 +11,39 @@ export function validateTrack(track: TrackDefinition): void {
   if (track.production !== 'emotional-pop') throw new RangeError(`未知制作风格: ${track.production}`);
   if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
   const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
-  for (const bar of track.hook) {
-    for (const note of bar) {
-      if (!midi(note.note) || !Number.isFinite(note.offset) || note.offset < 0 || note.offset >= 4 || !Number.isFinite(note.length) || note.length <= 0 || !Number.isFinite(note.velocity) || note.velocity <= 0 || note.velocity > 1) {
-        throw new RangeError('Hook 需要有效 MIDI 音高、0–4 拍内起音、正时值和 0–1 力度');
+  const validatePhrase = (phrase: HookBar[], name: string, withinBar = false) => {
+    for (const bar of phrase) {
+      if (!Array.isArray(bar)) throw new RangeError(`${name} 需要有效小节`);
+      for (const note of bar) {
+        if (!note || !midi(note.note) || !Number.isFinite(note.offset) || note.offset < 0 || note.offset >= 4 || !Number.isFinite(note.length) || note.length <= 0 || !Number.isFinite(note.velocity) || note.velocity <= 0 || note.velocity > 1) {
+          throw new RangeError(`${name} 需要有效 MIDI 音高、0–4 拍内起音、正时值和 0–1 力度`);
+        }
+        if (withinBar && note.offset + note.length > 4) throw new RangeError(`${name} 音符必须在小节内结束`);
+      }
+    }
+  };
+  validatePhrase(track.hook, 'Hook');
+  if (track.emotionalPop !== undefined) {
+    const development = track.emotionalPop;
+    if (!development || typeof development !== 'object') throw new RangeError('emotional-pop 需要有效旋律发展配置');
+    if (development.groove !== undefined && development.groove !== 'syncopated') throw new RangeError('emotional-pop 律动必须为 syncopated');
+    for (const name of ['response', 'finalHook', 'bridgeHook'] as const) {
+      const phrase = development[name];
+      if (phrase === undefined) continue;
+      if (!Array.isArray(phrase) || phrase.length !== track.hook.length) throw new RangeError(`${name} 小节数必须与 Hook 主题一致`);
+      validatePhrase(phrase, name, true);
+    }
+    if (development.response) {
+      validatePhrase(track.hook, 'Hook', true);
+      // A response belongs to the rests in both chorus versions, never a doubled lead.
+      for (const melody of [track.hook, development.finalHook].filter((phrase): phrase is HookBar[] => phrase !== undefined)) {
+        melody.forEach((bar, index) => {
+          for (const reply of development.response![index]) {
+            if (bar.some(note => reply.offset < note.offset + note.length && reply.offset + reply.length > note.offset)) {
+              throw new RangeError('response 应答必须位于主旋律留白');
+            }
+          }
+        });
       }
     }
   }
