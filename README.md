@@ -1,30 +1,37 @@
 # ai-audio
 
-用 **Tone.js** 创作原创音乐，新增国风旋律 House《墨潮 / Ink Tide》，内置情绪流行电子《余温 / Afterglow》《风起时 / When the Wind Rises》，以及中国风交响流行《山河醒 / Mountains Awake》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
+用 **Tone.js** 创作原创音乐，最新作品为抒情原声配乐《墨潮 / Ink Tide》第六版，支持独立轨道混音。仓库还内置情绪流行电子《余温 / Afterglow》《风起时 / When the Wind Rises》，以及中国风交响流行《山河醒 / Mountains Awake》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
 
-## 新作：《墨潮 / Ink Tide》
+## 《墨潮 / Ink Tide》第六版：让高潮形成抬升
 
-以用户提供的 **ZHENLOE《We Never》** 为参考，测量其推进速度与频谱段落变化后，创作了一首独立的 **124 BPM / D 小调五声 / 国风旋律 House**。木质琴弦与箫在留白里问答，温暖的反拍低音、木边击和轻沙锤保持向前的律动；最终段加入软电子拨弦和旋律变奏。新增独立音源与编曲，所有声音为原创合成。
+**92 BPM / D 大调和声、D 大调五声旋律 / 40 小节**。长笛与钢琴继续保持清楚的主次；第六版重点发展高潮：最后八小节改用 Gmaj7 → Aadd9 → Dadd9 → Bm7，长笛逐步升到 B5，再落回 D5，弦乐与大提琴随和声换位。桥段进一步收轻，高潮抬升前增加一次轻筒鼓，后半段鼓、低音与沙锤加强共同脉搏。竖琴只在两个真正的主奏停顿里接话，最后长音保留完整空间。
 
-40 小节，第一拍出现琴声，约 **3.87 秒**进入主段。定稿为移调 0、seed **261014**，MP3 为 320 kbps / 44.1 kHz / 立体声。
-
-| 版本 | 内容 | PCM 时长 |
+| 版本 | 内容 | 解码内容时长 |
 | --- | --- | ---: |
-| full | 40 小节 + 2.8 秒尾音 | 80.219 s |
-| hook | 实际第 3–10 小节 + 1.4 秒尾音 | 16.884 s |
-| loop | 实际第 3–10 小节，跨轮空间尾音 | 15.484 s |
+| full | 40 小节 + 2.8 秒尾音 | 107.147823 s |
+| hook | 完整乐谱第 3–10 小节 + 1.4 秒尾音 | 22.269546 s |
+| loop | 第 3–10 小节，保留跨轮空间尾音 | 20.869569 s |
+| climax | 完整版约 73.04 秒起，含高潮发展与收尾 | 34.104354 s |
 
-- [完整版 / full](releases/ink-tide/ink-tide-full-124bpm-t0-s261014.mp3)
-- [精华片段 / hook](releases/ink-tide/ink-tide-hook-124bpm-t0-s261014.mp3)
-- [循环配乐 / loop](releases/ink-tide/ink-tide-loop-124bpm-t0-s261014.mp3)
-- [定稿实测 manifest](releases/ink-tide/manifest.json)
-- [参考调研、编曲与验证说明](docs/ink-tide-production.md)
+- [高潮与收尾试听](releases/ink-tide-v6/ink-tide-climax-92bpm-t0-s261014.mp3)
+- [第六版完整版](releases/ink-tide-v6/ink-tide-full-92bpm-t0-s261014.mp3)
+- [第六版开头主题](releases/ink-tide-v6/ink-tide-hook-92bpm-t0-s261014.mp3)
+- [第六版循环](releases/ink-tide-v6/ink-tide-loop-92bpm-t0-s261014.mp3)
+- [实测与来源 manifest](releases/ink-tide-v6/manifest.json)
+- [编曲、采样与验证说明](docs/ink-tide-v6-production.md)
 
-参考曲通过官方公开试听音频做客观测量，未核验抖音当日热度，未进行人工耳听评审；响度和自动检查不等于主观听感结论。网页 `/?track=ink-tide&version=hook` 可试听，设 seed 为 261014 可复现定稿触感。
+新版高潮位于完整版 **57.39–99.13 秒**，后八小节从 **78.26 秒**抬升；短版 hook / loop 仍取开头主段。网页 `/?track=ink-tide&version=full` 使用第六版，可单独试听一条轨道，或移除选中轨道比较；导出 WAV 保留当前选择。当前版本没有事件的轨道标为“此段休止”，并禁用选择。设 seed **261014** 使用本版参数。工程配置 12 条独立轨道，其中 hook 有 8 条实际发声，其余转段轨道在该段休止；轨道数量不代表编曲质量。CLI 可导出三种版本，也可导出保持原始电平的分轨：
 
 ```bash
-npm run render -- --track ink-tide --seed 261014 --format both --out artifacts/audio/ink-tide-local
+npm run render -- --track ink-tide --seed 261014 --format both --out artifacts/audio/ink-tide-v6-local
+npm run render:stems -- --version hook --seed 261014 --out artifacts/audio/ink-tide-v6-local-stems
 ```
+
+分轨包含原有滤波、声像、空间与自动化，均从 time 0 对齐；不逐轨归一化，不应用最终去 DC、边缘淡化、峰值修整或 LUFS 母带。浮点分轨相加可还原原始混音，PCM16 导出会增加量化误差。每轨及每次起音独立 seeded；静音别轨不会改写剩余声部的随机触感。
+
+钢琴使用 **Alexander Holm / Salamander Grand Piano v3** 的 13 份本地实录采样，CC BY 3.0，详见[钢琴署名说明](public/audio/salamander/ATTRIBUTION.md)。长笛、小提琴组、大提琴组和竖琴使用 **VSCO 2 Community Edition** 的 25 份本地录音，CC0 1.0，详见[原声采样来源与处理](public/audio/vsco/ATTRIBUTION.md)。采样按近邻音高变速，钢琴力度由增益与滤波表达，VSCO 力度只调整播放增益；没有完整多力度层、round robin 或连奏采样，也没有制作长音循环。VSCO 源文件未经峰值归一化，播放器使用 0.5–2 倍的有限电平补偿。低音与鼓由代码合成。成品 MP3 为 320 kbps / 44.1 kHz / 立体声。
+
+旧版保留供比较：[第五版长笛与钢琴](releases/ink-tide-v5/manifest.json)、[第四版多轨编曲](releases/ink-tide-v4/manifest.json)、[第三版钢琴弦乐](releases/ink-tide-v3/manifest.json)、[第二版箫鼓](releases/ink-tide-v2/manifest.json)、[第一版国风 House](releases/ink-tide/manifest.json)。最初参考为用户提供的 ZHENLOE《We Never》，未核验抖音当日热度。第六版独立创作，未使用参考录音或旋律。**本版未进行人工耳听；编曲取舍属于制作判断，客观电平、分轨相加与自动检查不能证明听感。**
 
 ## 新作：《山河醒》第二版
 
@@ -65,7 +72,7 @@ npm run render -- --track mountains-awake --seed 261013 --format both --out arti
 | hook | 主段 8 小节与 0.8 秒尾音 | 17.071 s |
 | loop | 主段 8 小节，不添加尾音 | 16.271 s |
 
-MP3 容器时长可能因编码填充略长，实际文件数据见 manifest。音符、和声、节奏和音色由代码生成；元音应答是**合成乐器**，没有歌手录音、歌词或声音模仿。项目未调用 AI 音乐服务，也未使用外部音频采样。制作依据与验证边界见 [调研与制作简报](docs/short-video-music-research.md)；自动检查不替代人工试听，不保证作品传播效果。
+MP3 容器时长可能因编码填充略长，实际文件数据见 manifest。音符、和声、节奏和音色由代码生成；元音应答是**合成乐器**，没有歌手录音、歌词或声音模仿。《余温》未调用 AI 音乐服务，也未使用外部音频采样。制作依据与验证边界见 [调研与制作简报](docs/short-video-music-research.md)；自动检查不替代人工试听，不保证作品传播效果。
 
 ## 新作：《风起时》
 
@@ -120,7 +127,7 @@ CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必�
 | --- | --- | --- |
 | `--track` | `afterglow`、`when-the-wind-rises`、`mountains-awake`、`ink-tide` | `afterglow` |
 | `--version` | `all`、`full`、`hook`、`loop` | `all` |
-| `--bpm` | 90–170 整数 | 所选曲目 BPM；余温 118，风起时 114，山河醒 104，墨潮 124 |
+| `--bpm` | 90–170 整数 | 所选曲目 BPM；余温 118，风起时 114，山河醒 104，墨潮 92 |
 | `--transpose` | −12–12 整数，单位为半音 | 0 |
 | `--seed` | uint32 整数：0–4294967295 | 260713 |
 | `--out` | 相对当前工作目录或绝对路径 | `artifacts/audio` |
@@ -128,7 +135,7 @@ CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必�
 | `--master` | `auto`（仅母带 MP3）、`off`、`loudness`（也母带 WAV） | `auto` |
 | `--overwrite` | 允许覆盖已有同名成果 | 关闭 |
 
-负数参数使用等号，例如 `--transpose=-2`。默认生成全三版、118 BPM、移调 0、seed **260713**；仓库定稿使用 **261013**，复现定稿需显式传入该 seed。引擎 `renderTrack(track)` 省略 options 时使用 full 和曲目 BPM，`defaultOptions.bpm` 为 118。
+负数参数使用等号，例如 `--transpose=-2`。默认生成全三版、118 BPM、移调 0、seed **260713**；《余温》《风起时》《山河醒》定稿使用 **261013**，《墨潮》使用 **261014**，复现相应版本需显式传入该 seed。引擎 `renderTrack(track)` 省略 options 时使用 full 和曲目 BPM，`defaultOptions.bpm` 为 118。
 
 输出为 320 kbps MP3 或 PCM16 WAV，均为立体声、44.1 kHz。默认拒绝覆盖已有音频、母带报告或 `manifest.json`；比较修订时用新 `--out`，需要替换时显式传 `--overwrite`。manifest 记录本次参数、段落、源 PCM 统计与各格式实际文件数据。
 
@@ -142,7 +149,9 @@ MP3 默认两遍 loudnorm 的项目目标为 **−14 LUFS / −1.5 dBTP / LRA 9*
 
 ```text
 ai-audio/
-├── releases/                # 四首作品各三版 MP3 与实测 manifest
+├── releases/                # 四首作品的 MP3、实测 manifest 与保留的旧版
+├── public/audio/salamander/ # 墨潮的钢琴采样及 CC BY 3.0 署名
+├── public/audio/vsco/       # 长笛、弦乐、竖琴采样及 CC0 来源说明
 ├── src/
 │   ├── tracks/              # 四首曲目定义与 registry.ts
 │   ├── music/               # 类型、校验、确定性随机源与编曲
@@ -166,7 +175,7 @@ ai-audio/
 
 `cinematic-guofeng` 使用独立编曲器和音源；《山河醒》可选 `cinematicGuofeng.finalHook` / `bridgeHook` 作为最终旋律发展与桥段主题。两种风格均有 seed、BPM、移调和真实乐谱裁切；国风 full / hook 尾音为 3.6 / 1.6 秒，loop 不加尾音。
 
-`ink-tide` 使用独立编曲器与音源，新增 `guqin` / `xiao` / `jade` / `rim` / `shaker` 音色；`inkTide.response` / `finalHook` / `bridgeHook` 保存八小节应答、变奏与桥段主题。应答避开主句和变奏，bridge 当前使用前四小节；hook / loop 裁自第 3–10 小节。
+`ink-tide` 第六版使用独立编曲器和 12 条混音轨道。`MusicalEvent.trackId` 标明声部身份，音色与轨道分别配置；长笛唯一领奏、钢琴单一活动伴奏，弦乐保持两小节长和声。`inkTide.response` / `finalResponse` / `finalHook` / `bridgeHook` 保存首段与高潮各自的回答、发展与桥段主题，bridge 当前使用前四小节。`ink-tide-mix.ts` 根据实际段落边界生成音量曲线，裁切版本保留边界的插值电平。钢琴和四类原声采样在渲染前从静态目录加载并解码；任一原声采样加载失败时不发布部分音源库，后续调用可重新加载。hook / loop 裁自第 3–10 小节，分轨与 raw 混音从同一原乐谱渲染，接口与边界见[第六版制作说明](docs/ink-tide-v6-production.md)。第二版中国鼓与第四版合成音色模块仍保留为工程能力。
 
 Offline 任务串行执行，每次渲染独立拥有并释放节点，完成或失败后恢复原上下文。扩展音源时保留这些生命周期约束；尾音规则由 `src/engine/render.ts` 的 `getTailSeconds` 统一维护。
 
@@ -183,7 +192,7 @@ npm run test:browser
 
 ## 许可与常见问题
 
-[LICENSE](LICENSE) 的 MIT 适用于自有软件代码；依赖遵循各自许可，仓库公开不自动把输出音乐授权为 MIT。音频发布者需另行明确作品授权范围。
+[LICENSE](LICENSE) 的 MIT 适用于自有软件代码；依赖遵循各自许可，仓库公开不自动把输出音乐授权为 MIT。《墨潮》使用 Alexander Holm 的 Salamander Grand Piano 采样，受独立的 CC BY 3.0 许可约束；使用或再发布相关采样与含采样的音频时保留[作者、来源与处理说明](public/audio/salamander/ATTRIBUTION.md)。第五版新增的 VSCO 2 Community Edition 采样为 CC0 1.0，仓库保留[作者、来源与本地处理记录](public/audio/vsco/ATTRIBUTION.md)。作品其余音乐部分的授权范围仍需由音频发布者另行明确。
 
 - **缺少 Chromium**：在 `npm ci` 后执行 `npx --yes playwright install chromium`。
 - **缺少 FFmpeg / FFprobe 或 libmp3lame**：安装并加入 PATH；只需原始 WAV 时传 `--format wav`。

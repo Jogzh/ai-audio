@@ -89,7 +89,7 @@ try {
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
-      return { track: track.meta.id, filename: result.filename, duration: result.duration, options: result.options, stats: result.stats, sections: result.sections, sampleRate: result.buffer.sampleRate, channels: result.buffer.numberOfChannels };
+      return { track: track.meta.id, filename: result.filename, duration: result.duration, options: result.options, stats: result.stats, sections: result.sections, mixTracks: result.tracks, sampleRate: result.buffer.sampleRate, channels: result.buffer.numberOfChannels };
     }, { input: { ...resolved.options, version }, trackId: resolved.trackId });
     const [download, metadata] = await Promise.all([downloadPromise, renderPromise]);
     const sourcePath = path.join(tempDirectory, metadata.filename);

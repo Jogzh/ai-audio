@@ -1,0 +1,163 @@
+{
+  "method": "FFmpeg native-rate stereo float32 decode; NumPy frame, sample, section and mono measurements",
+  "generatedAt": "2026-10-14T11:02:30.708978+00:00",
+  "manualListening": "not performed",
+  "checks": [
+    {
+      "name": "full: decoded frames match source PCM",
+      "passed": true
+    },
+    {
+      "name": "full: finite samples and no full-scale values",
+      "passed": true
+    },
+    {
+      "name": "full: mono RMS loss below 1 dB",
+      "passed": true
+    },
+    {
+      "name": "hook: decoded frames match source PCM",
+      "passed": true
+    },
+    {
+      "name": "hook: finite samples and no full-scale values",
+      "passed": true
+    },
+    {
+      "name": "hook: mono RMS loss below 1 dB",
+      "passed": true
+    },
+    {
+      "name": "loop: decoded frames match source PCM",
+      "passed": true
+    },
+    {
+      "name": "loop: finite samples and no full-scale values",
+      "passed": true
+    },
+    {
+      "name": "loop: mono RMS loss below 1 dB",
+      "passed": true
+    },
+    {
+      "name": "loop: edge absolute jump below 0.001 full scale",
+      "passed": true
+    }
+  ],
+  "renders": [
+    {
+      "version": "full",
+      "filename": "ink-tide-full-92bpm-t0-s261014.mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "decodedFrames": 4725219,
+      "decodedDurationSeconds": 107.1478231292517,
+      "expectedSourceDurationSeconds": 107.1478231292517,
+      "durationDifferenceSamples": 0.0,
+      "nonFiniteSamples": 0,
+      "fullScaleSamples": 0,
+      "peakDbfs": -1.5001772314071327,
+      "rmsDbfs": -16.871306438799824,
+      "monoFoldDownRmsDeltaDb": -0.028777360021411433,
+      "sections": [
+        {
+          "name": "01 / 清晨的窗",
+          "start": 0,
+          "end": 5.217391304347826,
+          "rmsDbfs": -18.962976583694832,
+          "peakDbfs": -1.5001772314071327
+        },
+        {
+          "name": "02 / 一句话的光",
+          "start": 5.217391304347826,
+          "end": 26.086956521739133,
+          "rmsDbfs": -16.135186081232217,
+          "peakDbfs": -2.2782012845470105
+        },
+        {
+          "name": "03 / 慢慢向前",
+          "start": 26.086956521739133,
+          "end": 46.95652173913044,
+          "rmsDbfs": -18.020400194592366,
+          "peakDbfs": -4.072925173643257
+        },
+        {
+          "name": "04 / 风停下来",
+          "start": 46.95652173913044,
+          "end": 57.391304347826086,
+          "rmsDbfs": -20.843080515859324,
+          "peakDbfs": -6.9694907484617685
+        },
+        {
+          "name": "05 / 光越过山",
+          "start": 57.391304347826086,
+          "end": 99.1304347826087,
+          "rmsDbfs": -15.470903567447923,
+          "peakDbfs": -1.7594134525767025
+        },
+        {
+          "name": "06 / 留在心里",
+          "start": 99.1304347826087,
+          "end": 104.34782608695653,
+          "rmsDbfs": -22.64773117793264,
+          "peakDbfs": -8.985624678006126
+        }
+      ],
+      "bridgeEnergyChangeDb": {
+        "versusPrecedingGroove": -2.822680321266958,
+        "versusFollowingFinal": -5.372176948411401
+      }
+    },
+    {
+      "version": "hook",
+      "filename": "ink-tide-hook-92bpm-t0-s261014.mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "decodedFrames": 982087,
+      "decodedDurationSeconds": 22.269546485260772,
+      "expectedSourceDurationSeconds": 22.269546485260772,
+      "durationDifferenceSamples": 0.0,
+      "nonFiniteSamples": 0,
+      "fullScaleSamples": 0,
+      "peakDbfs": -1.8856246772798966,
+      "rmsDbfs": -16.769157815763524,
+      "monoFoldDownRmsDeltaDb": -0.02294194637020536
+    },
+    {
+      "version": "loop",
+      "filename": "ink-tide-loop-92bpm-t0-s261014.mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "decodedFrames": 920348,
+      "decodedDurationSeconds": 20.86956916099773,
+      "expectedSourceDurationSeconds": 20.86956916099773,
+      "durationDifferenceSamples": 0.0,
+      "nonFiniteSamples": 0,
+      "fullScaleSamples": 0,
+      "peakDbfs": -1.9196364458588853,
+      "rmsDbfs": -16.507008706530517,
+      "monoFoldDownRmsDeltaDb": -0.02293860813240889,
+      "loopBoundary": {
+        "firstSamples": [
+          3.267181455157697e-06,
+          -2.122990736097563e-05
+        ],
+        "lastSamples": [
+          3.203366304660449e-06,
+          3.731088554559392e-06
+        ],
+        "maximumAbsoluteJump": 2.4960995915535023e-05,
+        "maximumJumpDbfs": -92.0547618156956,
+        "first10msRmsDbfs": -20.889979619183663,
+        "last10msRmsDbfs": -55.81273601839317
+      }
+    }
+  ],
+  "limitations": [
+    "RMS measures energy, not perceived balance or musical quality.",
+    "Loop boundary sample difference is not an audible-click judgment.",
+    "MP3 gapless playback depends on encoder delay/padding support in the player.",
+    "Final-file LUFS and true peak are measured separately in the mastering reports."
+  ],
+  "passed": true
+}

@@ -9,10 +9,10 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const ink = process.argv.includes('--ink-tide');
 const config = ink ? {
   id: 'ink-tide', exportName: 'inkTide', factory: 'createInkTideInstruments',
-  title: '墨潮', bpm: 124, bars: 40, description: /木质琴弦/,
+  title: '墨潮', bpm: 92, bars: 40, description: /长笛.*钢琴/,
   seed: 261014,
-  voices: ['guqin', 'xiao', 'jade', 'lead', 'piano', 'pad', 'bass', 'kick', 'rim', 'shaker'],
-  report: 'ink-tide-qa',
+  voices: ['flute', 'piano', 'harp', 'strings', 'cello', 'bass', 'kick', 'perc', 'shaker', 'tom', 'cymbal'],
+  report: 'ink-tide-v6-qa',
 } : {
   id: 'mountains-awake', engine: 'cinematic-guofeng', exportName: 'mountainsAwake', factory: 'createCinematicGuofengInstruments',
   title: '山河醒', bpm: 104, bars: 48, description: /筝声与笛声/,
@@ -32,6 +32,34 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(`${base}/?track=${config.id}&version=hook`);
   await page.locator('#play').waitFor();
+  let sampleLoadRetry;
+  if (ink) {
+    const missingSample = '**/audio/salamander/C4.mp3';
+    await page.route(missingSample, route => route.fulfill({ status: 404, body: 'missing sample' }));
+    const pianoRetry = await page.evaluate(async () => {
+      const module = await import('/src/engine/piano-samples.ts');
+      let failed = false, empty = false;
+      try { await module.preparePianoSamples(); } catch (error) { failed = /钢琴采样加载失败/.test(String(error)); }
+      try { module.getPianoSamples(); } catch { empty = true; }
+      return { failed, empty };
+    });
+    await page.unroute(missingSample);
+    assert.deepEqual(pianoRetry, { failed: true, empty: true }, 'failed piano sample loading must not publish a partial bank');
+    const missingAcousticSample = '**/audio/vsco/flute-C5.mp3';
+    await page.route(missingAcousticSample, route => route.fulfill({ status: 404, body: 'missing acoustic sample' }));
+    const acousticRetry = await page.evaluate(async () => {
+      const module = await import('/src/engine/acoustic-samples.ts');
+      let failed = false;
+      try { await module.prepareAcousticSamples(); } catch (error) { failed = /原声采样加载失败/.test(String(error)); }
+      const emptyBanks = ['flute', 'strings', 'cello', 'harp'].map(kind => {
+        try { module.getAcousticSamples(kind); return false; } catch { return true; }
+      });
+      return { failed, emptyBanks };
+    });
+    await page.unroute(missingAcousticSample);
+    assert.deepEqual(acousticRetry, { failed: true, emptyBanks: [true, true, true, true] }, 'one missing acoustic sample must leave all banks unpublished and permit a complete retry');
+    sampleLoadRetry = { piano: pianoRetry, acoustic: acousticRetry };
+  }
   const checks = await page.evaluate(async config => {
     const { renderTrack, getTailSeconds } = await import('/src/engine/render.ts');
     const track = (await import(`/src/tracks/${config.id}.ts`))[config.exportName];
@@ -42,7 +70,22 @@ try {
     const Tone = await import(toneUrl);
     const original = Tone.getContext();
     const options = { version: 'hook', bpm: track.meta.bpm, transpose: 0, seed: config.seed };
+    const mixTracks = config.id === 'ink-tide'
+      ? (await import('/src/music/arrange.ts')).buildArrangement(track, options).tracks.map(track => ({ ...track, automation: undefined }))
+      : undefined;
     const [hook, repeat] = await Promise.all([renderTrack(track, options), renderTrack(track, options)]);
+    const sampleBank = config.id === 'ink-tide' ? [...(await import('/src/engine/piano-samples.ts')).getPianoSamples()].map(([midi, buffer]) => ({
+      midi, duration: buffer.duration, sampleRate: buffer.sampleRate, channels: buffer.numberOfChannels,
+      finite: buffer.getChannelData(0).every(Number.isFinite),
+    })) : undefined;
+    const acousticModule = config.id === 'ink-tide' ? await import('/src/engine/acoustic-samples.ts') : undefined;
+    const acousticBanks = acousticModule ? Object.fromEntries(
+      ['flute', 'strings', 'cello', 'harp'].map(kind => [kind, [...acousticModule.getAcousticSamples(kind)].map(([midi, buffer]) => ({
+        midi, duration: buffer.duration, sampleRate: buffer.sampleRate, channels: buffer.numberOfChannels,
+        finite: buffer.getChannelData(0).every(Number.isFinite),
+        compensationGain: acousticModule.getAcousticSampleGain(kind, midi),
+      }))]),
+    ) : undefined;
     const loop = await renderTrack(track, { ...options, version: 'loop' });
     const low = await renderTrack(track, { ...options, bpm: 90, transpose: -12, seed: 0 });
     const high = await renderTrack(track, { ...options, bpm: 170, transpose: 12, seed: 0xffffffff });
@@ -64,17 +107,22 @@ try {
       finite: [0, 1].every(channel => rendered.buffer.getChannelData(channel).every(Number.isFinite)),
       expectedDuration: 32 * 60 / rendered.options.bpm + getTailSeconds(track, rendered.options.version),
     });
-    const voices = config.voices;
+    const voices = mixTracks
+      ? mixTracks.map(track => ({ name: track.id, event: { trackId: track.id, instrument: track.instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [74] } }))
+      : config.voices.map(instrument => ({ name: instrument, event: { instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [74] } }));
+    for (const drum of config.drumCases ?? []) voices.push({
+      name: `drum/${drum.body}/${drum.stroke}`, event: { instrument: 'chineseDrum', beat: 0, duration: 1.2, velocity: 0.7, drum },
+    });
     let rig;
     let rendered;
     let palette;
     try {
       rendered = await Tone.Offline(() => {
-        rig = createInstruments(config.bpm, config.seed);
-        voices.forEach((instrument, index) => rig.hit({ instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [instrument === 'bass' ? 38 : 74] }, index * 4));
+        rig = createInstruments(config.bpm, config.seed, mixTracks);
+        voices.forEach(({ event }, index) => rig.hit(event, index * 4));
       }, voices.length * 4, 2, 44100);
       const buffer = rendered.get();
-      palette = voices.map((instrument, index) => ({ instrument, ...measureAudio({
+      palette = voices.map(({ name }, index) => ({ instrument: name, ...measureAudio({
         numberOfChannels: 2, sampleRate: 44100, length: 44100,
         getChannelData: channel => buffer.getChannelData(channel).subarray(index * 4 * 44100, (index * 4 + 1) * 44100),
       }) }));
@@ -89,7 +137,7 @@ try {
         for (let i = 0; i < left.length; i++) { stereo += (left[i] ** 2 + right[i] ** 2) / 2; mono += ((left[i] + right[i]) / 2) ** 2; }
         return 10 * Math.log10(mono / stereo);
       })(),
-      palette, renderContextRestored, contextRestored: Tone.getContext() === original,
+      palette, sampleBank, acousticBanks, renderContextRestored, contextRestored: Tone.getContext() === original,
     };
   }, { ...config, description: undefined });
   await mkdir(`${root}/artifacts/audio/${config.report}`, { recursive: true });
@@ -110,6 +158,18 @@ try {
   assert.equal(checks.contextRestored, true);
   assert.equal(checks.renderContextRestored, true, 'renderTrack restores its caller context');
   assert.ok(checks.monoDeltaDb > -1, 'mono fold-down must preserve the foreground');
+  if (ink) {
+    assert.equal(checks.sampleBank.length, 13);
+    assert.ok(checks.sampleBank.every(sample => sample.finite && sample.channels === 1 && sample.sampleRate === 44100 && sample.duration > 5));
+    assert.deepEqual(Object.keys(checks.acousticBanks).sort(), ['cello', 'flute', 'harp', 'strings']);
+    for (const [kind, bank] of Object.entries(checks.acousticBanks)) {
+      assert.ok(bank.length > 0, `${kind} sample bank is empty after retry`);
+      assert.equal(new Set(bank.map(sample => sample.midi)).size, bank.length);
+      assert.ok(bank.every(sample => sample.finite && sample.channels === 1 && sample.sampleRate === 44100 && sample.duration > 0.2), `${kind} samples must be finite mono PCM`);
+      assert.ok(bank.every(sample => Number.isFinite(sample.compensationGain) && sample.compensationGain > 0),
+        `${kind} sample-level compensation must remain finite and positive`);
+    }
+  }
 
   assert.equal(await page.locator('#track-select').inputValue(), config.id);
   assert.equal(await page.locator('#player-title').textContent(), config.title);
@@ -120,7 +180,7 @@ try {
   await page.waitForFunction(() => document.querySelector('#render-badge')?.textContent === '合成完成', undefined, { timeout: 120000 });
   await page.waitForFunction(() => document.querySelector('#play-state')?.textContent === '正在播放', undefined, { timeout: 20000 });
   await page.waitForFunction(() => Number(document.querySelector('#seek')?.value) > 0.2);
-  assert.equal(await page.locator('#total-time').textContent(), ink ? '00:16' : '00:20');
+  assert.equal(await page.locator('#total-time').textContent(), ink ? '00:22' : '00:20');
   await page.locator('#stop').click();
   const downloadPromise = page.waitForEvent('download');
   await page.locator('#export').click();
@@ -134,7 +194,7 @@ try {
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   assert.deepEqual(errors, []);
-  const report = { passed: true, generatedAt: new Date().toISOString(), ...checks, player: { directUrl: true, playbackProgress: true, wavDownload: true, mobileOverflow: false, pageErrors: errors }, manualListening: 'not performed' };
+  const report = { passed: true, generatedAt: new Date().toISOString(), ...checks, sampleLoadRetry, player: { directUrl: true, playbackProgress: true, wavDownload: true, mobileOverflow: false, pageErrors: errors }, manualListening: 'not performed' };
   await mkdir(`${root}/artifacts/audio/${config.report}`, { recursive: true });
   await writeFile(`${root}/artifacts/audio/${config.report}/browser-check.json`, JSON.stringify(report, null, 2) + '\n');
   console.log(`PASS: ${config.id} voices, seeded PCM, pitch/tempo limits, mono compatibility, loop edges, context cleanup and player/download`);

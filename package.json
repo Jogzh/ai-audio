@@ -5,19 +5,27 @@
   "type": "module",
   "description": "Original emotional pop, cinematic Chinese music and offline MP3/WAV rendering with Tone.js",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/Jogzh/ai-audio.git" },
-  "engines": { "node": ">=22.12.0" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jogzh/ai-audio.git"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts tests/*.test.mjs",
-    "test:browser": "node scripts/check-browser.mjs && node scripts/check-guofeng.mjs && node scripts/check-guofeng.mjs --ink-tide",
+    "test:browser": "node scripts/check-browser.mjs && node scripts/check-guofeng.mjs && node scripts/check-guofeng.mjs --ink-tide && node scripts/check-multitrack.mjs",
     "check": "npm test && npm run build",
-    "render": "node scripts/render.mjs"
+    "render": "node scripts/render.mjs",
+    "render:stems": "node scripts/render-stems.mjs"
   },
-  "dependencies": { "tone": "15.1.22" },
+  "dependencies": {
+    "tone": "15.1.22"
+  },
   "devDependencies": {
     "@types/node": "22.20.5",
     "playwright": "1.64.0",

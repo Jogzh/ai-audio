@@ -1,10 +1,13 @@
 import * as Tone from 'tone';
 import { finishAudio, measureAudio, waveformPeaks } from '../audio/wav';
 import { buildArrangement, validateOptions } from '../music/arrange';
-import type { RenderedTrack, RenderOptions, TrackDefinition, Version } from '../music/types';
+import type { RenderedTrack, RenderOptions, RenderSelection, TrackDefinition, Version } from '../music/types';
+import { selectedTrackIds } from '../music/mixer';
 import { createEmotionalPopInstruments } from './emotional-pop';
 import { createCinematicGuofengInstruments } from './cinematic-guofeng';
 import { createInkTideInstruments } from './ink-tide';
+import { preparePianoSamples } from './piano-samples';
+import { prepareAcousticSamples } from './acoustic-samples';
 
 export const defaultOptions: RenderOptions = { version: 'full', bpm: 118, transpose: 0, seed: 260713 };
 let renderQueue: Promise<void> = Promise.resolve();
@@ -19,16 +22,19 @@ export function getTailSeconds(track: TrackDefinition, version: Version): number
 }
 
 // Tone.Offline temporarily switches the global context; serialize concurrent requests.
-export function renderTrack(track: TrackDefinition, input: RenderOptions = { ...defaultOptions, bpm: track.meta.bpm }): Promise<RenderedTrack> {
+export function renderTrack(track: TrackDefinition, input: RenderOptions = { ...defaultOptions, bpm: track.meta.bpm }, inputSelection: RenderSelection = {}): Promise<RenderedTrack> {
   const options = { ...input };
+  const selection = { ...inputSelection, soloTrackIds: inputSelection.soloTrackIds?.slice(), muteTrackIds: inputSelection.muteTrackIds?.slice() };
   validateOptions(options);
-  const result = renderQueue.then(() => render(track, options));
+  const result = renderQueue.then(() => render(track, options, selection));
   renderQueue = result.then(() => undefined, () => undefined);
   return result;
 }
 
-async function render(track: TrackDefinition, options: RenderOptions): Promise<RenderedTrack> {
+async function render(track: TrackDefinition, options: RenderOptions, selection: RenderSelection): Promise<RenderedTrack> {
   const arrangement = buildArrangement(track, options);
+  const enabled = selectedTrackIds(arrangement, selection);
+  if (track.production === 'ink-tide') await Promise.all([preparePianoSamples(), prepareAcousticSamples()]);
   const secondsPerBeat = 60 / options.bpm;
   const musicalDuration = arrangement.beats * secondsPerBeat;
   const loop = options.version === 'loop';
@@ -42,14 +48,14 @@ async function render(track: TrackDefinition, options: RenderOptions): Promise<R
     try {
       offline = await Tone.Offline(() => {
         rig = track.production === 'ink-tide'
-          ? createInkTideInstruments(options.bpm, options.seed)
+          ? createInkTideInstruments(options.bpm, options.seed, arrangement.tracks, { cycleBeats: arrangement.beats, repetitions })
           : track.production === 'cinematic-guofeng'
           ? createCinematicGuofengInstruments(options.bpm, options.seed)
           : createEmotionalPopInstruments(options.bpm, options.seed);
         for (let cycle = 0; cycle < repetitions; cycle++) {
           for (const event of arrangement.events) {
             const at = event.beat * secondsPerBeat + cycle * musicalDuration;
-            rig.hit(event, at);
+            if (!enabled || (event.trackId && enabled.has(event.trackId))) rig.hit(event, at);
             if (event.instrument === 'kick') rig.duck(at);
           }
         }
@@ -70,16 +76,18 @@ async function render(track: TrackDefinition, options: RenderOptions): Promise<R
     } else {
       buffer = rendered;
     }
-    finishAudio(buffer, loop);
+    if (selection.processing !== 'raw') finishAudio(buffer, loop);
     const stats = measureAudio(buffer);
     return {
       buffer,
+      tracks: arrangement.tracks,
+      selection,
       options,
       duration: buffer.duration,
       peaks: waveformPeaks(buffer),
       sections: arrangement.sections,
       stats,
-      filename: `${track.meta.id}-${options.version}-${options.bpm}bpm-t${options.transpose}-s${options.seed}.wav`,
+      filename: `${track.meta.id}-${options.version}-${options.bpm}bpm-t${options.transpose}-s${options.seed}${selection.soloTrackIds?.length ? `-solo-${selection.soloTrackIds.join('_')}` : ''}${selection.muteTrackIds?.length ? `-minus-${selection.muteTrackIds.join('_')}` : ''}${selection.processing === 'raw' ? '-raw' : ''}.wav`,
     };
   } finally {
     // Includes missing buffers, failed post-processing and successful renders alike.

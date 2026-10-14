@@ -1,4 +1,14 @@
-import { versions, type HookBar, type RenderOptions, type TrackDefinition } from './types.ts';
+import { versions, type DrumExpression, type HookBar, type RenderOptions, type TrackDefinition } from './types.ts';
+
+export function validateDrumExpression(expression: DrumExpression): void {
+  if (!expression || !['large', 'medium', 'small'].includes(expression.body)
+    || !['open', 'rim', 'mute'].includes(expression.stroke)
+    || !['left', 'right'].includes(expression.hand)
+    || !Number.isFinite(expression.position) || expression.position < 0 || expression.position > 1
+    || !Number.isFinite(expression.tension) || expression.tension < 0 || expression.tension > 1) {
+    throw new RangeError('中国鼓需要有效鼓体、击法、左右手及 0–1 的位置和张力');
+  }
+}
 
 export function validateOptions(options: RenderOptions): void {
   if (!versions.includes(options.version)) throw new RangeError('版本必须为 full / hook / loop');
@@ -27,16 +37,21 @@ export function validateTrack(track: TrackDefinition): void {
   if (track.inkTide !== undefined) {
     const development = track.inkTide;
     if (track.production !== 'ink-tide' || !development || typeof development !== 'object') throw new RangeError('ink-tide 需要有效旋律发展配置');
-    for (const name of ['response', 'finalHook', 'bridgeHook'] as const) {
+    for (const name of ['response', 'finalResponse', 'finalHook', 'bridgeHook'] as const) {
       const phrase = development[name];
       if (phrase === undefined) continue;
       if (!Array.isArray(phrase) || phrase.length !== track.hook.length) throw new RangeError(`${name} 小节数必须与 Hook 主题一致`);
       validatePhrase(phrase, name, true);
     }
-    if (development.response) {
-      for (const melody of [track.hook, development.finalHook].filter((phrase): phrase is HookBar[] => phrase !== undefined)) {
+    if (development.finalResponse && !development.finalHook) throw new RangeError('finalResponse 需要最终旋律');
+    const replies = [
+      { melody: track.hook, response: development.response },
+      { melody: development.finalHook, response: development.finalResponse ?? development.response },
+    ];
+    for (const { melody, response } of replies) {
+      if (melody && response) {
         melody.forEach((bar, index) => {
-          for (const reply of development.response![index]) {
+          for (const reply of response[index]) {
             if (bar.some(note => reply.offset < note.offset + note.length && reply.offset + reply.length > note.offset)) throw new RangeError('response 应答必须位于主旋律留白');
           }
         });

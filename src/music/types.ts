@@ -1,6 +1,36 @@
 export const versions = ['full', 'hook', 'loop'] as const;
 export type Version = typeof versions[number];
-export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'impact' | 'piano' | 'vocal' | 'texture' | 'sweep' | 'guzheng' | 'dizi' | 'erhu' | 'taiko' | 'gong' | 'brass' | 'strings' | 'granular' | 'guqin' | 'xiao' | 'jade' | 'rim' | 'shaker';
+export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'impact' | 'piano' | 'vocal' | 'texture' | 'sweep' | 'guzheng' | 'dizi' | 'erhu' | 'taiko' | 'gong' | 'brass' | 'strings' | 'granular' | 'guqin' | 'xiao' | 'jade' | 'rim' | 'shaker' | 'chineseDrum' | 'guitar' | 'violin' | 'cello' | 'tom' | 'cymbal' | 'flute' | 'harp';
+
+/** An independently routed part, separate from the song definition. */
+export interface MixTrack {
+  id: string;
+  name: string;
+  role: 'foreground' | 'reply' | 'harmony' | 'texture' | 'bass' | 'rhythm' | 'transition';
+  instrument: Instrument;
+  mix: { gain: number; pan: number; highpass: number; lowpass: number; reverb: number; delay: number };
+  /** Linear gain envelopes, expressed in score beats; 1 means the track's base level. */
+  automation?: { beat: number; gain: number }[];
+}
+
+export interface RenderSelection {
+  soloTrackIds?: string[];
+  muteTrackIds?: string[];
+  /** Raw stems retain mix levels and effects; they are not independently normalized. */
+  processing?: 'master' | 'raw';
+}
+
+export type DrumBody = 'large' | 'medium' | 'small';
+export type DrumStroke = 'open' | 'rim' | 'mute';
+
+/** Physical playing choices; these vary timbre independently of hit volume. */
+export interface DrumExpression {
+  body: DrumBody;
+  stroke: DrumStroke;
+  position: number;
+  tension: number;
+  hand: 'left' | 'right';
+}
 
 export interface RenderOptions {
   version: Version;
@@ -10,11 +40,13 @@ export interface RenderOptions {
 }
 
 export interface MusicalEvent {
+  trackId?: string;
   instrument: Instrument;
   beat: number;
   duration: number;
   notes?: number[];
   velocity: number;
+  drum?: DrumExpression;
 }
 
 export interface Section {
@@ -44,9 +76,11 @@ export interface TrackDefinition {
     description: string;
   };
   production: 'emotional-pop' | 'cinematic-guofeng' | 'ink-tide';
-  /** Written pluck melody, breathy replies, and a developed final phrase. */
+  /** Written melody, phrase-ending replies, and final/bridge development. */
   inkTide?: {
     response?: HookBar[];
+    /** Separate cadence replies when the developed melody has longer endings. */
+    finalResponse?: HookBar[];
     finalHook?: HookBar[];
     bridgeHook?: HookBar[];
   };
@@ -75,6 +109,7 @@ export interface TrackDefinition {
 }
 
 export interface Arrangement {
+  tracks?: MixTrack[];
   events: MusicalEvent[];
   beats: number;
   sections: { name: string; start: number; end: number }[];
@@ -90,6 +125,8 @@ export interface AudioStats {
 }
 
 export interface RenderedTrack {
+  tracks?: MixTrack[];
+  selection?: RenderSelection;
   buffer: AudioBuffer;
   duration: number;
   options: RenderOptions;

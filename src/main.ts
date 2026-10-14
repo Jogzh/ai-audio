@@ -3,6 +3,7 @@ import * as Tone from 'tone';
 import { defaultOptions, renderTrack } from './engine/render';
 import { trackRegistry, defaultTrack, findTrack } from './tracks/registry.ts';
 import { encodeWav, measureAudio } from './audio/wav';
+import { buildArrangement } from './music/arrange';
 import type { RenderOptions, RenderedTrack } from './music/types';
 
 const icons = {
@@ -35,7 +36,7 @@ app.innerHTML = `
         <p class="description" id="track-description"></p>
         <div class="tags" id="track-tags" aria-label="曲目风格"></div>
         <dl class="track-facts"><div><dt>节奏</dt><dd><span id="bpm-fact"></span> <small>BPM</small></dd></div><div><dt>原始调性</dt><dd id="key-fact">—</dd></div><div><dt>完整结构</dt><dd><span id="bars-fact"></span> <small>小节</small></dd></div></dl>
-        <div class="original-note"><span aria-hidden="true">//</span> 原创编曲 · 原创合成音色 <span class="note-end">ORIGINAL SCORE / SYNTHESIZED SOUNDS.</span></div>
+        <div class="original-note"><span aria-hidden="true">//</span> 原创编曲 · 实录与合成音色 <span class="note-end">ORIGINAL SCORE / RECORDED & SYNTHESIZED SOUNDS.</span></div>
       </div>
     </section>
 
@@ -62,6 +63,7 @@ app.innerHTML = `
             <p id="version-description" class="field-help"></p>
             <div class="parameter-grid"><div class="number-field"><label for="bpm">速度 <span>BPM</span></label><input id="bpm" type="number" min="90" max="170" step="1" value="${selectedTrack.meta.bpm}" required><small>90 — 170</small></div><div class="number-field"><label for="transpose">移调 <span>SEMITONES</span></label><input id="transpose" type="number" min="-12" max="12" step="1" value="0" required><small>−12 — +12 半音</small></div></div>
             <div class="number-field seed-field"><label for="seed">随机种子 <span>SEED</span></label><input id="seed" type="number" min="0" max="4294967295" step="1" value="${defaultOptions.seed}" required><small>同一组参数，同一段原创声音。</small></div>
+            <div id="track-audition" class="track-field" hidden><label for="audition-track">拆开听一层 <span>PART</span></label><select id="audition-track"><option value="">完整混音</option></select><label class="mute-choice"><input id="mute-track" type="checkbox">听其余声部，移除选中轨道</label><p class="field-help">比较加入与移除这一层的变化；导出会保留当前选择。</p></div>
           </fieldset>
           <div class="export-area"><button id="export" class="export-button" type="button">${icons.download}<span>导出 WAV</span><span class="button-arrow" aria-hidden="true">↗</span></button><p>立体声 / 44.1 kHz / 16 bit PCM</p></div>
           <dl class="audio-metrics"><div><dt>峰值</dt><dd id="peak">— <small>dBFS</small></dd></div><div><dt>平均电平</dt><dd id="rms">— <small>dBFS</small></dd></div></dl>
@@ -70,7 +72,8 @@ app.innerHTML = `
     </section>
 
 
-    <section class="layers" aria-labelledby="layers-title"><div class="section-heading"><div><span class="section-number">02 /</span><h2 id="layers-title">拆开这段律动</h2></div><span class="section-aside">三层声音，一个夜晚。</span></div><div class="layer-list"><article class="layer"><div class="layer-art melody-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">01 / MELODY</span><h3>旋律 <span>主题与应答</span></h3><p id="melody-description"></p></div></article><article class="layer"><div class="layer-art drum-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">02 / DRUMS</span><h3>鼓 <span>节奏里的呼吸</span></h3><p id="drum-description"></p></div></article><article class="layer"><div class="layer-art bass-art" aria-hidden="true"><i></i><i></i><i></i></div><div><span class="layer-index">03 / BASS</span><h3>低音 <span>托住情绪</span></h3><p id="bass-description"></p></div></article></div></section>
+    <section class="layers" aria-labelledby="layers-title"><div class="section-heading"><div><span class="section-number">02 /</span><h2 id="layers-title">拆开这段律动</h2></div><span class="section-aside">各层配合，段落展开。</span></div><div class="layer-list"><article class="layer"><div class="layer-art melody-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">01 / MELODY</span><h3>旋律 <span>主题与应答</span></h3><p id="melody-description"></p></div></article><article class="layer"><div class="layer-art drum-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">02 / DRUMS</span><h3>鼓 <span>节奏里的呼吸</span></h3><p id="drum-description"></p></div></article><article class="layer"><div class="layer-art bass-art" aria-hidden="true"><i></i><i></i><i></i></div><div><span class="layer-index">03 / BASS</span><h3>低音 <span>托住情绪</span></h3><p id="bass-description"></p></div></article></div></section>
+    <section id="mix-tracks" class="mix-tracks" aria-labelledby="mix-title" hidden><div class="section-heading"><div><span class="section-number">03 /</span><h2 id="mix-title">编曲声部</h2></div><span id="mix-count" class="section-aside"></span></div><p class="field-help">亮起的段落表示该声部有演奏。可以在工作台单独试听，或移除一层比较。</p><div id="mix-track-list" class="mix-track-list"></div></section>
   </main>
   <footer><span class="footer-brand" id="footer-title"></span><span>原创编曲 / 合成音色 · 请以舒适音量聆听</span><a href="#main">回到顶部 ↑</a></footer>
 `;
@@ -94,6 +97,8 @@ trackSelect.replaceChildren(...trackRegistry.map(({ meta }) => {
 const bpmInput = element<HTMLInputElement>('#bpm');
 const transposeInput = element<HTMLInputElement>('#transpose');
 const seedInput = element<HTMLInputElement>('#seed');
+const auditionTrack = element<HTMLSelectElement>('#audition-track');
+const muteTrack = element<HTMLInputElement>('#mute-track');
 const seek = element<HTMLInputElement>('#seek');
 const volume = element<HTMLInputElement>('#volume');
 const canvas = element<HTMLCanvasElement>('#wave-canvas');
@@ -126,9 +131,9 @@ const versionCopy = {
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
   'ink-tide': {
     coverId: 'IT—008',
-    melody: '木质琴弦弹出两小节主题，箫声在留白里接话；玉磬轻点句尾，后半段由柔软电子拨弦展开新的旋律。',
-    drums: '稳拍底鼓、短木边击与轻沙锤组成向前的律动；桥段撤去鼓点，让再一次落拍更有分量。',
-    bass: '温暖的短低音与底鼓交错，低频保持居中；三声部和声与短暗空间托住主题。',
+    melody: '长笛唱出两小节的主题，钢琴用同一种分解和弦托住长句；高潮换位展开和声，旋律逐步升高，再沿长句落回 D 大调。',
+    drums: '低鼓和刷鼓守住共同的节拍，沙锤到高潮后半段才进入；筒鼓在高潮抬升前轻轻接力，桥段收起节奏。',
+    bass: '低音沿着根音平稳前行，大提琴接住长和声；竖琴在段落之间点亮几个音，让主题有清楚的方向。',
   },
   'cinematic-guofeng': {
     coverId: 'MA—007',
@@ -151,7 +156,7 @@ const productionCopy: Record<string, { coverId: string; melody: string; drums: s
 };
 function syncTrack(): void {
   const { meta, arrangement } = selectedTrack;
-  const styleName = { 'cinematic-guofeng': '国风交响流行', 'ink-tide': '国风电子', 'emotional-pop': '电子流行' }[selectedTrack.production];
+  const styleName = { 'cinematic-guofeng': '国风交响流行', 'ink-tide': '多轨电影配乐', 'emotional-pop': '电子流行' }[selectedTrack.production];
   element('.header-note').innerHTML = `<i aria-hidden="true"></i> 原创${styleName} · ${meta.title}`;
   const copy = productionCopy[meta.id] ?? productionCopy[selectedTrack.production];
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
@@ -176,6 +181,47 @@ function syncTrack(): void {
   trackSelect.value = meta.id;
   document.title = `${meta.subtitle} / ${meta.title}`;
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
+  element('.original-note').innerHTML = selectedTrack.production === 'ink-tide'
+    ? '<span aria-hidden="true">//</span> 原创编曲 · 实录与合成音色 <span class="note-end">ORIGINAL SCORE / RECORDED & SYNTHESIZED SOUNDS.</span>'
+    : '<span aria-hidden="true">//</span> 原创编曲 · 原创合成音色 <span class="note-end">ORIGINAL SCORE / SYNTHESIZED SOUNDS.</span>';
+  syncMixTracks();
+}
+
+function syncMixTracks(): void {
+  const score = buildArrangement(selectedTrack, { ...defaultOptions, bpm: selectedTrack.meta.bpm, version: 'full' });
+  const parts = score.tracks ?? [];
+  element('#mix-tracks').hidden = !parts.length;
+  element('#track-audition').hidden = !parts.length;
+  element('#mix-count').textContent = `${parts.length} 条轨道 · 围绕主题展开`;
+  auditionTrack.replaceChildren(new Option('完整混音', ''), ...parts.map(part => new Option(part.name, part.id)));
+  muteTrack.checked = false;
+  muteTrack.disabled = true;
+  const roles = { foreground: '主题', reply: '应答', harmony: '和声', texture: '空间', bass: '低音', rhythm: '律动', transition: '过门' };
+  element('#mix-track-list').replaceChildren(...parts.map(part => {
+    const row = document.createElement('article');
+    row.className = 'mix-track';
+    const label = document.createElement('div');
+    const name = document.createElement('strong');
+    name.textContent = part.name;
+    const role = document.createElement('small');
+    role.textContent = roles[part.role];
+    label.append(name, role);
+    const bars = document.createElement('div');
+    bars.className = 'mix-presence';
+    const events = score.events.filter(event => event.trackId === part.id);
+    score.sections.forEach(section => {
+      const span = document.createElement('span');
+      const start = section.start * selectedTrack.meta.bpm / 60;
+      const end = section.end * selectedTrack.meta.bpm / 60;
+      const plays = events.some(event => event.beat < end && event.beat + event.duration > start);
+      span.classList.toggle('is-present', plays);
+      span.textContent = section.name.split('/').at(-1)?.trim() ?? section.name;
+      span.title = `${part.name} · ${span.textContent} · ${plays ? '有演奏' : '休止'}`;
+      bars.append(span);
+    });
+    row.append(label, bars);
+    return row;
+  }));
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -216,8 +262,21 @@ function syncControls(): void {
   element('.studio').setAttribute('aria-busy', String(busy));
 }
 function syncVersion(): void {
+  const auditionScore = buildArrangement(selectedTrack, { ...defaultOptions, bpm: selectedTrack.meta.bpm, version });
+  const activeParts = new Set(auditionScore.events.map(event => event.trackId));
+  for (const option of auditionTrack.options) {
+    const part = auditionScore.tracks?.find(track => track.id === option.value);
+    option.disabled = Boolean(option.value && !activeParts.has(option.value));
+    if (part) option.textContent = `${part.name}${option.disabled ? '（此段休止）' : ''}`;
+  }
+  if (auditionTrack.selectedOptions[0]?.disabled) {
+    auditionTrack.value = '';
+    muteTrack.checked = false;
+  }
+  muteTrack.disabled = !auditionTrack.value;
   versions.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.version === version)));
-  element('#version-caption').textContent = versionCopy[version][0];
+  element('#version-caption').textContent = auditionTrack.value
+    ? `${muteTrack.checked ? '移除' : '独奏'} / ${auditionTrack.selectedOptions[0]?.textContent}` : versionCopy[version][0];
   const bars = selectedTrack.arrangement.reduce((sum, section) => sum + section.bars, 0);
   const edit = version === 'full' ? undefined : selectedTrack.edits?.[version];
   element('#version-description').textContent = version === 'full'
@@ -380,7 +439,9 @@ async function ensureTrack(options: RenderOptions, token: number): Promise<void>
   if (track && wavBlob && playbackUrl) return;
   badge.textContent = '正在合成';
   setStatus('正在合成原创音频，首次生成可能需要片刻。请稍候…');
-  const rendered = await renderTrack(selectedTrack, options);
+  const part = auditionTrack.value;
+  const rendered = await renderTrack(selectedTrack, options, part
+    ? muteTrack.checked ? { muteTrackIds: [part] } : { soloTrackIds: [part] } : {});
   if (!active || token !== generation) return;
   if (!rendered.buffer.length || !Number.isFinite(rendered.buffer.duration) || rendered.buffer.duration <= 0) throw new Error('引擎未返回有效音频，请调整参数后重试。');
   if (rendered.buffer.sampleRate !== 44100 || rendered.buffer.numberOfChannels !== 2) throw new Error('音频格式不符：需要立体声 44.1 kHz 音频。');
@@ -478,6 +539,16 @@ trackSelect.addEventListener('change', () => {
   window.history.replaceState(window.history.state, '', url);
   setStatus(`已切换到《${next.meta.title}》，速度恢复为 ${next.meta.bpm} BPM。点击播放试听。`);
 });
+[auditionTrack, muteTrack].forEach(input => input.addEventListener('change', () => {
+  if (busy) return;
+  if (!auditionTrack.value) muteTrack.checked = false;
+  muteTrack.disabled = !auditionTrack.value;
+  generation++;
+  invalidate(); syncVersion();
+  setStatus(auditionTrack.value
+    ? `已选择${muteTrack.checked ? '移除' : '独奏'}「${auditionTrack.selectedOptions[0]?.textContent}」，点击播放比较。`
+    : '已回到完整混音，点击播放试听。');
+}));
 [bpmInput, transposeInput, seedInput].forEach(input => input.addEventListener('input', () => {
   if (busy) return;
   generation++;

@@ -1,0 +1,578 @@
+{
+  "track": "ink-tide",
+  "title": "墨潮 / INK TIDE",
+  "revision": 2,
+  "generatedAt": "2026-10-14T03:20:30.450Z",
+  "sourceBaseCommit": "493fab7f44c994a3204d0c02604012b2aeec698c",
+  "sourceHashes": {
+    "src/tracks/ink-tide.ts": "9f8a7bb222e6b96d7f12e35ed7a0c256fa3e9c5c85ba574db958b15436959e64",
+    "src/tracks/registry.ts": "ddf702b0195fddc2420f7ce0331e0c00f168ffca47d54d674e03b8a9195abe7a",
+    "src/music/types.ts": "4079bb0a8f15cccf32dd588ce490553fc9c161e53d89b2616a59cc37dac6c72b",
+    "src/music/arrange.ts": "a86a9f632724760f5eb76c59b16995985d2170c5b9982f2b5372b3815131eb33",
+    "src/music/arrangements/ink-tide.ts": "260668f1a976b412a16e16f04987a03bf559db3706e8034bfdca4a90644f9157",
+    "src/music/validation.ts": "9b8d47dafd14c757850ae85ba17bded6b2475410dc6dcfa1b8a88461348e57b4",
+    "src/music/random.ts": "591c598ac35a6d37d4003d8f262f228a61548d096a216478731e59b5b9873550",
+    "src/engine/ink-tide.ts": "52df9b3e2a468cdde2010b25e77a823c9b73db36e1c050c3c42f6d119ff3e22d",
+    "src/engine/chinese-drums.ts": "973cfd28c050064440be9fe118a14098aa5e0f169593a44af826926715406cfe",
+    "src/engine/render.ts": "0c14f0955acbc2601f2a79ea379d70ad5e49b90e59921f22ab843239d4814b95",
+    "src/audio/wav.ts": "05fdff32c633ac48ced137a39263064de6c23706f23946bb92f733aa48d60ff6",
+    "src/main.ts": "3c65295a4e62d8552269d0004b997dec3423699527d8be8bceeb93cea1f4e0fd",
+    "scripts/render.mjs": "2970734ec42cd53aef37bf1c67611af3e005efb9da04ceb9a896739c94e91849",
+    "scripts/lib/audio-export.mjs": "27067cb60fd84d9da497e13be33c4535742174dbf85c22ad53c6ff9331f2f73d",
+    "scripts/check-guofeng.mjs": "4e5e3e0adc6b53dc2434fd4a96360faa0d6dee8eaaf6eb0d009a223b40a4089a",
+    "scripts/check-browser.mjs": "47780b0f73d8b8862d7d4b3aa1186b7ae876c0249707f8ba4e409aaefbf281b3",
+    "tests/ink-tide.test.ts": "2d260730b23b4a50a3c4f97d9d7398494ecd4763fdeb1b0a7bdc369e03a7ae5a",
+    "tests/chinese-drums.test.ts": "9b9ba6b115c4f367c570c76049b0596298b84310e073dd9436ad3e6269ffa48e",
+    "package.json": "1de5d6e9821c3fee208a5aca5ec6a6385d28dcc18436db1ade1374a3d74eb70d",
+    "package-lock.json": "0dc3946577faf4e909733aaa4f56688e807b4187243bdeb5d78640470aaacbd1"
+  },
+  "engine": "Tone.js 15.1.22 / Chromium OfflineAudioContext",
+  "format": "MP3 320 kbps / 44.1 kHz / stereo",
+  "masteringTarget": {
+    "integratedLufs": -14,
+    "truePeakDbtp": -1.5,
+    "loudnessRangeLu": 9
+  },
+  "reference": {
+    "title": "We Never",
+    "artist": "ZHENLOE",
+    "url": "https://music.163.com/song?id=3397959121",
+    "accessDate": "2026-10-14",
+    "priorResearch": "../../docs/ink-tide-production.md",
+    "note": "原参考的公开试听仅用于客观分析；第二版箫鼓与102 BPM来自用户反馈及独立创作，没有使用参考录音或复写旋律。未核验抖音当日热度。"
+  },
+  "production": {
+    "palette": [
+      "xiao",
+      "guqin",
+      "chineseDrum"
+    ],
+    "drumBodies": [
+      "large",
+      "medium",
+      "small"
+    ],
+    "drumStrokes": [
+      "open",
+      "rim",
+      "mute"
+    ],
+    "expression": [
+      "position",
+      "tension",
+      "velocity",
+      "hand",
+      "alternation"
+    ],
+    "previousRelease": "../ink-tide/manifest.json"
+  },
+  "note": "原创风格化合成箫、琴和变化皮鼓；音色层改变频谱与音头，播放力度另行控制音量。客观测量与自动检查不构成主观听感结论。",
+  "validation": {
+    "unitTests": {
+      "passed": 44,
+      "failed": 0,
+      "skipped": 0
+    },
+    "productionBuild": "passed",
+    "browserRegression": {
+      "status": "passed_on_retry",
+      "command": "npm run test:browser",
+      "lastRunExitCode": 0,
+      "lastRunLog": "artifacts/audio/ink-tide-v2/final-browser-validation.log",
+      "initialFailure": {
+        "track": "mountains-awake",
+        "check": "same seed maximum below 1/65536",
+        "maximum": 0.00009995698928833008
+      },
+      "existingTrackRetry": {
+        "track": "mountains-awake",
+        "maximum": 3.5762786865234375e-7,
+        "rms": 2.1150347882530095e-8
+      },
+      "note": "最终全套浏览器检查通过。旧曲初轮复现差异未经源码修改或阈值调整即在复查中通过，根因未证实，不能视为已修复。新版墨潮的两輪专项均通过，固定增益音源没有沿用旧曲原生压缩器。"
+    },
+    "inkTideBrowserReport": {
+      "passed": true,
+      "generatedAt": "2026-10-14T03:25:38.319Z",
+      "renders": [
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 102,
+            "transpose": 0,
+            "seed": 261014
+          },
+          "duration": 20.223514739229024,
+          "stats": {
+            "peak": 0.8386414647102356,
+            "rms": 0.1701898179821665,
+            "peakDb": -1.5284733740732404,
+            "rmsDb": -15.381328523857682,
+            "clippedSamples": 0,
+            "dcOffset": -0.000010298035255596872
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 20.223529411764705
+        },
+        {
+          "options": {
+            "version": "loop",
+            "bpm": 102,
+            "transpose": 0,
+            "seed": 261014
+          },
+          "duration": 18.823537414965987,
+          "stats": {
+            "peak": 0.8387082815170288,
+            "rms": 0.1767088735208768,
+            "peakDb": -1.527781373598818,
+            "rmsDb": -15.054832832797146,
+            "clippedSamples": 0,
+            "dcOffset": -0.000010748667884756438
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 18.823529411764707
+        },
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 90,
+            "transpose": -12,
+            "seed": 0
+          },
+          "duration": 22.733310657596373,
+          "stats": {
+            "peak": 0.8023329973220825,
+            "rms": 0.17687884249119998,
+            "peakDb": -1.9129069264795864,
+            "rmsDb": -15.046482249533193,
+            "clippedSamples": 0,
+            "dcOffset": -0.000009482397216205716
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 22.73333333333333
+        },
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 170,
+            "transpose": 12,
+            "seed": 4294967295
+          },
+          "duration": 12.694104308390022,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.1679755177792187,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -15.495080230743302,
+            "clippedSamples": 0,
+            "dcOffset": -0.00001612926875576408
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 12.694117647058825
+        }
+      ],
+      "repeat": {
+        "maximum": 4.470348358154297e-8,
+        "rms": 3.0153906792210965e-10
+      },
+      "loopEdges": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "monoDeltaDb": -0.023418389141381016,
+      "palette": [
+        {
+          "instrument": "guqin",
+          "peak": 0.194877028465271,
+          "rms": 0.056179797322628976,
+          "peakDb": -14.204787024599405,
+          "rmsDb": -25.008396638332325,
+          "clippedSamples": 0,
+          "dcOffset": -5.197335140243594e-8
+        },
+        {
+          "instrument": "xiao",
+          "peak": 0.24733085930347443,
+          "rms": 0.09174634514836752,
+          "peakDb": -12.134433872604323,
+          "rmsDb": -20.748224549912358,
+          "clippedSamples": 0,
+          "dcOffset": 1.689270347274984e-7
+        },
+        {
+          "instrument": "drum/large/open",
+          "peak": 0.3167748749256134,
+          "rms": 0.036329527688807074,
+          "peakDb": -9.984985437729376,
+          "rmsDb": -28.7948049651119,
+          "clippedSamples": 0,
+          "dcOffset": -1.8491175518425112e-8
+        },
+        {
+          "instrument": "drum/large/rim",
+          "peak": 0.22563619911670685,
+          "rms": 0.02253986412513889,
+          "peakDb": -12.931824493109772,
+          "rmsDb": -32.94097412594046,
+          "clippedSamples": 0,
+          "dcOffset": 7.510915161613695e-11
+        },
+        {
+          "instrument": "drum/large/mute",
+          "peak": 0.20028045773506165,
+          "rms": 0.02077558228251528,
+          "peakDb": -13.967228494096053,
+          "rmsDb": -33.648935905833014,
+          "clippedSamples": 0,
+          "dcOffset": -4.885450864304238e-12
+        },
+        {
+          "instrument": "drum/medium/open",
+          "peak": 0.23576109111309052,
+          "rms": 0.023073240275030184,
+          "peakDb": -12.55055734437591,
+          "rmsDb": -32.73782822683094,
+          "clippedSamples": 0,
+          "dcOffset": 3.2207034344214944e-10
+        },
+        {
+          "instrument": "drum/medium/rim",
+          "peak": 0.2038739025592804,
+          "rms": 0.014532270810115612,
+          "peakDb": -13.812767274518974,
+          "rmsDb": -36.75333035237831,
+          "clippedSamples": 0,
+          "dcOffset": 2.922890143943233e-11
+        },
+        {
+          "instrument": "drum/medium/mute",
+          "peak": 0.183463454246521,
+          "rms": 0.014221147583762668,
+          "peakDb": -14.729008677259529,
+          "rmsDb": -36.941307130934895,
+          "clippedSamples": 0,
+          "dcOffset": 1.2571631751450943e-12
+        },
+        {
+          "instrument": "drum/small/open",
+          "peak": 0.18859641253948212,
+          "rms": 0.013272858620394137,
+          "peakDb": -14.489331452453666,
+          "rmsDb": -37.54071063184131,
+          "clippedSamples": 0,
+          "dcOffset": -8.779687567574037e-11
+        },
+        {
+          "instrument": "drum/small/rim",
+          "peak": 0.20218758285045624,
+          "rms": 0.010509001845089606,
+          "peakDb": -13.884910393804219,
+          "rmsDb": -39.568770634251166,
+          "clippedSamples": 0,
+          "dcOffset": -2.7398426913580327e-12
+        },
+        {
+          "instrument": "drum/small/mute",
+          "peak": 0.17814284563064575,
+          "rms": 0.010377229700096574,
+          "peakDb": -14.984632292026719,
+          "rmsDb": -39.67837140092642,
+          "clippedSamples": 0,
+          "dcOffset": 1.1130181343332131e-12
+        }
+      ],
+      "renderContextRestored": true,
+      "contextRestored": true,
+      "player": {
+        "directUrl": true,
+        "playbackProgress": true,
+        "wavDownload": true,
+        "mobileOverflow": false,
+        "pageErrors": []
+      },
+      "manualListening": "not performed"
+    },
+    "decodedFilesPassed": true,
+    "manualListening": "not performed"
+  },
+  "renders": [
+    {
+      "options": {
+        "bpm": 102,
+        "transpose": 0,
+        "seed": 261014,
+        "version": "full"
+      },
+      "audioContentDurationSeconds": 96.91764172335601,
+      "sourceStats": {
+        "peak": 0.8709635734558105,
+        "rms": 0.15637899392659527,
+        "peakDb": -1.2000001645528333,
+        "rmsDb": -16.116431705122366,
+        "clippedSamples": 0,
+        "dcOffset": 6.113859729255972e-10
+      },
+      "sections": [
+        {
+          "name": "01 / 竹息",
+          "start": 0,
+          "end": 4.705882352941177
+        },
+        {
+          "name": "02 / 鼓入墨潮",
+          "start": 4.705882352941177,
+          "end": 23.529411764705884
+        },
+        {
+          "name": "03 / 山间回声",
+          "start": 23.529411764705884,
+          "end": 42.35294117647059
+        },
+        {
+          "name": "04 / 一息月白",
+          "start": 42.35294117647059,
+          "end": 51.76470588235294
+        },
+        {
+          "name": "05 / 潮生 · 鼓语",
+          "start": 51.76470588235294,
+          "end": 89.41176470588236
+        },
+        {
+          "name": "06 / 归山",
+          "start": 89.41176470588236,
+          "end": 94.11764705882354
+        }
+      ],
+      "files": [
+        {
+          "filename": "ink-tide-full-102bpm-t0-s261014.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 96.917642,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 96.91764172335601,
+          "bytes": 3879749,
+          "mastered": true,
+          "sha256": "c0f9c857675c39b3b5cd72eba6033fbc5e794a0d7595b46e60cd2d280dee477e",
+          "loudness": {
+            "integratedLufs": -14,
+            "truePeakDbtp": -1.57,
+            "loudnessRangeLu": 2.8,
+            "thresholdLufs": -24.22
+          }
+        }
+      ],
+      "decodedCheck": {
+        "version": "full",
+        "filename": "ink-tide-full-102bpm-t0-s261014.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 4274068,
+        "decodedDurationSeconds": 96.91764172335601,
+        "expectedSourceDurationSeconds": 96.91764172335601,
+        "durationDifferenceSamples": 0,
+        "nonFiniteSamples": 0,
+        "fullScaleSamples": 0,
+        "peakDbfs": -1.5700927573568744,
+        "rmsDbfs": -16.486423625379782,
+        "monoFoldDownRmsDeltaDb": -0.02469918596431453,
+        "sections": [
+          {
+            "name": "01 / 竹息",
+            "start": 0,
+            "end": 4.705882352941177,
+            "rmsDbfs": -17.23843786225225,
+            "peakDbfs": -7.948166128964706
+          },
+          {
+            "name": "02 / 鼓入墨潮",
+            "start": 4.705882352941177,
+            "end": 23.529411764705884,
+            "rmsDbfs": -16.01807354823592,
+            "peakDbfs": -2.4977214096982836
+          },
+          {
+            "name": "03 / 山间回声",
+            "start": 23.529411764705884,
+            "end": 42.35294117647059,
+            "rmsDbfs": -17.062396739694886,
+            "peakDbfs": -4.863338563151672
+          },
+          {
+            "name": "04 / 一息月白",
+            "start": 42.35294117647059,
+            "end": 51.76470588235294,
+            "rmsDbfs": -17.7260620478587,
+            "peakDbfs": -8.561860963619164
+          },
+          {
+            "name": "05 / 潮生 · 鼓语",
+            "start": 51.76470588235294,
+            "end": 89.41176470588236,
+            "rmsDbfs": -15.723385085379194,
+            "peakDbfs": -1.5700927573568744
+          },
+          {
+            "name": "06 / 归山",
+            "start": 89.41176470588236,
+            "end": 94.11764705882354,
+            "rmsDbfs": -17.7073628209615,
+            "peakDbfs": -7.551763415020233
+          }
+        ],
+        "bridgeEnergyChangeDb": {
+          "versusPrecedingGroove": -0.6636653081638144,
+          "versusFollowingFinal": -2.002676962479507
+        }
+      }
+    },
+    {
+      "options": {
+        "bpm": 102,
+        "transpose": 0,
+        "seed": 261014,
+        "version": "hook"
+      },
+      "audioContentDurationSeconds": 20.223514739229024,
+      "sourceStats": {
+        "peak": 0.8386414647102356,
+        "rms": 0.17018981798707772,
+        "peakDb": -1.5284733740732404,
+        "rmsDb": -15.381328523607031,
+        "clippedSamples": 0,
+        "dcOffset": -0.000010298035561190039
+      },
+      "sections": [
+        {
+          "name": "02 / 鼓入墨潮",
+          "start": 0,
+          "end": 18.823529411764707
+        }
+      ],
+      "files": [
+        {
+          "filename": "ink-tide-hook-102bpm-t0-s261014.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 20.223515,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 20.223514739229024,
+          "bytes": 811928,
+          "mastered": true,
+          "sha256": "d572f6076f5b3358d4a04c53a76c30c22ce67b6fd633920a00dd1afd6b807df5",
+          "loudness": {
+            "integratedLufs": -14,
+            "truePeakDbtp": -2.72,
+            "loudnessRangeLu": 4.7,
+            "thresholdLufs": -24.3
+          }
+        }
+      ],
+      "decodedCheck": {
+        "version": "hook",
+        "filename": "ink-tide-hook-102bpm-t0-s261014.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 891857,
+        "decodedDurationSeconds": 20.223514739229024,
+        "expectedSourceDurationSeconds": 20.223514739229024,
+        "durationDifferenceSamples": 0,
+        "nonFiniteSamples": 0,
+        "fullScaleSamples": 0,
+        "peakDbfs": -2.719183124778562,
+        "rmsDbfs": -16.571303428123876,
+        "monoFoldDownRmsDeltaDb": -0.023418467525416688
+      }
+    },
+    {
+      "options": {
+        "bpm": 102,
+        "transpose": 0,
+        "seed": 261014,
+        "version": "loop"
+      },
+      "audioContentDurationSeconds": 18.823537414965987,
+      "sourceStats": {
+        "peak": 0.8387082815170288,
+        "rms": 0.17670887352289877,
+        "peakDb": -1.527781373598818,
+        "rmsDb": -15.054832832697759,
+        "clippedSamples": 0,
+        "dcOffset": -0.000010748668146393741
+      },
+      "sections": [
+        {
+          "name": "02 / 鼓入墨潮",
+          "start": 0,
+          "end": 18.823529411764707
+        }
+      ],
+      "files": [
+        {
+          "filename": "ink-tide-loop-102bpm-t0-s261014.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 18.823537,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 18.823537414965987,
+          "bytes": 755504,
+          "mastered": true,
+          "sha256": "a05d9bc91497838ce5bc75f5d4541486374b9d21749f878ac08d355d8e1db8cc",
+          "loudness": {
+            "integratedLufs": -14,
+            "truePeakDbtp": -2.77,
+            "loudnessRangeLu": 1.4,
+            "thresholdLufs": -24.24
+          }
+        }
+      ],
+      "decodedCheck": {
+        "version": "loop",
+        "filename": "ink-tide-loop-102bpm-t0-s261014.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 830118,
+        "decodedDurationSeconds": 18.823537414965987,
+        "expectedSourceDurationSeconds": 18.823537414965987,
+        "durationDifferenceSamples": 0,
+        "nonFiniteSamples": 0,
+        "fullScaleSamples": 0,
+        "peakDbfs": -2.76850428638775,
+        "rmsDbfs": -16.29480626185511,
+        "monoFoldDownRmsDeltaDb": -0.02340792314543623,
+        "loopBoundary": {
+          "firstSamples": [
+            -0.000009834691809373908,
+            -0.00003359976108185947
+          ],
+          "lastSamples": [
+            0.0000028651281809288776,
+            -0.0000018732264379650587
+          ],
+          "maximumAbsoluteJump": 0.00003172653464389441,
+          "maximumJumpDbfs": -89.97154722942139,
+          "first10msRmsDbfs": -14.625086157941475,
+          "last10msRmsDbfs": -66.72372932662303
+        }
+      }
+    }
+  ]
+}

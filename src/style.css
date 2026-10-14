@@ -10,6 +10,24 @@
   --muted: #909aaa;
   --line: #252c38;
 }
+.mix-tracks { margin-top: 48px; }
+.mix-track-list { margin-top: 20px; display: grid; gap: 2px; }
+.mix-track { display: grid; grid-template-columns: 190px 1fr; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--line); align-items: center; }
+.mix-track strong { display: block; font-size: 12px; font-weight: 500; }
+.mix-track small { display: block; font-size: 10px; margin-top: 5px; color: var(--muted); }
+.mix-presence { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; }
+.mix-presence span { text-align: center; font-size: 9px; padding: 9px 2px; color: #566171; background: #111720; border-radius: 3px; }
+.mix-presence .is-present { color: #c6d6b4; background: #28352b; }
+#track-audition { margin-top: 22px; }
+#track-audition .mute-choice { display: flex; align-items: center; justify-content: start; gap: 9px; font-size: 11px; margin-top: 12px; color: var(--muted); }
+.mute-choice input { accent-color: var(--lime); width: 15px; height: 15px; }
+@media (max-width: 600px) {
+  .mix-track { grid-template-columns: 1fr; gap: 10px; }
+  .mix-presence { gap: 3px; }
+  .mix-presence span { font-size: 8px; }
+  .mix-track small { display: inline; margin-left: 8px; }
+  .mix-track strong { display: inline; }
+}
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; background: radial-gradient(ellipse at 83% 16%, #131c2b70, transparent 46%), #090c12; }
 button, input, select { font: inherit; }
