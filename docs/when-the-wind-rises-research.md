@@ -1,5 +1,7 @@
 # 《风起时 / When the Wind Rises》制作记录
 
+> 本文的成品音频路径指本地文件；MP3/WAV 不随 Git 分发，实测 manifest 与制作记录保留。新克隆请用试听台或导出命令重新生成。
+
 查阅日期：2026-10-13。新作延续《余温》的柔和电子流行方向，改为 114 BPM / D major，情绪从怀念转向轻盈、明亮。作品为原创器乐，无歌词或真人演唱。
 
 ## 本次实际阅读的互联网资料
@@ -24,7 +26,7 @@
 
 ## 复现与验收
 
-定稿参数：114 BPM、移调 0、seed 261013。Git 追踪的三版 MP3 位于 `releases/when-the-wind-rises/`，[release manifest](../releases/when-the-wind-rises/manifest.json) 保存文件 SHA256、参数、最终测量和源码指纹。本地导出的 WAV 与诊断报告仍保存在 `artifacts/`。导出命令：
+定稿参数：114 BPM、移调 0、seed 261013。仅在本地保留的三版 MP3 位于 `releases/when-the-wind-rises/`，[release manifest](../releases/when-the-wind-rises/manifest.json) 保存文件 SHA256、参数、最终测量和源码指纹。本地导出的 WAV 与诊断报告仍保存在 `artifacts/`。导出命令：
 
 ```bash
 npm run render -- --track when-the-wind-rises --seed 261013 --format both --out artifacts/audio/when-the-wind-rises-v2

@@ -1,6 +1,8 @@
 # 直接导出 MP3
 
-《余温》的三版 MP3 已随 Git 保存到 `releases/afterglow/`，可直接播放，无需重新渲染：[full](../releases/afterglow/afterglow-full-118bpm-t0-s261013.mp3) / [hook](../releases/afterglow/afterglow-hook-118bpm-t0-s261013.mp3) / [loop](../releases/afterglow/afterglow-loop-118bpm-t0-s261013.mp3)。定稿参数为 118 BPM、移调 0、seed 261013，文件与实测见 [manifest](../releases/afterglow/manifest.json)。
+> 本文的成品音频路径指本地文件；MP3/WAV 不随 Git 分发，实测 manifest 与制作记录保留。新克隆请用试听台或导出命令重新生成。
+
+《余温》的三版 MP3 仅在本地保存到 `releases/afterglow/`；本地已有文件可直接播放，新克隆需重新渲染：full（`../releases/afterglow/afterglow-full-118bpm-t0-s261013.mp3`） / hook（`../releases/afterglow/afterglow-hook-118bpm-t0-s261013.mp3`） / loop（`../releases/afterglow/afterglow-loop-118bpm-t0-s261013.mp3`）。定稿参数为 118 BPM、移调 0、seed 261013，文件与实测见 [manifest](../releases/afterglow/manifest.json)。
 
 修改后重新导出：`npm run render -- --track afterglow --version hook --seed 261013 --out artifacts/audio/afterglow-local`。`artifacts/` 仍被 Git 忽略；CLI 默认 seed 为 260713，与定稿不同。
 

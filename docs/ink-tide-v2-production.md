@@ -1,5 +1,7 @@
 # 《墨潮 / Ink Tide》第二版：箫与中国鼓
 
+> 本文的成品音频路径指本地文件；MP3/WAV 不随 Git 分发，实测 manifest 与制作记录保留。新克隆请用试听台或导出命令重新生成。
+
 制作日期：2026-10-14。第二版回应用户“减少电子感，更喜欢箫和有变化的中国鼓”的反馈：速度从 124 BPM 调整为 **102 BPM**，箫成为领奏，中国鼓承担句子之间的推进与收束，琴声保留为稀疏应答。当前编曲只调度 `xiao`、`guqin`、`chineseDrum` 三类声部。所有声音由代码合成，没有使用外部乐器录音。
 
 ## 参考与判断依据
@@ -52,9 +54,9 @@
 
 | 版本 | 内容 | 解码内容时长 | MP3 |
 | --- | --- | ---: | --- |
-| full | 40 小节 + 2.8 秒尾音 | 96.917642 s | [完整版](../releases/ink-tide-v2/ink-tide-full-102bpm-t0-s261014.mp3) |
-| hook | 8 小节 + 1.4 秒尾音 | 20.223515 s | [精华片段](../releases/ink-tide-v2/ink-tide-hook-102bpm-t0-s261014.mp3) |
-| loop | 8 小节，三轮预热后取第三轮 | 18.823537 s | [循环配乐](../releases/ink-tide-v2/ink-tide-loop-102bpm-t0-s261014.mp3) |
+| full | 40 小节 + 2.8 秒尾音 | 96.917642 s | 完整版（`../releases/ink-tide-v2/ink-tide-full-102bpm-t0-s261014.mp3`） |
+| hook | 8 小节 + 1.4 秒尾音 | 20.223515 s | 精华片段（`../releases/ink-tide-v2/ink-tide-hook-102bpm-t0-s261014.mp3`） |
+| loop | 8 小节，三轮预热后取第三轮 | 18.823537 s | 循环配乐（`../releases/ink-tide-v2/ink-tide-loop-102bpm-t0-s261014.mp3`） |
 
 MP3 参数为 320 kbps / 44.1 kHz / 立体声，默认母带目标为 -14 LUFS / -1.5 dBTP / LRA 9。目标为项目制作选择，最终编码后的实测值以[第二版 manifest](../releases/ink-tide-v2/manifest.json)为准。原始 WAV 默认保留引擎 PCM16。MP3 是否无缝循环还取决于播放器是否正确处理编码延迟和填充信息。
 
@@ -66,7 +68,7 @@ npm run test:browser
 
 试听台 `/?track=ink-tide&version=hook` 使用第二版，seed 设为 261014。曲谱位于 `src/tracks/ink-tide.ts`，编曲位于 `src/music/arrangements/ink-tide.ts`，主音源位于 `src/engine/ink-tide.ts`，中国鼓合成位于 `src/engine/chinese-drums.ts`。
 
-第一版 124 BPM 音频保留供比较：[full](../releases/ink-tide/ink-tide-full-124bpm-t0-s261014.mp3)、[hook](../releases/ink-tide/ink-tide-hook-124bpm-t0-s261014.mp3)、[loop](../releases/ink-tide/ink-tide-loop-124bpm-t0-s261014.mp3)。第一版的验证数值不作为第二版的测试结果。
+第一版 124 BPM 音频保留供比较：full（`../releases/ink-tide/ink-tide-full-124bpm-t0-s261014.mp3`）、hook（`../releases/ink-tide/ink-tide-hook-124bpm-t0-s261014.mp3`）、loop（`../releases/ink-tide/ink-tide-loop-124bpm-t0-s261014.mp3`）。第一版的验证数值不作为第二版的测试结果。
 
 ## 验证记录与边界
 

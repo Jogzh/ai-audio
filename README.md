@@ -1,19 +1,21 @@
 # ai-audio
 
+成品 MP3/WAV 仅在本地保存，Git 保留源码、制作记录、实测 manifest 与必要的音源采样。`releases/` 下的成品音频已加入忽略规则；克隆后可用试听台或导出命令重新生成。
+
 用 **Tone.js** 创作原创音乐，最新作品为国风 DJ《霓虹长安 / Neon Changan》：128 BPM、古筝与唢呐感主音、原生 48 kHz / 24 bit WAV，提供完整、精华、循环和 30 秒卡点四种成品。仓库还内置抒情原声《墨潮》、情绪流行电子《余温》《风起时》和中国风交响流行《山河醒》。默认试听作品仍为《余温》，新作可通过 `/?track=neon-changan&version=hook` 打开。
 
 ## 新作：《霓虹长安 / Neon Changan》
 
 **中国风 × Club House / 128 BPM / D 小调五声旋律 / 60 小节**。古筝从第一拍抛出 A–C–D 暗号，7.5 秒进入第一次 Drop；竹笛桥段加入半拍律动，最终 Drop 后八小节升高主题。唢呐感主音、古筝、竹笛、木鱼、堂鼓和锣均为原创合成音色，没有歌手录音、歌词或现成歌曲采样。
 
-全部成品保存在 `releases/neon-changan/`，WAV 为原生合成 **48 kHz / PCM24**，MP3 为 **48 kHz / 320 kbps / 立体声**。四个版本都完成响度母带与最终文件测量。
+全部成品仅在本地保存于 `releases/neon-changan/`，WAV 为原生合成 **48 kHz / PCM24**，MP3 为 **48 kHz / 320 kbps / 立体声**。四个版本都完成响度母带与最终文件测量。
 
 | 版本 | 内容时长 | MP3 | 高音质 WAV |
 | --- | ---: | --- | --- |
-| 完整版 | 115 s | [完整试听](releases/neon-changan/neon-changan-full-128bpm-t0-s261014.mp3) | [完整 PCM24](releases/neon-changan/neon-changan-full-128bpm-t0-s261014.wav) |
-| 主题版 | 15.65 s | [八小节主题](releases/neon-changan/neon-changan-hook-128bpm-t0-s261014.mp3) | [主题 PCM24](releases/neon-changan/neon-changan-hook-128bpm-t0-s261014.wav) |
-| 循环版 | 15 s | [循环试听](releases/neon-changan/neon-changan-loop-128bpm-t0-s261014.mp3) | [循环 PCM24](releases/neon-changan/neon-changan-loop-128bpm-t0-s261014.wav) |
-| 抖音卡点版 | 30 s | [最终 Drop](releases/neon-changan/neon-changan-douyin30-128bpm-t0-s261014.mp3) | [卡点 PCM24](releases/neon-changan/neon-changan-douyin30-128bpm-t0-s261014.wav) |
+| 完整版 | 115 s | 完整试听（`releases/neon-changan/neon-changan-full-128bpm-t0-s261014.mp3`） | 完整 PCM24（`releases/neon-changan/neon-changan-full-128bpm-t0-s261014.wav`） |
+| 主题版 | 15.65 s | 八小节主题（`releases/neon-changan/neon-changan-hook-128bpm-t0-s261014.mp3`） | 主题 PCM24（`releases/neon-changan/neon-changan-hook-128bpm-t0-s261014.wav`） |
+| 循环版 | 15 s | 循环试听（`releases/neon-changan/neon-changan-loop-128bpm-t0-s261014.mp3`） | 循环 PCM24（`releases/neon-changan/neon-changan-loop-128bpm-t0-s261014.wav`） |
+| 抖音卡点版 | 30 s | 最终 Drop（`releases/neon-changan/neon-changan-douyin30-128bpm-t0-s261014.mp3`） | 卡点 PCM24（`releases/neon-changan/neon-changan-douyin30-128bpm-t0-s261014.wav`） |
 
 30 秒版取完整作品 **75–105 秒**，第 **15 秒**进入旋律抬升。128 BPM 下，每拍 **0.46875 秒**、每小节 **1.875 秒**；可在第 15 秒安排变装或场景转换。循环剪辑优先导入 WAV，以避免剪辑软件对 MP3 编码填充的处理差异。制作与视频建议见[制作说明](docs/neon-changan-production.md)，最终响度、解码时长、SHA256 和源码指纹见 [release.json](releases/neon-changan/release.json)。没有核验当日热门榜单，也未进行人工耳听；客观检查不能替代听感评价，传播效果无法保证。
 
@@ -37,10 +39,10 @@ npm run package:neon -- --dir artifacts/audio/neon-changan
 | loop | 第 3–10 小节，保留跨轮空间尾音 | 20.869569 s |
 | climax | 完整版约 73.04 秒起，含高潮发展与收尾 | 34.104354 s |
 
-- [高潮与收尾试听](releases/ink-tide-v6/ink-tide-climax-92bpm-t0-s261014.mp3)
-- [第六版完整版](releases/ink-tide-v6/ink-tide-full-92bpm-t0-s261014.mp3)
-- [第六版开头主题](releases/ink-tide-v6/ink-tide-hook-92bpm-t0-s261014.mp3)
-- [第六版循环](releases/ink-tide-v6/ink-tide-loop-92bpm-t0-s261014.mp3)
+- 高潮与收尾试听（`releases/ink-tide-v6/ink-tide-climax-92bpm-t0-s261014.mp3`）
+- 第六版完整版（`releases/ink-tide-v6/ink-tide-full-92bpm-t0-s261014.mp3`）
+- 第六版开头主题（`releases/ink-tide-v6/ink-tide-hook-92bpm-t0-s261014.mp3`）
+- 第六版循环（`releases/ink-tide-v6/ink-tide-loop-92bpm-t0-s261014.mp3`）
 - [实测与来源 manifest](releases/ink-tide-v6/manifest.json)
 - [编曲、采样与验证说明](docs/ink-tide-v6-production.md)
 
@@ -69,25 +71,25 @@ npm run render:stems -- --version hook --seed 261014 --out artifacts/audio/ink-t
 
 定稿为移调 0、seed 261013，320 kbps / 44.1 kHz / 立体声 MP3：
 
-- [第二版完整版 / full](releases/mountains-awake-v2/mountains-awake-full-104bpm-t0-s261013.mp3)
-- [第二版精华片段 / hook](releases/mountains-awake-v2/mountains-awake-hook-104bpm-t0-s261013.mp3)
-- [第二版循环配乐 / loop](releases/mountains-awake-v2/mountains-awake-loop-104bpm-t0-s261013.mp3)
+- 第二版完整版 / full（`releases/mountains-awake-v2/mountains-awake-full-104bpm-t0-s261013.mp3`）
+- 第二版精华片段 / hook（`releases/mountains-awake-v2/mountains-awake-hook-104bpm-t0-s261013.mp3`）
+- 第二版循环配乐 / loop（`releases/mountains-awake-v2/mountains-awake-loop-104bpm-t0-s261013.mp3`）
 - [第二版实测 manifest](releases/mountains-awake-v2/manifest.json)
 - [第二版制作说明](docs/mountains-awake-v2-production.md)
 
-第一版以 commit `97cfa6c` 保存，96 BPM MP3 位于 `releases/mountains-awake/`，可直接对比。试听台 `/?track=mountains-awake&version=full` 使用第二版；本地 raw WAV 和详细导出报告在 `artifacts/audio/mountains-awake-v2/`。全部声音为原创合成，未使用外部录音采样。
+第一版以 commit `5178e01` 保存，96 BPM MP3 位于 `releases/mountains-awake/`，可直接对比。试听台 `/?track=mountains-awake&version=full` 使用第二版；本地 raw WAV 和详细导出报告在 `artifacts/audio/mountains-awake-v2/`。全部声音为原创合成，未使用外部录音采样。
 
 ```bash
 npm run render -- --track mountains-awake --seed 261013 --format both --out artifacts/audio/mountains-awake-v2-local
 ```
 
-## 直接听 MP3
+## 本地成品与试听
 
-三个定稿 MP3 和 manifest 位于 **Git 追踪的 `releases/afterglow/`**，克隆仓库后即可播放，无需安装依赖或重新渲染。定稿参数为 118 BPM、移调 0、seed **261013**，320 kbps / 44.1 kHz / 立体声。
+三个定稿 MP3 仅在本地 `releases/afterglow/` 保留，manifest 随 Git 保存；克隆后可通过试听台或重新渲染收听。定稿参数为 118 BPM、移调 0、seed **261013**，320 kbps / 44.1 kHz / 立体声。
 
-- [完整版 / full](releases/afterglow/afterglow-full-118bpm-t0-s261013.mp3)
-- [精华片段 / hook](releases/afterglow/afterglow-hook-118bpm-t0-s261013.mp3)
-- [循环配乐 / loop](releases/afterglow/afterglow-loop-118bpm-t0-s261013.mp3)
+- 完整版 / full（`releases/afterglow/afterglow-full-118bpm-t0-s261013.mp3`）
+- 精华片段 / hook（`releases/afterglow/afterglow-hook-118bpm-t0-s261013.mp3`）
+- 循环配乐 / loop（`releases/afterglow/afterglow-loop-118bpm-t0-s261013.mp3`）
 - [输出参数与实测 manifest](releases/afterglow/manifest.json)
 
 | 版本 | 音乐结构 | PCM 内容时长 |
@@ -106,11 +108,11 @@ MP3 容器时长可能因编码填充略长，实际文件数据见 manifest。�
 | --- | ---: | --- | ---: | ---: | ---: | ---: |
 | `when-the-wind-rises` / 风起时 | 114 | D major | 44 | 95.032 s | 17.642 s | 16.842 s |
 
-三版定稿 MP3 与实测 manifest 已由 Git 追踪，克隆后即可试听：
+三版定稿 MP3 仅在本地保留，Git 保存实测 manifest：
 
-- [完整版 / full](releases/when-the-wind-rises/when-the-wind-rises-full-114bpm-t0-s261013.mp3)
-- [精华片段 / hook](releases/when-the-wind-rises/when-the-wind-rises-hook-114bpm-t0-s261013.mp3)
-- [循环配乐 / loop](releases/when-the-wind-rises/when-the-wind-rises-loop-114bpm-t0-s261013.mp3)
+- 完整版 / full（`releases/when-the-wind-rises/when-the-wind-rises-full-114bpm-t0-s261013.mp3`）
+- 精华片段 / hook（`releases/when-the-wind-rises/when-the-wind-rises-hook-114bpm-t0-s261013.mp3`）
+- 循环配乐 / loop（`releases/when-the-wind-rises/when-the-wind-rises-loop-114bpm-t0-s261013.mp3`）
 - [输出参数与实测 manifest](releases/when-the-wind-rises/manifest.json)
 
 以上为 seed 261013 / 移调 0 的最终解码内容时长；响度、电平、文件 SHA256 与源码指纹见 release manifest。本地 WAV 与完整导出报告位于 `artifacts/audio/when-the-wind-rises-v2/`。制作资料与改进依据见 [《风起时》制作简报](docs/when-the-wind-rises-research.md)。
@@ -145,7 +147,7 @@ npm run render -- --version hook --format wav --out artifacts/audio/afterglow-wa
 npm run render -- --help
 ```
 
-CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；五首作品的成品保存在 `releases/` 对应曲目目录。只导出原始 WAV 时无需 FFmpeg。
+CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；五首作品的成品仅在本地 `releases/` 对应曲目目录保留。只导出原始 WAV 时无需 FFmpeg。
 
 | 参数 | 范围 / 含义 | 默认 |
 | --- | --- | --- |
@@ -175,7 +177,7 @@ MP3 默认两遍 loudnorm 的项目目标为 **−14 LUFS / −1.5 dBTP / LRA 9*
 
 ```text
 ai-audio/
-├── releases/                # 五首作品的成品、实测 manifest 与保留的旧版
+├── releases/                # 实测 manifest 与本地成品；MP3/WAV 不纳入 Git
 ├── public/audio/salamander/ # 墨潮的钢琴采样及 CC BY 3.0 署名
 ├── public/audio/vsco/       # 长笛、弦乐、竖琴采样及 CC0 来源说明
 ├── src/

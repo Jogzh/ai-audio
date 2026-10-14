@@ -1,6 +1,8 @@
 # 《山河醒》第二版
 
-第一版保存于 commit `97cfa6c`，96 BPM 三版 MP3 在 `releases/mountains-awake/`。第二版针对“配器乱、节奏不好”的反馈重新写主旋律与编曲，并调整音源。
+> 本文的成品音频路径指本地文件；MP3/WAV 不随 Git 分发，实测 manifest 与制作记录保留。新克隆请用试听台或导出命令重新生成。
+
+第一版保存于 commit `5178e01`，96 BPM 三版 MP3 在 `releases/mountains-awake/`。第二版针对“配器乱、节奏不好”的反馈重新写主旋律与编曲，并调整音源。
 
 ## 本版调整
 

@@ -5,15 +5,17 @@ description: 使用 ai-audio 仓库与 Tone.js 创作、改编、试听和导出
 
 # Tone Hit Lab
 
+成品 MP3/WAV 只在本地交付，不提交或推送到 Git。`releases/` 下的音频和 `artifacts/` 已忽略；manifest、制作记录、来源许可与音源采样继续由 Git 保存。新克隆没有成品音频，先检查本地文件，缺少时使用试听台或按定稿参数渲染。
+
 当前仓库维护《余温 / Afterglow》《风起时 / When the Wind Rises》《山河醒 / Mountains Awake》《墨潮 / Ink Tide》，支持 `emotional-pop`、`cinematic-guofeng` 与 `ink-tide` 制作风格。音乐任务需交付可播放的作品，自动检查不等于人工试听，也不能保证作品流行。此 Skill 随仓库共享，不自动安装到用户全局；按会话授权处理 Git 与外部发布。
 
 ## 先选择已有成品或重新制作
 
-`releases/afterglow/` 的 full / hook / loop MP3 与 `manifest.json` 由 Git 追踪，克隆后直接播放，无需渲染。定稿为 118 BPM / F# minor / 移调 0 / seed **261013**，320 kbps、44.1 kHz、立体声；测量入口为仓库 [release manifest](../../../releases/afterglow/manifest.json)。
+`releases/afterglow/` 的 full / hook / loop MP3 仅在本地保存，`manifest.json` 由 Git 追踪；新克隆可用试听台或重新渲染。定稿为 118 BPM / F# minor / 移调 0 / seed **261013**，320 kbps、44.1 kHz、立体声；测量入口为仓库 [release manifest](../../../releases/afterglow/manifest.json)。
 
-《风起时》的 full / hook / loop MP3 与实测 manifest 位于 `releases/when-the-wind-rises/`，同样由 Git 追踪并可直接播放；定稿为 114 BPM / D major / 移调 0 / seed 261013。
+《风起时》的 full / hook / loop MP3 与实测 manifest 位于 `releases/when-the-wind-rises/`，MP3 仅本地保存，manifest 由 Git 追踪；定稿为 114 BPM / D major / 移调 0 / seed 261013。
 
-《墨潮》当前为第六版：92 BPM / D 大调和声、D 大调五声旋律 / 40 小节 / seed 261014；成品位于 `releases/ink-tide-v6/`。长笛唯一领奏、钢琴使用统一四分脉搏、弦乐与大提琴延续长和声，鼓和低音以共同拍位支撑主题。第六版的编曲取舍是制作判断，未进行人工耳听。第五版及更早的音频保留在原 release 目录。第六版高潮后八小节换用 G→A→D→Bm 和声、逐步升到 B5 并收束到 D5；`climax` MP3 为完整 WAV 约 73.04 秒起的独立母带试听片段。hook / loop 仍引用开头主段，评估高潮应听 full 或 climax。
+《墨潮》当前为第六版：92 BPM / D 大调和声、D 大调五声旋律 / 40 小节 / seed 261014；成品位于 `releases/ink-tide-v6/`。长笛唯一领奏、钢琴使用统一四分脉搏、弦乐与大提琴延续长和声，鼓和低音以共同拍位支撑主题。第六版的编曲取舍是制作判断，未进行人工耳听。第五版及更早的音频仅在本地原 release 目录保留。第六版高潮后八小节换用 G→A→D→Bm 和声、逐步升到 B5 并收束到 D5；`climax` MP3 为完整 WAV 约 73.04 秒起的独立母带试听片段。hook / loop 仍引用开头主段，评估高潮应听 full 或 climax。
 
 需要改编或重新渲染时先检查已有改动。运行环境为 Node.js >=22.12、npm、Web Audio 浏览器；CLI 需要 Playwright Chromium，MP3 或响度母带另需 FFmpeg / FFprobe，MP3 需 libmp3lame。已有依赖可直接使用，缺少依赖时执行 `npm ci` / `npx --yes playwright install chromium`。
 
@@ -57,7 +59,7 @@ description: 使用 ai-audio 仓库与 Tone.js 创作、改编、试听和导出
 
 改曲后运行 `npm test`、`npm run build` 与 `npm run test:browser`，覆盖编曲、非静音、参数边界、同 seed 复现、循环、WAV、MP3 编码与播放器。缺少 FFmpeg 的集成测试会明确 skip。检查通过不能宣称人工耳听或保证好听。
 
-交付实际音频，列出参数、真实时长与实测电平，说明人工试听状态。用户只要现有 MP3 时直接提供对应 `releases/` 成品；仅文档任务不额外渲染。MIT 适用于软件代码，输出音乐授权需另行明确，仓库公开不自动把音频授权为 MIT；包含 Salamander 采样的音频保留 CC BY 3.0 署名。
+交付实际音频，列出参数、真实时长与实测电平，说明人工试听状态。用户只要现有 MP3 时先确认本地成品存在，再提供对应 `releases/` 文件；不存在则按定稿参数渲染；仅文档任务不额外渲染。MIT 适用于软件代码，输出音乐授权需另行明确，仓库公开不自动把音频授权为 MIT；包含 Salamander 采样的音频保留 CC BY 3.0 署名。
 
 ## 曲目级旋律发展
 

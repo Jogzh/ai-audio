@@ -10,3 +10,7 @@ artifacts/
 coverage/
 playwright-report/
 test-results/
+
+# 成品音频仅本地保存；音源采样仍由 Git 追踪
+/releases/**/*.mp3
+/releases/**/*.wav

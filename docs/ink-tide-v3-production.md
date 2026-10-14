@@ -1,5 +1,7 @@
 # 《墨潮 / Ink Tide》第三版：钢琴与弦乐
 
+> 本文的成品音频路径指本地文件；MP3/WAV 不随 Git 分发，实测 manifest 与制作记录保留。新克隆请用试听台或导出命令重新生成。
+
 制作日期：2026-10-14。用户再次反馈第二版不好听，并明确允许自由发挥、不再按照原先的箫鼓偏好制作。本版保留《墨潮》名称与 `ink-tide` 曲目 ID，重新写成 **96 BPM / E 自然小调 / 钢琴电影配乐**。核心变化是使用钢琴实录采样承载新旋律，让弦乐与轻柔碎拍作为背景推进，而不是继续扩展第二版的箫鼓音色。
 
 ## 参考与判断依据
@@ -43,9 +45,9 @@
 
 | 版本 | 内容 | 解码内容时长 | MP3 |
 | --- | --- | ---: | --- |
-| full | 40 小节 + 2.8 秒尾音 | 102.8 s | [完整版](../releases/ink-tide-v3/ink-tide-full-96bpm-t0-s261014.mp3) |
-| hook | 8 小节 + 1.4 秒尾音 | 21.399977 s | [精华片段](../releases/ink-tide-v3/ink-tide-hook-96bpm-t0-s261014.mp3) |
-| loop | 8 小节，三轮预热后取第三轮 | 20 s | [循环配乐](../releases/ink-tide-v3/ink-tide-loop-96bpm-t0-s261014.mp3) |
+| full | 40 小节 + 2.8 秒尾音 | 102.8 s | 完整版（`../releases/ink-tide-v3/ink-tide-full-96bpm-t0-s261014.mp3`） |
+| hook | 8 小节 + 1.4 秒尾音 | 21.399977 s | 精华片段（`../releases/ink-tide-v3/ink-tide-hook-96bpm-t0-s261014.mp3`） |
+| loop | 8 小节，三轮预热后取第三轮 | 20 s | 循环配乐（`../releases/ink-tide-v3/ink-tide-loop-96bpm-t0-s261014.mp3`） |
 
 默认 MP3 母带目标为 -14 LUFS / -1.5 dBTP / LRA 9，是项目制作选择，不是平台官方要求；源动态和有损编码可能使最终值偏离目标。原始 WAV 默认保留引擎 PCM16。MP3 的无缝循环仍取决于播放器是否正确处理编码延迟与填充信息。
 
@@ -57,7 +59,7 @@ npm run test:browser
 
 试听台 `/?track=ink-tide&version=hook` 使用第三版，seed 设为 261014。曲谱位于 `src/tracks/ink-tide.ts`，编曲位于 `src/music/arrangements/ink-tide.ts`，音源位于 `src/engine/ink-tide.ts`，采样加载器位于 `src/engine/piano-samples.ts`。
 
-前两版保留供试听比较：[第一版制作记录](ink-tide-production.md)、[第二版制作记录](ink-tide-v2-production.md)、[第一版 hook](../releases/ink-tide/ink-tide-hook-124bpm-t0-s261014.mp3)、[第二版 hook](../releases/ink-tide-v2/ink-tide-hook-102bpm-t0-s261014.mp3)。前两版的测试结果不用于宣称第三版已通过。
+前两版保留供试听比较：[第一版制作记录](ink-tide-production.md)、[第二版制作记录](ink-tide-v2-production.md)、第一版 hook（`../releases/ink-tide/ink-tide-hook-124bpm-t0-s261014.mp3`）、第二版 hook（`../releases/ink-tide-v2/ink-tide-hook-102bpm-t0-s261014.mp3`）。前两版的测试结果不用于宣称第三版已通过。
 
 ## 验证记录与边界
 

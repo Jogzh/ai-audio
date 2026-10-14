@@ -1,5 +1,7 @@
 # 短视频情绪流行电子：调研与制作简报
 
+> 本文的成品音频路径指本地文件；MP3/WAV 不随 Git 分发，实测 manifest 与制作记录保留。新克隆请用试听台或导出命令重新生成。
+
 查阅日期：2026-10-13。目标是抖音 / 小红书的夜景、旅行、日常回忆与情绪片段；保留轻 DJ 律动，主角是旋律。
 
 ## 可以从资料得到什么
@@ -39,7 +41,7 @@
 - `src/music/arrangements/emotional-pop.ts`：完整作曲与短版裁切。
 - `src/engine/emotional-pop.ts`：电钢琴、电子主音、合成元音和独立混音链。
 - [MP3 导出与测量说明](mp3-export.md)：编码、响度与格式选项。
-- [release manifest](../releases/afterglow/manifest.json)：Git 追踪的定稿参数、实际时长、源 PCM 检查与编码后测量。三版 MP3 可直接播放：[full](../releases/afterglow/afterglow-full-118bpm-t0-s261013.mp3) / [hook](../releases/afterglow/afterglow-hook-118bpm-t0-s261013.mp3) / [loop](../releases/afterglow/afterglow-loop-118bpm-t0-s261013.mp3)，无需本地渲染。后续重新导出仍写入 Git 忽略的 `artifacts/`。
+- [release manifest](../releases/afterglow/manifest.json)：Git 追踪的定稿参数、实际时长、源 PCM 检查与编码后测量。本地三版 MP3 的路径：full（`../releases/afterglow/afterglow-full-118bpm-t0-s261013.mp3`） / hook（`../releases/afterglow/afterglow-hook-118bpm-t0-s261013.mp3`） / loop（`../releases/afterglow/afterglow-loop-118bpm-t0-s261013.mp3`）；新克隆需本地渲染。后续重新导出仍写入 Git 忽略的 `artifacts/`。
 
 回声链采用四个独立前向延迟。同 seed 回归同时限制最大 PCM 差 < 1/65536 与差值 RMS < 1e-6，容纳原生压缩处理的微小浮点差异；不承诺跨浏览器或文件逐位一致。
 
