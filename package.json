@@ -13,7 +13,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts tests/*.test.mjs",
-    "test:browser": "node scripts/check-browser.mjs && node scripts/check-guofeng.mjs",
+    "test:browser": "node scripts/check-browser.mjs && node scripts/check-guofeng.mjs && node scripts/check-guofeng.mjs --ink-tide",
     "check": "npm test && npm run build",
     "render": "node scripts/render.mjs"
   },

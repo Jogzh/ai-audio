@@ -4,14 +4,16 @@ import { buildArrangement, validateOptions } from '../music/arrange';
 import type { RenderedTrack, RenderOptions, TrackDefinition, Version } from '../music/types';
 import { createEmotionalPopInstruments } from './emotional-pop';
 import { createCinematicGuofengInstruments } from './cinematic-guofeng';
+import { createInkTideInstruments } from './ink-tide';
 
 export const defaultOptions: RenderOptions = { version: 'full', bpm: 118, transpose: 0, seed: 260713 };
 let renderQueue: Promise<void> = Promise.resolve();
 
 /** A loop has no tail; the other edits retain their release. */
 export function getTailSeconds(track: TrackDefinition, version: Version): number {
-  if (!['emotional-pop', 'cinematic-guofeng'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
+  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
   if (version === 'loop') return 0;
+  if (track.production === 'ink-tide') return { full: 2.8, hook: 1.4 }[version];
   if (track.production === 'cinematic-guofeng') return { full: 3.6, hook: 1.6 }[version];
   return { full: 2.4, hook: 0.8 }[version];
 }
@@ -39,7 +41,9 @@ async function render(track: TrackDefinition, options: RenderOptions): Promise<R
   try {
     try {
       offline = await Tone.Offline(() => {
-        rig = track.production === 'cinematic-guofeng'
+        rig = track.production === 'ink-tide'
+          ? createInkTideInstruments(options.bpm, options.seed)
+          : track.production === 'cinematic-guofeng'
           ? createCinematicGuofengInstruments(options.bpm, options.seed)
           : createEmotionalPopInstruments(options.bpm, options.seed);
         for (let cycle = 0; cycle < repetitions; cycle++) {

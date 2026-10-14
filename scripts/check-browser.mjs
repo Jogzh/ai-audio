@@ -208,7 +208,8 @@ try {
   });
 
   assert.equal(checks.registry.defaultId, 'afterglow');
-  assert.equal(checks.registry.ids.length, 3);
+  assert.equal(new Set(checks.registry.ids).size, checks.registry.ids.length, 'track IDs are unique');
+  assert.ok(checks.registry.ids.includes('ink-tide'), 'registry includes Ink Tide');
   assert.ok(checks.registry.ids.includes('afterglow'), 'registry keeps afterglow');
   assert.ok(checks.registry.ids.includes('when-the-wind-rises'), 'registry includes the new composition');
   assert.ok(checks.registry.ids.includes('mountains-awake'), 'registry includes the cinematic guofeng composition');

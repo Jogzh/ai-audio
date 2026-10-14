@@ -1,0 +1,689 @@
+{
+  "track": "ink-tide",
+  "title": "墨潮 / INK TIDE",
+  "revision": 1,
+  "generatedAt": "2026-10-14T02:51:53.079Z",
+  "sourceBaseCommit": "682b6f88de80db5e414def96f754895a73940e9a",
+  "sourceHashes": {
+    "src/tracks/ink-tide.ts": "ec5f91bc023dd0dc12f546a985729f08a875447783bcdc7bb71594bb4e3f2009",
+    "src/tracks/registry.ts": "ddf702b0195fddc2420f7ce0331e0c00f168ffca47d54d674e03b8a9195abe7a",
+    "src/music/types.ts": "6bcccff6defc7ba47220e2b7b59ce01ef121d8b32cfb4c4fbbad4d3fb32314f7",
+    "src/music/arrange.ts": "a86a9f632724760f5eb76c59b16995985d2170c5b9982f2b5372b3815131eb33",
+    "src/music/arrangements/ink-tide.ts": "18d1cc31598d7d6074ffae872c868964676963c20f5778d6f723447253927043",
+    "src/music/validation.ts": "7310d24eeeac6a615ee3bb1fa5531f9a0b5126039ded3ec8602a8e2aca427a2d",
+    "src/music/random.ts": "591c598ac35a6d37d4003d8f262f228a61548d096a216478731e59b5b9873550",
+    "src/engine/ink-tide.ts": "72b7136b1a7304ad2e3eb20ec900906c8f0b41ed539524c79633760a038904b6",
+    "src/engine/render.ts": "0c14f0955acbc2601f2a79ea379d70ad5e49b90e59921f22ab843239d4814b95",
+    "src/audio/wav.ts": "05fdff32c633ac48ced137a39263064de6c23706f23946bb92f733aa48d60ff6",
+    "src/main.ts": "718f994c6ce7b910e8f0e88d77b07d9f9c24b1b1fcf0e8fb6d4fe863b767083a",
+    "scripts/render.mjs": "2970734ec42cd53aef37bf1c67611af3e005efb9da04ceb9a896739c94e91849",
+    "scripts/lib/audio-export.mjs": "27067cb60fd84d9da497e13be33c4535742174dbf85c22ad53c6ff9331f2f73d",
+    "scripts/check-guofeng.mjs": "28f1a52f94cc6014a35faacd35bd99f81adcae1866e1fe2fbf3e59aa77b21c11",
+    "scripts/check-browser.mjs": "47780b0f73d8b8862d7d4b3aa1186b7ae876c0249707f8ba4e409aaefbf281b3",
+    "tests/ink-tide.test.ts": "db6dd10b7f7cbdbfcff90d124a0be7ecca2e2d84addf270c364079a0fc40c025",
+    "package.json": "1de5d6e9821c3fee208a5aca5ec6a6385d28dcc18436db1ade1374a3d74eb70d",
+    "package-lock.json": "0dc3946577faf4e909733aaa4f56688e807b4187243bdeb5d78640470aaacbd1"
+  },
+  "engine": "Tone.js 15.1.22 / Chromium OfflineAudioContext",
+  "format": "MP3 320 kbps / 44.1 kHz / stereo",
+  "masteringTarget": {
+    "integratedLufs": -14,
+    "truePeakDbtp": -1.5,
+    "loudnessRangeLu": 9
+  },
+  "reference": {
+    "title": "We Never",
+    "artist": "ZHENLOE",
+    "url": "https://music.163.com/song?id=3397959121",
+    "accessDate": "2026-10-14",
+    "measuredDurationSeconds": 168.293,
+    "estimatedTempoBpm": [
+      125.4,
+      125.6
+    ],
+    "note": "Objective analysis of the official public preview; no listening or current Douyin ranking claim. No reference audio, sampled material, or transcribed reference melody is included in the new work."
+  },
+  "note": "Original written score and stylised synthesis. Linear engine output avoids unstable native compressor startup; final-file loudness mastering follows PCM peak trim. Measurements do not establish subjective musical quality.",
+  "validation": {
+    "unitTests": {
+      "passed": 38,
+      "failed": 0,
+      "skipped": 0
+    },
+    "productionBuild": "passed",
+    "existingTracksBrowserChecks": "passed",
+    "inkTideBrowserReport": {
+      "passed": true,
+      "generatedAt": "2026-10-14T02:49:45.879Z",
+      "renders": [
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 124,
+            "transpose": 0,
+            "seed": 261014
+          },
+          "duration": 16.883854875283447,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.15030171119533994,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -16.460721498246787,
+            "clippedSamples": 0,
+            "dcOffset": -0.000015658194715790903
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 16.883870967741935
+        },
+        {
+          "options": {
+            "version": "loop",
+            "bpm": 124,
+            "transpose": 0,
+            "seed": 261014
+          },
+          "duration": 15.483877551020408,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.16058141463556655,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -15.886094410074561,
+            "clippedSamples": 0,
+            "dcOffset": -0.000017352460503357268
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 15.483870967741936
+        },
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 90,
+            "transpose": -12,
+            "seed": 0
+          },
+          "duration": 22.733310657596373,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.13350912065300394,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -17.48978129063701,
+            "clippedSamples": 0,
+            "dcOffset": -0.000010408276263189557
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 22.73333333333333
+        },
+        {
+          "options": {
+            "version": "hook",
+            "bpm": 170,
+            "transpose": 12,
+            "seed": 4294967295
+          },
+          "duration": 12.694104308390022,
+          "stats": {
+            "peak": 0.8709635734558105,
+            "rms": 0.15959629353859967,
+            "peakDb": -1.2000001645528333,
+            "rmsDb": -15.939543978305435,
+            "clippedSamples": 0,
+            "dcOffset": -0.00002103191632673284
+          },
+          "sampleRate": 44100,
+          "channels": 2,
+          "finite": true,
+          "expectedDuration": 12.694117647058825
+        }
+      ],
+      "repeat": {
+        "maximum": 2.384185791015625e-7,
+        "rms": 1.689625411592933e-8
+      },
+      "loopEdges": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "monoDeltaDb": -0.01926919773754817,
+      "palette": [
+        {
+          "instrument": "guqin",
+          "peak": 0.2831750512123108,
+          "rms": 0.08042164806975789,
+          "peakDb": -10.958900245501095,
+          "rmsDb": -21.89254062409818,
+          "clippedSamples": 0,
+          "dcOffset": -8.355485696408213e-8
+        },
+        {
+          "instrument": "xiao",
+          "peak": 0.21199576556682587,
+          "rms": 0.07180885463790664,
+          "peakDb": -13.473456272870965,
+          "rmsDb": -22.876440005605303,
+          "clippedSamples": 0,
+          "dcOffset": -4.3697851530668114e-8
+        },
+        {
+          "instrument": "jade",
+          "peak": 0.14923517405986786,
+          "rms": 0.03741225401202761,
+          "peakDb": -16.522576070814615,
+          "rmsDb": -28.53972251312939,
+          "clippedSamples": 0,
+          "dcOffset": 1.7507175687898346e-7
+        },
+        {
+          "instrument": "lead",
+          "peak": 0.26312583684921265,
+          "rms": 0.07537525509437189,
+          "peakDb": -11.596730111632318,
+          "rmsDb": -22.45542410111131,
+          "clippedSamples": 0,
+          "dcOffset": -1.0219778722173315e-8
+        },
+        {
+          "instrument": "piano",
+          "peak": 0.15238355100154877,
+          "rms": 0.04690451194896524,
+          "peakDb": -16.34123820517891,
+          "rmsDb": -26.57570757201471,
+          "clippedSamples": 0,
+          "dcOffset": 1.68604550328757e-8
+        },
+        {
+          "instrument": "pad",
+          "peak": 0.05678636580705643,
+          "rms": 0.01746696442662008,
+          "peakDb": -24.91511848491315,
+          "rmsDb": -35.15565128479223,
+          "clippedSamples": 0,
+          "dcOffset": -1.3204218929721007e-8
+        },
+        {
+          "instrument": "bass",
+          "peak": 0.2652752101421356,
+          "rms": 0.07558032467459667,
+          "peakDb": -11.52606665519742,
+          "rmsDb": -22.43182493584161,
+          "clippedSamples": 0,
+          "dcOffset": 2.2296479603717794e-10
+        },
+        {
+          "instrument": "kick",
+          "peak": 0.45265546441078186,
+          "rms": 0.04951147665509323,
+          "peakDb": -6.884644650059495,
+          "rmsDb": -26.10588241718155,
+          "clippedSamples": 0,
+          "dcOffset": 2.0960554898541088e-11
+        },
+        {
+          "instrument": "rim",
+          "peak": 0.2127734273672104,
+          "rms": 0.010857001688437198,
+          "peakDb": -13.441652214417593,
+          "rmsDb": -39.28580189264807,
+          "clippedSamples": 0,
+          "dcOffset": -3.5769835309274945e-11
+        },
+        {
+          "instrument": "shaker",
+          "peak": 0.17506007850170135,
+          "rms": 0.0055865183454073914,
+          "peakDb": -15.136257622380498,
+          "rmsDb": -45.05717541456854,
+          "clippedSamples": 0,
+          "dcOffset": 1.3014298454222685e-12
+        }
+      ],
+      "renderContextRestored": true,
+      "contextRestored": true,
+      "player": {
+        "directUrl": true,
+        "playbackProgress": true,
+        "wavDownload": true,
+        "mobileOverflow": false,
+        "pageErrors": []
+      },
+      "manualListening": "not performed"
+    },
+    "decodedFilesPassed": true,
+    "manualListening": "not performed"
+  },
+  "renders": [
+    {
+      "options": {
+        "bpm": 124,
+        "transpose": 0,
+        "seed": 261014,
+        "version": "full"
+      },
+      "audioContentDurationSeconds": 80.21934240362812,
+      "sourceStats": {
+        "peak": 0.8709635734558105,
+        "rms": 0.13634054108997987,
+        "peakDb": -1.2000001645528333,
+        "rmsDb": -17.307499735293696,
+        "clippedSamples": 0,
+        "dcOffset": 5.482523007241522e-8
+      },
+      "sections": [
+        {
+          "name": "01 / 落墨",
+          "start": 0,
+          "end": 3.870967741935484
+        },
+        {
+          "name": "02 / 墨潮",
+          "start": 3.870967741935484,
+          "end": 19.35483870967742
+        },
+        {
+          "name": "03 / 水面来信",
+          "start": 19.35483870967742,
+          "end": 34.83870967741936
+        },
+        {
+          "name": "04 / 月白",
+          "start": 34.83870967741936,
+          "end": 42.58064516129032
+        },
+        {
+          "name": "05 / 潮生 · 回声",
+          "start": 42.58064516129032,
+          "end": 73.54838709677419
+        },
+        {
+          "name": "06 / 墨归于水",
+          "start": 73.54838709677419,
+          "end": 77.41935483870968
+        }
+      ],
+      "files": [
+        {
+          "filename": "ink-tide-full-124bpm-t0-s261014.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 80.219342,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 80.21934240362812,
+          "bytes": 3211014,
+          "mastered": true,
+          "sha256": "778e04608550e6a51ad2d48f7d6994e95c5c8d31ca1202b59955a55d7f1d7517",
+          "loudness": {
+            "integratedLufs": -14,
+            "truePeakDbtp": -1.46,
+            "loudnessRangeLu": 4.7,
+            "thresholdLufs": -24.27
+          }
+        }
+      ],
+      "decodedCheck": {
+        "version": "full",
+        "filename": "ink-tide-full-124bpm-t0-s261014.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 3537673,
+        "decodedDurationSeconds": 80.21934240362812,
+        "expectedSourceDurationSeconds": 80.21934240362812,
+        "durationDifferenceSamples": 0,
+        "nonFiniteSamples": 0,
+        "fullScaleSamples": 0,
+        "peakDbfs": -1.4618246364197196,
+        "rmsDbfs": -16.19541488496439,
+        "monoFoldDownRmsDeltaDb": -0.020674227762299158,
+        "sections": [
+          {
+            "name": "01 / 落墨",
+            "start": 0,
+            "end": 3.870967741935484,
+            "rmsDbfs": -16.910182684164784,
+            "peakDbfs": -4.531515484030503
+          },
+          {
+            "name": "02 / 墨潮",
+            "start": 3.870967741935484,
+            "end": 19.35483870967742,
+            "rmsDbfs": -15.236123510962582,
+            "peakDbfs": -1.485245718840037
+          },
+          {
+            "name": "03 / 水面来信",
+            "start": 19.35483870967742,
+            "end": 34.83870967741936,
+            "rmsDbfs": -17.617329670245812,
+            "peakDbfs": -2.0466119343005635
+          },
+          {
+            "name": "04 / 月白",
+            "start": 34.83870967741936,
+            "end": 42.58064516129032,
+            "rmsDbfs": -20.75650748248958,
+            "peakDbfs": -8.303509994182711
+          },
+          {
+            "name": "05 / 潮生 · 回声",
+            "start": 42.58064516129032,
+            "end": 73.54838709677419,
+            "rmsDbfs": -14.819180319528849,
+            "peakDbfs": -1.4618246364197196
+          },
+          {
+            "name": "06 / 墨归于水",
+            "start": 73.54838709677419,
+            "end": 77.41935483870968,
+            "rmsDbfs": -21.134735659066664,
+            "peakDbfs": -7.16706241449208
+          }
+        ],
+        "bridgeEnergyChangeDb": {
+          "versusPrecedingGroove": -3.1391778122437692,
+          "versusFollowingFinal": -5.937327162960733
+        },
+        "finalBars": [
+          {
+            "localBarIndex": 0,
+            "startSeconds": 42.58064516129032,
+            "endSeconds": 44.516129032258064,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.560789022385167,
+            "first2Point6BeatsRmsDbfs": -13.50105709442321
+          },
+          {
+            "localBarIndex": 1,
+            "startSeconds": 44.516129032258064,
+            "endSeconds": 46.45161290322581,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.400335182240443,
+            "first2Point6BeatsRmsDbfs": -13.522117982088965
+          },
+          {
+            "localBarIndex": 2,
+            "startSeconds": 46.45161290322581,
+            "endSeconds": 48.38709677419355,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.673712976776322,
+            "first2Point6BeatsRmsDbfs": -13.649274760884541
+          },
+          {
+            "localBarIndex": 3,
+            "startSeconds": 48.387096774193544,
+            "endSeconds": 50.32258064516129,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.517335223678337,
+            "first2Point6BeatsRmsDbfs": -13.627150041188163
+          },
+          {
+            "localBarIndex": 4,
+            "startSeconds": 50.32258064516129,
+            "endSeconds": 52.25806451612903,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.769705497079775,
+            "first2Point6BeatsRmsDbfs": -13.69750498102227
+          },
+          {
+            "localBarIndex": 5,
+            "startSeconds": 52.25806451612903,
+            "endSeconds": 54.193548387096776,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.67132959877081,
+            "first2Point6BeatsRmsDbfs": -13.752716666292628
+          },
+          {
+            "localBarIndex": 6,
+            "startSeconds": 54.19354838709677,
+            "endSeconds": 56.12903225806451,
+            "foregroundInstrument": "lead",
+            "rmsDbfs": -15.023706848013465,
+            "first2Point6BeatsRmsDbfs": -14.035673341183623
+          },
+          {
+            "localBarIndex": 7,
+            "startSeconds": 56.12903225806451,
+            "endSeconds": 58.064516129032256,
+            "foregroundInstrument": "lead",
+            "rmsDbfs": -14.856943316239926,
+            "first2Point6BeatsRmsDbfs": -13.97036121278613
+          },
+          {
+            "localBarIndex": 8,
+            "startSeconds": 58.064516129032256,
+            "endSeconds": 60,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.893577661662103,
+            "first2Point6BeatsRmsDbfs": -13.837840931091776
+          },
+          {
+            "localBarIndex": 9,
+            "startSeconds": 60,
+            "endSeconds": 61.935483870967744,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.7157538447931,
+            "first2Point6BeatsRmsDbfs": -13.81360692382659
+          },
+          {
+            "localBarIndex": 10,
+            "startSeconds": 61.935483870967744,
+            "endSeconds": 63.87096774193549,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -15.019962885773829,
+            "first2Point6BeatsRmsDbfs": -13.99846731495453
+          },
+          {
+            "localBarIndex": 11,
+            "startSeconds": 63.87096774193548,
+            "endSeconds": 65.80645161290322,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.927853832332543,
+            "first2Point6BeatsRmsDbfs": -14.049292641342026
+          },
+          {
+            "localBarIndex": 12,
+            "startSeconds": 65.80645161290323,
+            "endSeconds": 67.74193548387098,
+            "foregroundInstrument": "lead",
+            "rmsDbfs": -15.17586661602669,
+            "first2Point6BeatsRmsDbfs": -14.117975598317587
+          },
+          {
+            "localBarIndex": 13,
+            "startSeconds": 67.74193548387098,
+            "endSeconds": 69.67741935483872,
+            "foregroundInstrument": "lead",
+            "rmsDbfs": -15.057911395764737,
+            "first2Point6BeatsRmsDbfs": -14.19117235325134
+          },
+          {
+            "localBarIndex": 14,
+            "startSeconds": 69.6774193548387,
+            "endSeconds": 71.61290322580645,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -15.102422823629336,
+            "first2Point6BeatsRmsDbfs": -14.07063790635485
+          },
+          {
+            "localBarIndex": 15,
+            "startSeconds": 71.61290322580645,
+            "endSeconds": 73.54838709677419,
+            "foregroundInstrument": "guqin",
+            "rmsDbfs": -14.826855336384403,
+            "first2Point6BeatsRmsDbfs": -13.877678191559815
+          }
+        ],
+        "finalForegroundExchanges": [
+          {
+            "electronicLocalBars": [
+              6,
+              7
+            ],
+            "electronicRmsDbfs": -14.939524692980651,
+            "precedingTwoBarsRmsDbfs": -14.72023929203215,
+            "followingTwoBarsRmsDbfs": -14.803755682339903,
+            "entryChangeDb": -0.21928540094849974,
+            "exitChangeDb": 0.13576901064074917
+          },
+          {
+            "electronicLocalBars": [
+              12,
+              13
+            ],
+            "electronicRmsDbfs": -15.116488211917751,
+            "precedingTwoBarsRmsDbfs": -14.973664172243538,
+            "followingTwoBarsRmsDbfs": -14.96245379134603,
+            "entryChangeDb": -0.14282403967421414,
+            "exitChangeDb": 0.15403442057171865
+          }
+        ]
+      }
+    },
+    {
+      "options": {
+        "bpm": 124,
+        "transpose": 0,
+        "seed": 261014,
+        "version": "hook"
+      },
+      "audioContentDurationSeconds": 16.883854875283447,
+      "sourceStats": {
+        "peak": 0.8709635734558105,
+        "rms": 0.15030169682231373,
+        "peakDb": -1.2000001645528333,
+        "rmsDb": -16.46072232885959,
+        "clippedSamples": 0,
+        "dcOffset": -0.000015658200562611757
+      },
+      "sections": [
+        {
+          "name": "02 / 墨潮",
+          "start": 0,
+          "end": 15.483870967741936
+        }
+      ],
+      "files": [
+        {
+          "filename": "ink-tide-hook-124bpm-t0-s261014.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 16.883855,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 16.883854875283447,
+          "bytes": 678181,
+          "mastered": true,
+          "sha256": "61bc55f1d03ee76f42cd537aa488d433429d764617d1495be3dc552f4fbb7ffc",
+          "loudness": {
+            "integratedLufs": -14.09,
+            "truePeakDbtp": -1.49,
+            "loudnessRangeLu": 3.4,
+            "thresholdLufs": -24.26
+          }
+        }
+      ],
+      "decodedCheck": {
+        "version": "hook",
+        "filename": "ink-tide-hook-124bpm-t0-s261014.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 744578,
+        "decodedDurationSeconds": 16.883854875283447,
+        "expectedSourceDurationSeconds": 16.883854875283447,
+        "durationDifferenceSamples": 0,
+        "nonFiniteSamples": 0,
+        "fullScaleSamples": 0,
+        "peakDbfs": -1.50371175145137,
+        "rmsDbfs": -16.047642492024398,
+        "monoFoldDownRmsDeltaDb": -0.019355498021306
+      }
+    },
+    {
+      "options": {
+        "bpm": 124,
+        "transpose": 0,
+        "seed": 261014,
+        "version": "loop"
+      },
+      "audioContentDurationSeconds": 15.483877551020408,
+      "sourceStats": {
+        "peak": 0.8709635734558105,
+        "rms": 0.16058139890201145,
+        "peakDb": -1.2000001645528333,
+        "rmsDb": -15.886095261106608,
+        "clippedSamples": 0,
+        "dcOffset": -0.000017352455563474232
+      },
+      "sections": [
+        {
+          "name": "02 / 墨潮",
+          "start": 0,
+          "end": 15.483870967741936
+        }
+      ],
+      "files": [
+        {
+          "filename": "ink-tide-loop-124bpm-t0-s261014.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 15.483878,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 15.483877551020408,
+          "bytes": 621757,
+          "mastered": true,
+          "sha256": "befb899a5cbe01b5a882ebd7b6003c892831ff36db6a174bd9c1879351499311",
+          "loudness": {
+            "integratedLufs": -14.12,
+            "truePeakDbtp": -1.5,
+            "loudnessRangeLu": 1.1,
+            "thresholdLufs": -24.12
+          }
+        }
+      ],
+      "decodedCheck": {
+        "version": "loop",
+        "filename": "ink-tide-loop-124bpm-t0-s261014.mp3",
+        "sampleRate": 44100,
+        "channels": 2,
+        "decodedFrames": 682839,
+        "decodedDurationSeconds": 15.483877551020408,
+        "expectedSourceDurationSeconds": 15.483877551020408,
+        "durationDifferenceSamples": 0,
+        "nonFiniteSamples": 0,
+        "fullScaleSamples": 0,
+        "peakDbfs": -1.500852267160574,
+        "rmsDbfs": -15.738624844964097,
+        "monoFoldDownRmsDeltaDb": -0.01940214293203165,
+        "loopBoundary": {
+          "firstSamples": [
+            0.0003002956509590149,
+            0.00004630777766578831
+          ],
+          "lastSamples": [
+            2.1489059065515903e-7,
+            -0.0000017148164488389739
+          ],
+          "absoluteJumpByChannel": [
+            0.00030008076036835973,
+            0.00004802259411462728
+          ],
+          "maximumAbsoluteJump": 0.00030008076036835973,
+          "maximumJumpDbfs": -70.45523696812478,
+          "first10msRmsDbfs": -8.780848974978792,
+          "last10msRmsDbfs": -56.895788564261224,
+          "neighborDifference99thPercentile": 0.07037808001041412
+        }
+      }
+    }
+  ]
+}

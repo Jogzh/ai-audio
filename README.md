@@ -1,6 +1,30 @@
 # ai-audio
 
-用 **Tone.js** 创作原创音乐，内置情绪流行电子《余温 / Afterglow》《风起时 / When the Wind Rises》，以及中国风交响流行《山河醒 / Mountains Awake》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
+用 **Tone.js** 创作原创音乐，新增国风旋律 House《墨潮 / Ink Tide》，内置情绪流行电子《余温 / Afterglow》《风起时 / When the Wind Rises》，以及中国风交响流行《山河醒 / Mountains Awake》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
+
+## 新作：《墨潮 / Ink Tide》
+
+以用户提供的 **ZHENLOE《We Never》** 为参考，测量其推进速度与频谱段落变化后，创作了一首独立的 **124 BPM / D 小调五声 / 国风旋律 House**。木质琴弦与箫在留白里问答，温暖的反拍低音、木边击和轻沙锤保持向前的律动；最终段加入软电子拨弦和旋律变奏。新增独立音源与编曲，所有声音为原创合成。
+
+40 小节，第一拍出现琴声，约 **3.87 秒**进入主段。定稿为移调 0、seed **261014**，MP3 为 320 kbps / 44.1 kHz / 立体声。
+
+| 版本 | 内容 | PCM 时长 |
+| --- | --- | ---: |
+| full | 40 小节 + 2.8 秒尾音 | 80.219 s |
+| hook | 实际第 3–10 小节 + 1.4 秒尾音 | 16.884 s |
+| loop | 实际第 3–10 小节，跨轮空间尾音 | 15.484 s |
+
+- [完整版 / full](releases/ink-tide/ink-tide-full-124bpm-t0-s261014.mp3)
+- [精华片段 / hook](releases/ink-tide/ink-tide-hook-124bpm-t0-s261014.mp3)
+- [循环配乐 / loop](releases/ink-tide/ink-tide-loop-124bpm-t0-s261014.mp3)
+- [定稿实测 manifest](releases/ink-tide/manifest.json)
+- [参考调研、编曲与验证说明](docs/ink-tide-production.md)
+
+参考曲通过官方公开试听音频做客观测量，未核验抖音当日热度，未进行人工耳听评审；响度和自动检查不等于主观听感结论。网页 `/?track=ink-tide&version=hook` 可试听，设 seed 为 261014 可复现定稿触感。
+
+```bash
+npm run render -- --track ink-tide --seed 261014 --format both --out artifacts/audio/ink-tide-local
+```
 
 ## 新作：《山河醒》第二版
 
@@ -90,13 +114,13 @@ npm run render -- --version hook --format wav --out artifacts/audio/afterglow-wa
 npm run render -- --help
 ```
 
-CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；三首已交付作品的 MP3 保存在 `releases/` 对应曲目目录。只导出原始 WAV 时无需 FFmpeg。
+CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；四首已交付作品的 MP3 保存在 `releases/` 对应曲目目录。只导出原始 WAV 时无需 FFmpeg。
 
 | 参数 | 范围 / 含义 | 默认 |
 | --- | --- | --- |
-| `--track` | `afterglow`、`when-the-wind-rises`、`mountains-awake` | `afterglow` |
+| `--track` | `afterglow`、`when-the-wind-rises`、`mountains-awake`、`ink-tide` | `afterglow` |
 | `--version` | `all`、`full`、`hook`、`loop` | `all` |
-| `--bpm` | 90–170 整数 | 所选曲目 BPM；余温为 118，风起时为 114 |
+| `--bpm` | 90–170 整数 | 所选曲目 BPM；余温 118，风起时 114，山河醒 104，墨潮 124 |
 | `--transpose` | −12–12 整数，单位为半音 | 0 |
 | `--seed` | uint32 整数：0–4294967295 | 260713 |
 | `--out` | 相对当前工作目录或绝对路径 | `artifacts/audio` |
@@ -112,18 +136,18 @@ MP3 默认两遍 loudnorm 的项目目标为 **−14 LUFS / −1.5 dBTP / LRA 9*
 
 ## 音频与工程约束
 
-每小节 4 拍，音乐时长为 `小节数 × 4 × 60 / BPM`。hook / loop 为 8 小节；情绪电子 full / hook 分别加 2.4 / 0.8 秒尾音，国风分别为 3.6 / 1.6 秒。loop 渲染三轮、截取第三轮以保留跨轮空间尾音，并对边缘做约 3 ms 淡化；接缝仍需实际试听。固定 BPM、完整小节与精确秒数不一定能同时满足。
+每小节 4 拍，音乐时长为 `小节数 × 4 × 60 / BPM`。hook / loop 为 8 小节；情绪电子 full / hook 分别加 2.4 / 0.8 秒尾音，交响国风分别为 3.6 / 1.6 秒，墨潮分别为 2.8 / 1.4 秒。loop 渲染三轮、截取第三轮以保留跨轮空间尾音，并对边缘做约 3 ms 淡化；接缝仍需实际试听。固定 BPM、完整小节与精确秒数不一定能同时满足。
 
 引擎去除 DC，采用 −1.2 dBFS 采样峰值 ceiling。源 `stats` 的 peak / RMS / 削波不能当作最终文件的 LUFS / true peak；后者在重新渲染报告的 `mastering.after`，定稿则在 release manifest 的 `files[].loudness`。相同环境、源码与参数的 PCM 复现检查限制最大差值 `< 1/65536`、差值 RMS `< 1e-6`，容纳原生处理的微小浮点差异，不保证跨浏览器或文件逐位一致。
 
 ```text
 ai-audio/
-├── releases/                # 三首作品各三版 MP3 与实测 manifest
+├── releases/                # 四首作品各三版 MP3 与实测 manifest
 ├── src/
-│   ├── tracks/              # 三首曲目定义与 registry.ts
+│   ├── tracks/              # 四首曲目定义与 registry.ts
 │   ├── music/               # 类型、校验、确定性随机源与编曲
-│   │   └── arrangements/     # emotional-pop / cinematic-guofeng
-│   ├── engine/              # 两种独立音源与 Offline 渲染
+│   │   └── arrangements/     # emotional-pop / cinematic-guofeng / ink-tide
+│   ├── engine/              # 三种独立音源与 Offline 渲染
 │   ├── audio/wav.ts         # WAV 编码、PCM 电平与波形
 │   ├── main.ts              # 试听台
 │   └── style.css
@@ -141,6 +165,8 @@ ai-audio/
 当前和弦与 pad 每两小节起音，`harmony` 中相邻两小节使用同一和声，以保持持续和弦与低音一致。`edits.hook` / `edits.loop` 的 `startBar` 从 0 计数；两首情绪电子作品设为 2，国风《山河醒》设为 16，均取实际第一主段的 8 小节。`resolveHarmony` 指向已有和声的索引，控制结尾落点。
 
 `cinematic-guofeng` 使用独立编曲器和音源；《山河醒》可选 `cinematicGuofeng.finalHook` / `bridgeHook` 作为最终旋律发展与桥段主题。两种风格均有 seed、BPM、移调和真实乐谱裁切；国风 full / hook 尾音为 3.6 / 1.6 秒，loop 不加尾音。
+
+`ink-tide` 使用独立编曲器与音源，新增 `guqin` / `xiao` / `jade` / `rim` / `shaker` 音色；`inkTide.response` / `finalHook` / `bridgeHook` 保存八小节应答、变奏与桥段主题。应答避开主句和变奏，bridge 当前使用前四小节；hook / loop 裁自第 3–10 小节。
 
 Offline 任务串行执行，每次渲染独立拥有并释放节点，完成或失败后恢复原上下文。扩展音源时保留这些生命周期约束；尾音规则由 `src/engine/render.ts` 的 `getTailSeconds` 统一维护。
 

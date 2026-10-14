@@ -1,0 +1,330 @@
+{
+  "method": "FFmpeg decode to native-rate stereo float32 PCM; frame counting and NumPy RMS/sample measurements",
+  "generatedAt": "2026-10-14T02:52:16.393625+00:00",
+  "manualListening": "not performed",
+  "checks": [
+    {
+      "name": "full duration equals source PCM frame count",
+      "passed": true
+    },
+    {
+      "name": "full finite and no full-scale samples",
+      "passed": true
+    },
+    {
+      "name": "full mono RMS loss under 1 dB",
+      "passed": true
+    },
+    {
+      "name": "bridge at least 3 dB lower RMS than preceding groove and following final",
+      "passed": true
+    },
+    {
+      "name": "final foreground exchange two-bar RMS changes under 3 dB",
+      "passed": true
+    },
+    {
+      "name": "hook duration equals source PCM frame count",
+      "passed": true
+    },
+    {
+      "name": "hook finite and no full-scale samples",
+      "passed": true
+    },
+    {
+      "name": "hook mono RMS loss under 1 dB",
+      "passed": true
+    },
+    {
+      "name": "loop duration equals source PCM frame count",
+      "passed": true
+    },
+    {
+      "name": "loop finite and no full-scale samples",
+      "passed": true
+    },
+    {
+      "name": "loop mono RMS loss under 1 dB",
+      "passed": true
+    },
+    {
+      "name": "loop edge absolute jump below 0.001 full scale (-60 dBFS)",
+      "passed": true
+    }
+  ],
+  "renders": [
+    {
+      "version": "full",
+      "filename": "ink-tide-full-124bpm-t0-s261014.mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "decodedFrames": 3537673,
+      "decodedDurationSeconds": 80.21934240362812,
+      "expectedSourceDurationSeconds": 80.21934240362812,
+      "durationDifferenceSamples": 0.0,
+      "nonFiniteSamples": 0,
+      "fullScaleSamples": 0,
+      "peakDbfs": -1.4618246364197196,
+      "rmsDbfs": -16.19541488496439,
+      "monoFoldDownRmsDeltaDb": -0.020674227762299158,
+      "sections": [
+        {
+          "name": "01 / 落墨",
+          "start": 0,
+          "end": 3.870967741935484,
+          "rmsDbfs": -16.910182684164784,
+          "peakDbfs": -4.531515484030503
+        },
+        {
+          "name": "02 / 墨潮",
+          "start": 3.870967741935484,
+          "end": 19.35483870967742,
+          "rmsDbfs": -15.236123510962582,
+          "peakDbfs": -1.485245718840037
+        },
+        {
+          "name": "03 / 水面来信",
+          "start": 19.35483870967742,
+          "end": 34.83870967741936,
+          "rmsDbfs": -17.617329670245812,
+          "peakDbfs": -2.0466119343005635
+        },
+        {
+          "name": "04 / 月白",
+          "start": 34.83870967741936,
+          "end": 42.58064516129032,
+          "rmsDbfs": -20.75650748248958,
+          "peakDbfs": -8.303509994182711
+        },
+        {
+          "name": "05 / 潮生 · 回声",
+          "start": 42.58064516129032,
+          "end": 73.54838709677419,
+          "rmsDbfs": -14.819180319528849,
+          "peakDbfs": -1.4618246364197196
+        },
+        {
+          "name": "06 / 墨归于水",
+          "start": 73.54838709677419,
+          "end": 77.41935483870968,
+          "rmsDbfs": -21.134735659066664,
+          "peakDbfs": -7.16706241449208
+        }
+      ],
+      "bridgeEnergyChangeDb": {
+        "versusPrecedingGroove": -3.1391778122437692,
+        "versusFollowingFinal": -5.937327162960733
+      },
+      "finalBars": [
+        {
+          "localBarIndex": 0,
+          "startSeconds": 42.58064516129032,
+          "endSeconds": 44.516129032258064,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.560789022385167,
+          "first2Point6BeatsRmsDbfs": -13.50105709442321
+        },
+        {
+          "localBarIndex": 1,
+          "startSeconds": 44.516129032258064,
+          "endSeconds": 46.45161290322581,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.400335182240443,
+          "first2Point6BeatsRmsDbfs": -13.522117982088965
+        },
+        {
+          "localBarIndex": 2,
+          "startSeconds": 46.45161290322581,
+          "endSeconds": 48.38709677419355,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.673712976776322,
+          "first2Point6BeatsRmsDbfs": -13.649274760884541
+        },
+        {
+          "localBarIndex": 3,
+          "startSeconds": 48.387096774193544,
+          "endSeconds": 50.32258064516129,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.517335223678337,
+          "first2Point6BeatsRmsDbfs": -13.627150041188163
+        },
+        {
+          "localBarIndex": 4,
+          "startSeconds": 50.32258064516129,
+          "endSeconds": 52.25806451612903,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.769705497079775,
+          "first2Point6BeatsRmsDbfs": -13.69750498102227
+        },
+        {
+          "localBarIndex": 5,
+          "startSeconds": 52.25806451612903,
+          "endSeconds": 54.193548387096776,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.67132959877081,
+          "first2Point6BeatsRmsDbfs": -13.752716666292628
+        },
+        {
+          "localBarIndex": 6,
+          "startSeconds": 54.19354838709677,
+          "endSeconds": 56.12903225806451,
+          "foregroundInstrument": "lead",
+          "rmsDbfs": -15.023706848013465,
+          "first2Point6BeatsRmsDbfs": -14.035673341183623
+        },
+        {
+          "localBarIndex": 7,
+          "startSeconds": 56.12903225806451,
+          "endSeconds": 58.064516129032256,
+          "foregroundInstrument": "lead",
+          "rmsDbfs": -14.856943316239926,
+          "first2Point6BeatsRmsDbfs": -13.97036121278613
+        },
+        {
+          "localBarIndex": 8,
+          "startSeconds": 58.064516129032256,
+          "endSeconds": 60.0,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.893577661662103,
+          "first2Point6BeatsRmsDbfs": -13.837840931091776
+        },
+        {
+          "localBarIndex": 9,
+          "startSeconds": 60.0,
+          "endSeconds": 61.935483870967744,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.7157538447931,
+          "first2Point6BeatsRmsDbfs": -13.81360692382659
+        },
+        {
+          "localBarIndex": 10,
+          "startSeconds": 61.935483870967744,
+          "endSeconds": 63.87096774193549,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -15.019962885773829,
+          "first2Point6BeatsRmsDbfs": -13.99846731495453
+        },
+        {
+          "localBarIndex": 11,
+          "startSeconds": 63.87096774193548,
+          "endSeconds": 65.80645161290322,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.927853832332543,
+          "first2Point6BeatsRmsDbfs": -14.049292641342026
+        },
+        {
+          "localBarIndex": 12,
+          "startSeconds": 65.80645161290323,
+          "endSeconds": 67.74193548387098,
+          "foregroundInstrument": "lead",
+          "rmsDbfs": -15.17586661602669,
+          "first2Point6BeatsRmsDbfs": -14.117975598317587
+        },
+        {
+          "localBarIndex": 13,
+          "startSeconds": 67.74193548387098,
+          "endSeconds": 69.67741935483872,
+          "foregroundInstrument": "lead",
+          "rmsDbfs": -15.057911395764737,
+          "first2Point6BeatsRmsDbfs": -14.19117235325134
+        },
+        {
+          "localBarIndex": 14,
+          "startSeconds": 69.6774193548387,
+          "endSeconds": 71.61290322580645,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -15.102422823629336,
+          "first2Point6BeatsRmsDbfs": -14.07063790635485
+        },
+        {
+          "localBarIndex": 15,
+          "startSeconds": 71.61290322580645,
+          "endSeconds": 73.54838709677419,
+          "foregroundInstrument": "guqin",
+          "rmsDbfs": -14.826855336384403,
+          "first2Point6BeatsRmsDbfs": -13.877678191559815
+        }
+      ],
+      "finalForegroundExchanges": [
+        {
+          "electronicLocalBars": [
+            6,
+            7
+          ],
+          "electronicRmsDbfs": -14.939524692980651,
+          "precedingTwoBarsRmsDbfs": -14.72023929203215,
+          "followingTwoBarsRmsDbfs": -14.803755682339903,
+          "entryChangeDb": -0.21928540094849974,
+          "exitChangeDb": 0.13576901064074917
+        },
+        {
+          "electronicLocalBars": [
+            12,
+            13
+          ],
+          "electronicRmsDbfs": -15.116488211917751,
+          "precedingTwoBarsRmsDbfs": -14.973664172243538,
+          "followingTwoBarsRmsDbfs": -14.96245379134603,
+          "entryChangeDb": -0.14282403967421414,
+          "exitChangeDb": 0.15403442057171865
+        }
+      ]
+    },
+    {
+      "version": "hook",
+      "filename": "ink-tide-hook-124bpm-t0-s261014.mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "decodedFrames": 744578,
+      "decodedDurationSeconds": 16.883854875283447,
+      "expectedSourceDurationSeconds": 16.883854875283447,
+      "durationDifferenceSamples": 0.0,
+      "nonFiniteSamples": 0,
+      "fullScaleSamples": 0,
+      "peakDbfs": -1.50371175145137,
+      "rmsDbfs": -16.047642492024398,
+      "monoFoldDownRmsDeltaDb": -0.019355498021306
+    },
+    {
+      "version": "loop",
+      "filename": "ink-tide-loop-124bpm-t0-s261014.mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "decodedFrames": 682839,
+      "decodedDurationSeconds": 15.483877551020408,
+      "expectedSourceDurationSeconds": 15.483877551020408,
+      "durationDifferenceSamples": 0.0,
+      "nonFiniteSamples": 0,
+      "fullScaleSamples": 0,
+      "peakDbfs": -1.500852267160574,
+      "rmsDbfs": -15.738624844964097,
+      "monoFoldDownRmsDeltaDb": -0.01940214293203165,
+      "loopBoundary": {
+        "firstSamples": [
+          0.0003002956509590149,
+          4.630777766578831e-05
+        ],
+        "lastSamples": [
+          2.1489059065515903e-07,
+          -1.7148164488389739e-06
+        ],
+        "absoluteJumpByChannel": [
+          0.00030008076036835973,
+          4.802259411462728e-05
+        ],
+        "maximumAbsoluteJump": 0.00030008076036835973,
+        "maximumJumpDbfs": -70.45523696812478,
+        "first10msRmsDbfs": -8.780848974978792,
+        "last10msRmsDbfs": -56.895788564261224,
+        "neighborDifference99thPercentile": 0.07037808001041412
+      }
+    }
+  ],
+  "limitations": [
+    "RMS measures energy, not subjective tone quality or perceived foreground balance.",
+    "Loop edge sample difference is an objective discontinuity measure, not an audible-click judgment.",
+    "MP3 gapless playback also depends on the player respecting encoder delay/padding metadata.",
+    "This report does not rerun LUFS or true-peak analysis; those final-file measurements are in the export mastering reports."
+  ],
+  "passed": true
+}

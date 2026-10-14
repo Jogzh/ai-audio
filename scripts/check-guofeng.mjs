@@ -6,6 +6,20 @@ import { chromium } from 'playwright';
 import { createServer } from 'vite';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+const ink = process.argv.includes('--ink-tide');
+const config = ink ? {
+  id: 'ink-tide', exportName: 'inkTide', factory: 'createInkTideInstruments',
+  title: '墨潮', bpm: 124, bars: 40, description: /木质琴弦/,
+  seed: 261014,
+  voices: ['guqin', 'xiao', 'jade', 'lead', 'piano', 'pad', 'bass', 'kick', 'rim', 'shaker'],
+  report: 'ink-tide-qa',
+} : {
+  id: 'mountains-awake', engine: 'cinematic-guofeng', exportName: 'mountainsAwake', factory: 'createCinematicGuofengInstruments',
+  title: '山河醒', bpm: 104, bars: 48, description: /筝声与笛声/,
+  seed: 261013,
+  voices: ['guzheng', 'dizi', 'erhu', 'strings', 'brass', 'granular', 'taiko', 'gong'],
+  report: 'mountains-awake-v2-qa',
+};
 let server;
 let browser;
 try {
@@ -16,22 +30,23 @@ try {
   const page = await browser.newPage({ acceptDownloads: true });
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(`${base}/?track=mountains-awake&version=hook`);
+  await page.goto(`${base}/?track=${config.id}&version=hook`);
   await page.locator('#play').waitFor();
-  const checks = await page.evaluate(async () => {
+  const checks = await page.evaluate(async config => {
     const { renderTrack, getTailSeconds } = await import('/src/engine/render.ts');
-    const { mountainsAwake: track } = await import('/src/tracks/mountains-awake.ts');
-    const { createCinematicGuofengInstruments } = await import('/src/engine/cinematic-guofeng.ts');
+    const track = (await import(`/src/tracks/${config.id}.ts`))[config.exportName];
+    const createInstruments = (await import(`/src/engine/${config.engine ?? config.id}.ts`))[config.factory];
     const { measureAudio } = await import('/src/audio/wav.ts');
     const engineSource = await (await fetch('/src/engine/render.ts')).text();
     const toneUrl = engineSource.match(/from ["']([^"']*tone[^"']*)["']/)?.[1];
     const Tone = await import(toneUrl);
     const original = Tone.getContext();
-    const options = { version: 'hook', bpm: track.meta.bpm, transpose: 0, seed: 261013 };
+    const options = { version: 'hook', bpm: track.meta.bpm, transpose: 0, seed: config.seed };
     const [hook, repeat] = await Promise.all([renderTrack(track, options), renderTrack(track, options)]);
     const loop = await renderTrack(track, { ...options, version: 'loop' });
     const low = await renderTrack(track, { ...options, bpm: 90, transpose: -12, seed: 0 });
     const high = await renderTrack(track, { ...options, bpm: 170, transpose: 12, seed: 0xffffffff });
+    const renderContextRestored = Tone.getContext() === original;
     let maximum = 0;
     let sum = 0;
     for (let channel = 0; channel < 2; channel++) {
@@ -49,14 +64,14 @@ try {
       finite: [0, 1].every(channel => rendered.buffer.getChannelData(channel).every(Number.isFinite)),
       expectedDuration: 32 * 60 / rendered.options.bpm + getTailSeconds(track, rendered.options.version),
     });
-    const voices = ['guzheng', 'dizi', 'erhu', 'strings', 'brass', 'granular', 'taiko', 'gong'];
+    const voices = config.voices;
     let rig;
     let rendered;
     let palette;
     try {
       rendered = await Tone.Offline(() => {
-        rig = createCinematicGuofengInstruments(96, 261013);
-        voices.forEach((instrument, index) => rig.hit({ instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [74] }, index * 4));
+        rig = createInstruments(config.bpm, config.seed);
+        voices.forEach((instrument, index) => rig.hit({ instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [instrument === 'bass' ? 38 : 74] }, index * 4));
       }, voices.length * 4, 2, 44100);
       const buffer = rendered.get();
       palette = voices.map((instrument, index) => ({ instrument, ...measureAudio({
@@ -68,9 +83,17 @@ try {
       renders: [hook, loop, low, high].map(summary),
       repeat: { maximum, rms: Math.sqrt(sum / (hook.buffer.length * 2)) },
       loopEdges: [0, 1].flatMap(channel => { const data = loop.buffer.getChannelData(channel); return [data[0], data.at(-1)]; }),
-      palette, contextRestored: Tone.getContext() === original,
+      monoDeltaDb: (() => {
+        const left = hook.buffer.getChannelData(0), right = hook.buffer.getChannelData(1);
+        let stereo = 0, mono = 0;
+        for (let i = 0; i < left.length; i++) { stereo += (left[i] ** 2 + right[i] ** 2) / 2; mono += ((left[i] + right[i]) / 2) ** 2; }
+        return 10 * Math.log10(mono / stereo);
+      })(),
+      palette, renderContextRestored, contextRestored: Tone.getContext() === original,
     };
-  });
+  }, { ...config, description: undefined });
+  await mkdir(`${root}/artifacts/audio/${config.report}`, { recursive: true });
+  await writeFile(`${root}/artifacts/audio/${config.report}/pcm-check.json`, JSON.stringify(checks, null, 2) + '\n');
   for (const result of checks.renders) {
     assert.equal(result.finite, true);
     assert.equal(result.sampleRate, 44100);
@@ -85,22 +108,24 @@ try {
   assert.ok(checks.loopEdges.every(value => value === 0));
   assert.ok(checks.palette.every(voice => voice.rms > 0.0001 && voice.peak > 0.001));
   assert.equal(checks.contextRestored, true);
+  assert.equal(checks.renderContextRestored, true, 'renderTrack restores its caller context');
+  assert.ok(checks.monoDeltaDb > -1, 'mono fold-down must preserve the foreground');
 
-  assert.equal(await page.locator('#track-select').inputValue(), 'mountains-awake');
-  assert.equal(await page.locator('#player-title').textContent(), '山河醒');
-  assert.equal(await page.locator('#bpm').inputValue(), '104');
-  assert.equal(await page.locator('#bars-fact').textContent(), '48');
-  assert.match(await page.locator('#melody-description').textContent(), /筝声与笛声/);
+  assert.equal(await page.locator('#track-select').inputValue(), config.id);
+  assert.equal(await page.locator('#player-title').textContent(), config.title);
+  assert.equal(await page.locator('#bpm').inputValue(), String(config.bpm));
+  assert.equal(await page.locator('#bars-fact').textContent(), String(config.bars));
+  assert.match(await page.locator('#melody-description').textContent(), config.description);
   await page.locator('#play').click();
   await page.waitForFunction(() => document.querySelector('#render-badge')?.textContent === '合成完成', undefined, { timeout: 120000 });
   await page.waitForFunction(() => document.querySelector('#play-state')?.textContent === '正在播放', undefined, { timeout: 20000 });
   await page.waitForFunction(() => Number(document.querySelector('#seek')?.value) > 0.2);
-  assert.equal(await page.locator('#total-time').textContent(), '00:20');
+  assert.equal(await page.locator('#total-time').textContent(), ink ? '00:16' : '00:20');
   await page.locator('#stop').click();
   const downloadPromise = page.waitForEvent('download');
   await page.locator('#export').click();
   const download = await downloadPromise;
-  assert.match(download.suggestedFilename(), /mountains-awake-hook-104bpm-t0-s260713\.wav/);
+  assert.equal(download.suggestedFilename(), `${config.id}-hook-${config.bpm}bpm-t0-s260713.wav`);
   const bytes = await readFile(await download.path());
   assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
   assert.equal(bytes.readUInt16LE(22), 2);
@@ -110,10 +135,10 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   assert.deepEqual(errors, []);
   const report = { passed: true, generatedAt: new Date().toISOString(), ...checks, player: { directUrl: true, playbackProgress: true, wavDownload: true, mobileOverflow: false, pageErrors: errors }, manualListening: 'not performed' };
-  await mkdir(`${root}/artifacts/audio/mountains-awake-v2-qa`, { recursive: true });
-  await writeFile(`${root}/artifacts/audio/mountains-awake-v2-qa/browser-check.json`, JSON.stringify(report, null, 2) + '\n');
-  console.log('PASS: guofeng voices, seeded PCM, pitch/tempo limits, loop edges, context cleanup and player/download');
-  console.log(JSON.stringify(report, null, 2));
+  await mkdir(`${root}/artifacts/audio/${config.report}`, { recursive: true });
+  await writeFile(`${root}/artifacts/audio/${config.report}/browser-check.json`, JSON.stringify(report, null, 2) + '\n');
+  console.log(`PASS: ${config.id} voices, seeded PCM, pitch/tempo limits, mono compatibility, loop edges, context cleanup and player/download`);
+  console.log(JSON.stringify({ renders: checks.renders.map(({ duration, stats }) => ({ duration, rmsDb: stats.rmsDb })), repeat: checks.repeat, monoDeltaDb: checks.monoDeltaDb }));
 } finally {
   try { await browser?.close(); } finally { await server?.close(); }
 }

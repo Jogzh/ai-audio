@@ -8,7 +8,7 @@ export function validateOptions(options: RenderOptions): void {
 }
 
 export function validateTrack(track: TrackDefinition): void {
-  if (!['emotional-pop', 'cinematic-guofeng'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
+  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
   if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
   const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
   const validatePhrase = (phrase: HookBar[], name: string, withinBar = false) => {
@@ -23,6 +23,26 @@ export function validateTrack(track: TrackDefinition): void {
     }
   };
   validatePhrase(track.hook, 'Hook');
+  if (track.production === 'ink-tide') validatePhrase(track.hook, 'Hook', true);
+  if (track.inkTide !== undefined) {
+    const development = track.inkTide;
+    if (track.production !== 'ink-tide' || !development || typeof development !== 'object') throw new RangeError('ink-tide 需要有效旋律发展配置');
+    for (const name of ['response', 'finalHook', 'bridgeHook'] as const) {
+      const phrase = development[name];
+      if (phrase === undefined) continue;
+      if (!Array.isArray(phrase) || phrase.length !== track.hook.length) throw new RangeError(`${name} 小节数必须与 Hook 主题一致`);
+      validatePhrase(phrase, name, true);
+    }
+    if (development.response) {
+      for (const melody of [track.hook, development.finalHook].filter((phrase): phrase is HookBar[] => phrase !== undefined)) {
+        melody.forEach((bar, index) => {
+          for (const reply of development.response![index]) {
+            if (bar.some(note => reply.offset < note.offset + note.length && reply.offset + reply.length > note.offset)) throw new RangeError('response 应答必须位于主旋律留白');
+          }
+        });
+      }
+    }
+  }
   if (track.cinematicGuofeng !== undefined) {
     if (track.production !== 'cinematic-guofeng' || !track.cinematicGuofeng || typeof track.cinematicGuofeng !== 'object') throw new RangeError('cinematic-guofeng 需要有效旋律发展配置');
     validatePhrase(track.hook, 'Hook', true);

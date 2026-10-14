@@ -1,6 +1,6 @@
 export const versions = ['full', 'hook', 'loop'] as const;
 export type Version = typeof versions[number];
-export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'impact' | 'piano' | 'vocal' | 'texture' | 'sweep' | 'guzheng' | 'dizi' | 'erhu' | 'taiko' | 'gong' | 'brass' | 'strings' | 'granular';
+export type Instrument = 'kick' | 'clap' | 'hat' | 'openHat' | 'perc' | 'bass' | 'sub' | 'lead' | 'chord' | 'pad' | 'spark' | 'impact' | 'piano' | 'vocal' | 'texture' | 'sweep' | 'guzheng' | 'dizi' | 'erhu' | 'taiko' | 'gong' | 'brass' | 'strings' | 'granular' | 'guqin' | 'xiao' | 'jade' | 'rim' | 'shaker';
 
 export interface RenderOptions {
   version: Version;
@@ -43,7 +43,13 @@ export interface TrackDefinition {
     tags: string[];
     description: string;
   };
-  production: 'emotional-pop' | 'cinematic-guofeng';
+  production: 'emotional-pop' | 'cinematic-guofeng' | 'ink-tide';
+  /** Written pluck melody, breathy replies, and a developed final phrase. */
+  inkTide?: {
+    response?: HookBar[];
+    finalHook?: HookBar[];
+    bridgeHook?: HookBar[];
+  };
   /** Written melody development for the separate cinematic Chinese palette. */
   cinematicGuofeng?: {
     finalHook?: HookBar[];

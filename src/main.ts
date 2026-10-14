@@ -124,6 +124,12 @@ const versionCopy = {
   loop: ['循环片段 / LOOP EDIT', '适合反复聆听的循环片段，播放时自动循环。'],
 };
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
+  'ink-tide': {
+    coverId: 'IT—008',
+    melody: '木质琴弦弹出两小节主题，箫声在留白里接话；玉磬轻点句尾，后半段由柔软电子拨弦展开新的旋律。',
+    drums: '稳拍底鼓、短木边击与轻沙锤组成向前的律动；桥段撤去鼓点，让再一次落拍更有分量。',
+    bass: '温暖的短低音与底鼓交错，低频保持居中；三声部和声与短暗空间托住主题。',
+  },
   'cinematic-guofeng': {
     coverId: 'MA—007',
     melody: '筝声与笛声各自领奏，二胡唱主歌；三音主题留出呼吸，弦乐逐步展开，最后一遍向更高处推进。',
@@ -145,7 +151,8 @@ const productionCopy: Record<string, { coverId: string; melody: string; drums: s
 };
 function syncTrack(): void {
   const { meta, arrangement } = selectedTrack;
-  element('.header-note').innerHTML = `<i aria-hidden="true"></i> 原创${selectedTrack.production === 'cinematic-guofeng' ? '国风交响流行' : '电子流行'} · ${meta.title}`;
+  const styleName = { 'cinematic-guofeng': '国风交响流行', 'ink-tide': '国风电子', 'emotional-pop': '电子流行' }[selectedTrack.production];
+  element('.header-note').innerHTML = `<i aria-hidden="true"></i> 原创${styleName} · ${meta.title}`;
   const copy = productionCopy[meta.id] ?? productionCopy[selectedTrack.production];
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
   const [first, ...rest] = meta.subtitle.split(' ');
