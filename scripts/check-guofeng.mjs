@@ -7,8 +7,13 @@ import { createServer } from 'vite';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const ink = process.argv.includes('--ink-tide');
-const club = process.argv.includes('--neon-changan');
-const config = club ? {
+const vocal = process.argv.includes('--vocal');
+const club = process.argv.includes('--neon-changan') || vocal;
+const config = vocal ? {
+  id: 'neon-changan-vocal', engine: 'guofeng-club', exportName: 'neonChanganVocal', factory: 'createGuofengClubInstruments',
+  title: '霓虹长安 · 灯起', bpm: 128, bars: 60, description: /男女声.*切片/,
+  seed: 261014, sampleRate: 48000, bitDepth: 24, mix: true, vocal: true, report: 'neon-changan-vocal-qa',
+} : club ? {
   id: 'neon-changan', engine: 'guofeng-club', exportName: 'neonChangan', factory: 'createGuofengClubInstruments',
   title: '霓虹长安', bpm: 128, bars: 60, description: /古筝.*唢呐/,
   seed: 261014, sampleRate: 48000, bitDepth: 24, mix: true, report: 'neon-changan-qa',
@@ -38,6 +43,19 @@ try {
   await page.goto(`${base}/?track=${config.id}&version=hook`);
   await page.locator('#play').waitFor();
   let sampleLoadRetry;
+  if (vocal) {
+    const missing = '**/audio/night-city/night-call.wav';
+    await page.route(missing, route => route.fulfill({ status: 404, body: 'missing voice' }));
+    sampleLoadRetry = await page.evaluate(async () => {
+      const module = await import('/src/engine/vocal-samples.ts');
+      let failed = false, empty = false;
+      try { await module.prepareVocalSamples(); } catch (error) { failed = /人声采样加载失败/.test(String(error)); }
+      try { module.getVocalSample('ah-a4'); } catch { empty = true; }
+      return { failed, empty };
+    });
+    await page.unroute(missing);
+    assert.deepEqual(sampleLoadRetry, { failed: true, empty: true });
+  }
   if (ink) {
     const missingSample = '**/audio/salamander/C4.mp3';
     await page.route(missingSample, route => route.fulfill({ status: 404, body: 'missing sample' }));
@@ -79,6 +97,14 @@ try {
       ? (await import('/src/music/arrange.ts')).buildArrangement(track, options).tracks.map(track => ({ ...track, automation: undefined }))
       : undefined;
     const [hook, repeat] = await Promise.all([renderTrack(track, options), renderTrack(track, options)]);
+    const vocalBank = config.vocal ? await (async () => {
+      const { vocalSamples } = await import('/src/music/vocal-bank.ts');
+      const { getVocalSample } = await import('/src/engine/vocal-samples.ts');
+      return Object.keys(vocalSamples).map(id => {
+        const buffer = getVocalSample(id);
+        return { id, duration: buffer.duration, sampleRate: buffer.sampleRate, channels: buffer.numberOfChannels, finite: buffer.getChannelData(0).every(Number.isFinite) };
+      });
+    })() : undefined;
     const sampleBank = config.id === 'ink-tide' ? [...(await import('/src/engine/piano-samples.ts')).getPianoSamples()].map(([midi, buffer]) => ({
       midi, duration: buffer.duration, sampleRate: buffer.sampleRate, channels: buffer.numberOfChannels,
       finite: buffer.getChannelData(0).every(Number.isFinite),
@@ -113,7 +139,7 @@ try {
       expectedDuration: 32 * 60 / rendered.options.bpm + getTailSeconds(track, rendered.options.version),
     });
     const voices = mixTracks
-      ? mixTracks.map(track => ({ name: track.id, event: { trackId: track.id, instrument: track.instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [74] } }))
+      ? mixTracks.map(track => ({ name: track.id, event: { trackId: track.id, instrument: track.instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [74], ...(track.instrument === 'vocal' ? { sample: ({ voice: 'night-call', chops: 'ah-a4', choir: 'choir-d4', 'voice-fx': 'reverse-a4' })[track.id] } : {}) } }))
       : config.voices.map(instrument => ({ name: instrument, event: { instrument, beat: 0, duration: 1.2, velocity: 0.8, notes: [74] } }));
     for (const drum of config.drumCases ?? []) voices.push({
       name: `drum/${drum.body}/${drum.stroke}`, event: { instrument: 'chineseDrum', beat: 0, duration: 1.2, velocity: 0.7, drum },
@@ -132,6 +158,19 @@ try {
         getChannelData: channel => buffer.getChannelData(channel).subarray(index * 4 * buffer.sampleRate, (index * 4 + 1) * buffer.sampleRate),
       }) }));
     } finally { Tone.setContext(original); rig?.dispose(); rendered?.dispose(); }
+    let vocalStemSum;
+    if (config.vocal) {
+      const ids = ['voice', 'chops', 'choir', 'voice-fx'];
+      const raw = await renderTrack(track, options, { processing: 'raw' });
+      const voices = await renderTrack(track, options, { processing: 'raw', soloTrackIds: ids });
+      const music = await renderTrack(track, options, { processing: 'raw', muteTrackIds: ids });
+      let maximum = 0, squares = 0;
+      for (let c = 0; c < 2; c++) {
+        const a = raw.buffer.getChannelData(c), b = voices.buffer.getChannelData(c), d = music.buffer.getChannelData(c);
+        for (let i = 0; i < a.length; i++) { const diff = a[i] - b[i] - d[i]; maximum = Math.max(maximum, Math.abs(diff)); squares += diff ** 2; }
+      }
+      vocalStemSum = { maximum, rms: Math.sqrt(squares / (raw.buffer.length * 2)), voiceRms: voices.stats.rms, musicRms: music.stats.rms };
+    }
     return {
       renders: [hook, loop, low, high].map(summary),
       repeat: { maximum, rms: Math.sqrt(sum / (hook.buffer.length * 2)) },
@@ -142,7 +181,7 @@ try {
         for (let i = 0; i < left.length; i++) { stereo += (left[i] ** 2 + right[i] ** 2) / 2; mono += ((left[i] + right[i]) / 2) ** 2; }
         return 10 * Math.log10(mono / stereo);
       })(),
-      palette, sampleBank, acousticBanks, renderContextRestored, contextRestored: Tone.getContext() === original,
+      palette, sampleBank, acousticBanks, vocalBank, vocalStemSum, renderContextRestored, contextRestored: Tone.getContext() === original,
     };
   }, { ...config, description: undefined });
   await mkdir(`${root}/artifacts/audio/${config.report}`, { recursive: true });
@@ -163,6 +202,12 @@ try {
   assert.equal(checks.contextRestored, true);
   assert.equal(checks.renderContextRestored, true, 'renderTrack restores its caller context');
   assert.ok(checks.monoDeltaDb > -1, 'mono fold-down must preserve the foreground');
+  if (vocal) {
+    assert.equal(checks.vocalBank.length, 11);
+    assert.ok(checks.vocalBank.every(s => s.finite && s.sampleRate === 48000 && s.channels === 1 && s.duration > .1));
+    assert.ok(checks.vocalStemSum.maximum < 2e-6 && checks.vocalStemSum.rms < 1e-7);
+    assert.ok(checks.vocalStemSum.voiceRms > .01 && checks.vocalStemSum.musicRms > .01);
+  }
   if (ink) {
     assert.equal(checks.sampleBank.length, 13);
     assert.ok(checks.sampleBank.every(sample => sample.finite && sample.channels === 1 && sample.sampleRate === 44100 && sample.duration > 5));

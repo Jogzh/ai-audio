@@ -36,6 +36,7 @@ export function validateTrack(track: TrackDefinition): void {
   validatePhrase(track.hook, 'Hook');
   if (track.guofengClub !== undefined) {
     if (track.production !== 'guofeng-club') throw new RangeError('guofengClub 配置需要对应制作风格');
+    if (track.guofengClub.vocals !== undefined && track.guofengClub.vocals !== 'night-city') throw new RangeError('未知国风 DJ 人声音源');
     validatePhrase(track.hook, 'Hook', true);
     for (const name of ['finalHook', 'bridgeHook'] as const) {
       const phrase = track.guofengClub[name];

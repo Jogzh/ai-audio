@@ -1,5 +1,6 @@
 import type { Arrangement, Instrument, MixTrack, RenderOptions, TrackDefinition } from '../types.ts';
 import { createRandom } from '../random.ts';
+import { addNightCityArrangement, nightCityParts } from './night-city.ts';
 
 const strip = (id: string, name: string, instrument: Instrument, role: MixTrack['role'], gain: number, pan: number, highpass: number, lowpass: number, reverb = 0, delay = 0): MixTrack => ({ id, name, instrument, role, mix: { gain, pan, highpass, lowpass, reverb, delay } });
 export const clubTracks: MixTrack[] = [
@@ -22,7 +23,7 @@ export const clubTracks: MixTrack[] = [
 /** Write the full score once. Short versions retain identical timing and dynamics. */
 export function buildGuofengClubArrangement(track: TrackDefinition, options: RenderOptions): Arrangement {
   const random = createRandom(options.seed);
-  const events: Arrangement['events'] = [];
+  let events: Arrangement['events'] = [];
   const sections: Arrangement['sections'] = [];
   const spb = 60 / options.bpm;
   const add = (id: string, beat: number, duration: number, velocity: number, notes?: number[], touch = false, gesture?: 'rise' | 'fall') => {
@@ -111,13 +112,16 @@ export function buildGuofengClubArrangement(track: TrackDefinition, options: Ren
       if (outro && local === 0) add('drum', b, .7, .47, [38]);
     }
   }
+  const vocal = track.guofengClub?.vocals === 'night-city';
+  if (vocal) events = addNightCityArrangement(track, options, events);
+  const tracks = vocal ? [...clubTracks, ...nightCityParts] : clubTracks;
   events.sort((a, b) => a.beat - b.beat);
-  if (options.version === 'full') return { tracks: clubTracks, events, beats: bar * 4, sections };
+  if (options.version === 'full') return { tracks, events, beats: bar * 4, sections };
   const edit = track.edits![options.version];
   const start = edit.startBar * 4;
   const end = start + edit.bars * 4;
   return {
-    tracks: clubTracks,
+    tracks,
     events: events.filter(e => e.beat >= start && e.beat < end).map(e => ({ ...e, beat: e.beat - start, duration: Math.min(e.duration, end - e.beat) })),
     beats: end - start,
     sections: sections.filter(s => s.end > start * spb && s.start < end * spb).map(s => ({ name: s.name, start: Math.max(0, s.start - start * spb), end: Math.min((end - start) * spb, s.end - start * spb) })),

@@ -129,6 +129,12 @@ const versionCopy = {
   loop: ['循环片段 / LOOP EDIT', '适合反复聆听的循环片段，播放时自动循环。'],
 };
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
+  'neon-changan-vocal': {
+    coverId: 'NCLO—010',
+    melody: '“长安入夜，灯起！”男女声口号先开场，调音人声切片唱出三音暗号，唢呐与古筝在下一句回答；月下桥段加入呼吸和声。',
+    drums: '四拍底鼓与二四拍拍手托住口号，每八小节用一次碎拍和短暂停顿转身；反向人声接进 Drop，末尾留出起跳空间。',
+    bass: '居中的弹跳低音给人声留出音区；酸性电子音只在古筝句尾接话，最终 Drop 后半段把人声与国风主题一起抬高。',
+  },
   'guofeng-club': {
     coverId: 'NC—009',
     melody: '古筝抛出 A–C–D 三音暗号，唢呐感主音接住 Drop；竹笛在月下唱长句，最终主题升高再归弦。',
@@ -188,7 +194,9 @@ function syncTrack(): void {
   element('#export-format').textContent = selectedTrack.production === 'guofeng-club' ? '立体声 / 48 kHz / 24 bit PCM' : '立体声 / 44.1 kHz / 16 bit PCM';
   document.title = `${meta.subtitle} / ${meta.title}`;
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
-  element('.original-note').innerHTML = selectedTrack.production === 'ink-tide'
+  element('.original-note').innerHTML = selectedTrack.guofengClub?.vocals
+    ? '<span aria-hidden="true">//</span> 原创词曲 · 神经语音与合成音色 <span class="note-end">ORIGINAL WORDS / NEURAL VOICES & SYNTHESIS.</span>'
+    : selectedTrack.production === 'ink-tide'
     ? '<span aria-hidden="true">//</span> 原创编曲 · 实录与合成音色 <span class="note-end">ORIGINAL SCORE / RECORDED & SYNTHESIZED SOUNDS.</span>'
     : '<span aria-hidden="true">//</span> 原创编曲 · 原创合成音色 <span class="note-end">ORIGINAL SCORE / SYNTHESIZED SOUNDS.</span>';
   syncMixTracks();

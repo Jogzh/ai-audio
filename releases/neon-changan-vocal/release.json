@@ -1,0 +1,446 @@
+{
+  "title": "霓虹长安 · 灯起 / Neon Changan Lights On",
+  "generatedAt": "2026-10-14T12:37:33.732Z",
+  "bpm": 128,
+  "key": "D minor pentatonic melody",
+  "seed": 261014,
+  "transpose": 0,
+  "synthesis": "Original 48 kHz Web Audio instruments and Kokoro neural Chinese voices sourced at 24 kHz, processed and converted to 48 kHz. WORLD-tuned vocal chops, original spoken text, no live singer or copied song recording.",
+  "manualListening": "not performed; objective measurements and automated checks are not listening judgments",
+  "edit30": {
+    "source": "neon-changan-vocal-full-128bpm-t0-s261014.wav",
+    "sourceStartSeconds": 75,
+    "sourceEndSeconds": 105,
+    "bars": "41–56",
+    "durationSeconds": 30,
+    "melodyLiftSeconds": 15,
+    "mastering": {
+      "mode": "loudness",
+      "method": "FFmpeg loudnorm / EBU R128, measured from source and decoded final files",
+      "target": {
+        "integratedLufs": -14,
+        "truePeakDbtp": -1.5,
+        "loudnessRangeLu": 9
+      },
+      "targetNote": "Project production target; no platform loudness standard is claimed. MP3 encoding can alter measured loudness/true peak.",
+      "before": {
+        "integratedLufs": -12.96,
+        "truePeakDbtp": -1.49,
+        "loudnessRangeLu": 3.3,
+        "thresholdLufs": -22.99
+      },
+      "after": {
+        "wav": {
+          "integratedLufs": -14,
+          "truePeakDbtp": -2.53,
+          "loudnessRangeLu": 3.4,
+          "thresholdLufs": -24.03
+        },
+        "mp3": {
+          "integratedLufs": -14,
+          "truePeakDbtp": -2.47,
+          "loudnessRangeLu": 3.4,
+          "thresholdLufs": -24.03
+        }
+      },
+      "processing": {
+        "wav": {
+          "passes": 2,
+          "normalizationType": "linear",
+          "requestedLinear": true
+        },
+        "mp3": {
+          "passes": 2,
+          "normalizationType": "linear",
+          "requestedLinear": true
+        }
+      }
+    }
+  },
+  "files": [
+    {
+      "filename": "neon-changan-vocal-full-128bpm-t0-s261014.wav",
+      "format": "PCM24 WAV",
+      "codec": "pcm_s24le",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 115,
+      "durationSource": "ffprobe container duration",
+      "bitsPerSample": 24,
+      "audioContentDurationSeconds": 115,
+      "bytes": 33120102,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14.04,
+        "truePeakDbtp": -1.45,
+        "loudnessRangeLu": 5.9,
+        "thresholdLufs": -24.26
+      },
+      "sha256": "f16f63fbbc6094f341b570ab1d4460a7088bea3776cb31785ff557ce2c878924"
+    },
+    {
+      "filename": "neon-changan-vocal-full-128bpm-t0-s261014.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 115,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 115,
+      "bytes": 4602284,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14.04,
+        "truePeakDbtp": -1.43,
+        "loudnessRangeLu": 5.9,
+        "thresholdLufs": -24.26
+      },
+      "sha256": "1a515d04dc7a8fc153cce5b1ab6809d765d33b96e268e7bea32192a750e952d5"
+    },
+    {
+      "filename": "neon-changan-vocal-hook-128bpm-t0-s261014.wav",
+      "format": "PCM24 WAV",
+      "codec": "pcm_s24le",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 15.65,
+      "durationSource": "ffprobe container duration",
+      "bitsPerSample": 24,
+      "audioContentDurationSeconds": 15.65,
+      "bytes": 4507302,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14.31,
+        "truePeakDbtp": -1.5,
+        "loudnessRangeLu": 3.6,
+        "thresholdLufs": -24.58
+      },
+      "sha256": "523b7b161f7866aafde00ba5622fcf8efd01ecb889c6d2b4a0a1f0b6bc686635"
+    },
+    {
+      "filename": "neon-changan-vocal-hook-128bpm-t0-s261014.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 15.65,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 15.65,
+      "bytes": 628844,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14.31,
+        "truePeakDbtp": -1.45,
+        "loudnessRangeLu": 3.6,
+        "thresholdLufs": -24.58
+      },
+      "sha256": "71f6b0383501cbb424202f0e17d77c8e76e2fe497036335e54243f53de1272c2"
+    },
+    {
+      "filename": "neon-changan-vocal-loop-128bpm-t0-s261014.wav",
+      "format": "PCM24 WAV",
+      "codec": "pcm_s24le",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 15,
+      "durationSource": "ffprobe container duration",
+      "bitsPerSample": 24,
+      "audioContentDurationSeconds": 15,
+      "bytes": 4320102,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14.28,
+        "truePeakDbtp": -1.5,
+        "loudnessRangeLu": 2.4,
+        "thresholdLufs": -24.28
+      },
+      "sha256": "d69397b495c5993606938584c63ddc54c5e1fea39c6f566c6d9dd5a34627f2b3"
+    },
+    {
+      "filename": "neon-changan-vocal-loop-128bpm-t0-s261014.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 15,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 15,
+      "bytes": 601964,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14.28,
+        "truePeakDbtp": -1.45,
+        "loudnessRangeLu": 2.4,
+        "thresholdLufs": -24.28
+      },
+      "sha256": "4ddfc20ec5143f12fbc87acec85f4fd41174bed419efd9b83eb2e953f45b5e52"
+    },
+    {
+      "filename": "neon-changan-vocal-douyin30-128bpm-t0-s261014.wav",
+      "format": "PCM24 WAV",
+      "codec": "pcm_s24le",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 30,
+      "durationSource": "ffprobe container duration",
+      "bitsPerSample": 24,
+      "audioContentDurationSeconds": 30,
+      "bytes": 8640102,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14,
+        "truePeakDbtp": -2.53,
+        "loudnessRangeLu": 3.4,
+        "thresholdLufs": -24.03
+      },
+      "sha256": "0dd8c206f96febd070b6e683808b45be1ccf3d11632f9277a2de0cb411902a6e"
+    },
+    {
+      "filename": "neon-changan-vocal-douyin30-128bpm-t0-s261014.mp3",
+      "format": "MP3 320 kbps",
+      "codec": "mp3",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 30,
+      "durationSource": "ffprobe container duration",
+      "audioContentDurationSeconds": 30,
+      "bytes": 1201964,
+      "mastered": true,
+      "loudness": {
+        "integratedLufs": -14,
+        "truePeakDbtp": -2.47,
+        "loudnessRangeLu": 3.4,
+        "thresholdLufs": -24.03
+      },
+      "sha256": "99ffb3b484e8d3f58ed231e6f1d9d4bc74acf7f22fe8ce3e60ba6b7a2a0af75d"
+    }
+  ],
+  "decoded": [
+    {
+      "filename": "neon-changan-vocal-full-128bpm-t0-s261014.wav",
+      "frames": 5520000,
+      "decodedDurationSeconds": 115,
+      "finite": true,
+      "peakDbfs": -1.4824064297984854,
+      "rmsDbfs": -15.496577285518796,
+      "dcOffset": -0.0000054445622407871746,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.00578948898724011
+    },
+    {
+      "filename": "neon-changan-vocal-full-128bpm-t0-s261014.mp3",
+      "frames": 5520000,
+      "decodedDurationSeconds": 115,
+      "finite": true,
+      "peakDbfs": -1.4432083248855423,
+      "rmsDbfs": -15.496985658530292,
+      "dcOffset": -0.0000061513984494915144,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.005799084571403662
+    },
+    {
+      "filename": "neon-changan-vocal-hook-128bpm-t0-s261014.wav",
+      "frames": 751200,
+      "decodedDurationSeconds": 15.65,
+      "finite": true,
+      "peakDbfs": -1.4994290306516513,
+      "rmsDbfs": -15.198623279482133,
+      "dcOffset": -0.000019036814475211852,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.0019165930945817583
+    },
+    {
+      "filename": "neon-changan-vocal-hook-128bpm-t0-s261014.mp3",
+      "frames": 751200,
+      "decodedDurationSeconds": 15.65,
+      "finite": true,
+      "peakDbfs": -1.449291673131559,
+      "rmsDbfs": -15.198794314503354,
+      "dcOffset": -0.000013980150574336916,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.0019256452462027569
+    },
+    {
+      "filename": "neon-changan-vocal-loop-128bpm-t0-s261014.wav",
+      "frames": 720000,
+      "decodedDurationSeconds": 15,
+      "finite": true,
+      "peakDbfs": -1.4994290306516513,
+      "rmsDbfs": -15.035496994572256,
+      "dcOffset": -0.000019597515215476353,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.0017980886450483916
+    },
+    {
+      "filename": "neon-changan-vocal-loop-128bpm-t0-s261014.mp3",
+      "frames": 720000,
+      "decodedDurationSeconds": 15,
+      "finite": true,
+      "peakDbfs": -1.4506314627363104,
+      "rmsDbfs": -15.035540123646252,
+      "dcOffset": -0.000015249128259523835,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.0018062246585647042
+    },
+    {
+      "filename": "neon-changan-vocal-douyin30-128bpm-t0-s261014.wav",
+      "frames": 1440000,
+      "decodedDurationSeconds": 30,
+      "finite": true,
+      "peakDbfs": -2.534476762129556,
+      "rmsDbfs": -14.966333307199413,
+      "dcOffset": -0.000023258029628131125,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.00197848257242557
+    },
+    {
+      "filename": "neon-changan-vocal-douyin30-128bpm-t0-s261014.mp3",
+      "frames": 1440000,
+      "decodedDurationSeconds": 30,
+      "finite": true,
+      "peakDbfs": -2.4731612656936743,
+      "rmsDbfs": -14.966920461072132,
+      "dcOffset": -0.000022224412247563278,
+      "clippedSamples": 0,
+      "monoDeltaDb": -0.001986663219761555
+    }
+  ],
+  "sources": [
+    {
+      "filename": "src/tracks/neon-changan.ts",
+      "sha256": "494c7eb256045b68a7f2c2a313eef34508f324bdde80f89e1d438adbf8611716"
+    },
+    {
+      "filename": "src/music/arrangements/guofeng-club.ts",
+      "sha256": "6475314b6af62cf61a0f694f286f8e2a6e63e909591409dfd0363dfed0345d4d"
+    },
+    {
+      "filename": "src/engine/guofeng-club.ts",
+      "sha256": "79f07d57ff2f020f4c169dc7486e114e3ad45c855f12db0093aea3919d781a73"
+    },
+    {
+      "filename": "src/engine/ink-tide-voices.ts",
+      "sha256": "e53e41f93550ca785cc7462410c9745d5e350863a3a09a4104f249a4a1956f44"
+    },
+    {
+      "filename": "src/engine/render.ts",
+      "sha256": "4db5a70e8c438e8f9be23f58cfea53ab825fd5e6e1c20a217b6d8dd6e39e8459"
+    },
+    {
+      "filename": "src/audio/wav.ts",
+      "sha256": "887cae84640318cf8f9dbb6d33592a242632653a676e5ae973576ed3f760a96c"
+    },
+    {
+      "filename": "src/music/random.ts",
+      "sha256": "591c598ac35a6d37d4003d8f262f228a61548d096a216478731e59b5b9873550"
+    },
+    {
+      "filename": "src/music/types.ts",
+      "sha256": "d4226cfa6ae94631642def65720161fbc488ad6594149dbcb77e161bb9796872"
+    },
+    {
+      "filename": "src/music/arrange.ts",
+      "sha256": "9da6ccc490468d9d7445addb8e70601be428b023390b118291cd80bf7f8a4161"
+    },
+    {
+      "filename": "src/music/mixer.ts",
+      "sha256": "e4fd7802a0722f73bc7dda5eb96c4fad987357b4d61cdf8ad3bf9068beb3ddd6"
+    },
+    {
+      "filename": "src/music/validation.ts",
+      "sha256": "21c95dc029c8e72d956c81891ce6dbc124a62024b82f3b23283b2d531595f907"
+    },
+    {
+      "filename": "scripts/render.mjs",
+      "sha256": "7aa0f2272eab3575bc6fdc55374b2bb58c18594205a371e856cf49c263ecedee"
+    },
+    {
+      "filename": "scripts/lib/audio-export.mjs",
+      "sha256": "d090d3a53c32c6eba52b0473e25ae3b46f581cdf57fd10b486dde5e082ef3992"
+    },
+    {
+      "filename": "scripts/package-neon-changan.mjs",
+      "sha256": "a590b035d9394694e086052c775d946f88005bbc69075172b65fa3599f35764b"
+    },
+    {
+      "filename": "src/tracks/neon-changan-vocal.ts",
+      "sha256": "b53a7753b251d811ff52b73d12c66f2b583fe92ab2afd8165167ee29221cf649"
+    },
+    {
+      "filename": "src/music/arrangements/night-city.ts",
+      "sha256": "bcbd3cd774a3c718afd73987471bb25d4ba5d9aad44cf03238f4063401624662"
+    },
+    {
+      "filename": "src/music/vocal-bank.ts",
+      "sha256": "f96510857b9b8e94a96426950764277355546b7374486bed6a10d3d4a5cbce5a"
+    },
+    {
+      "filename": "src/engine/vocal-samples.ts",
+      "sha256": "27c43e3e52eae8b775d311015d587b100ddaf59c3cf4b10151f075ef1acd28b4"
+    },
+    {
+      "filename": "src/engine/vocal-time-fit.ts",
+      "sha256": "e04eee0077be9ead908a18e1f2a7365fec05054c4f5b33e10ce998722ad2f391"
+    },
+    {
+      "filename": "scripts/generate-night-city.py",
+      "sha256": "7e8360f1b2d680866997ae7bf92e299a50a12599452acd42ed7528f0199de6d4"
+    },
+    {
+      "filename": "scripts/requirements-vocals.txt",
+      "sha256": "132936ca3e2226785f7b8e577c8a19b23e4d3057f047a2693fbc74e02ebb20e6"
+    },
+    {
+      "filename": "public/audio/night-city/manifest.json",
+      "sha256": "021c7f333e6374164d83b4cd9618895a45517b896daa15d22ef88b29bc6a79ec"
+    },
+    {
+      "filename": "public/audio/night-city/ATTRIBUTION.md",
+      "sha256": "2d8fbcec888171147fcb05d5bc7ab4af3c30db6536eb493ec41541058f4fb8e5"
+    },
+    {
+      "filename": "public/audio/night-city/city-open.wav",
+      "sha256": "fb45fbd222350a5956cd725457cc98702576e38e6d8b15dbc245f8fa7f0e1a64"
+    },
+    {
+      "filename": "public/audio/night-city/night-call.wav",
+      "sha256": "68c5f38842a6a0c6610a342a81ad177ce665e7b9f7b87ce957059fe85b233bf6"
+    },
+    {
+      "filename": "public/audio/night-city/lights-on.wav",
+      "sha256": "c8550b794c8ac82760604eb947504cfe2e129e8a33e3a94b7557ecbb41710e12"
+    },
+    {
+      "filename": "public/audio/night-city/follow-drums.wav",
+      "sha256": "dfa5440a568efe6d85842d6cb6a2f177df5e2caddabca3361f25c60d05b0d01e"
+    },
+    {
+      "filename": "public/audio/night-city/tonight.wav",
+      "sha256": "da0b702182360acf4ace89296566ce4d6312ee4cd4c1f39d090d54268710fe99"
+    },
+    {
+      "filename": "public/audio/night-city/together.wav",
+      "sha256": "5ce08eab6d5cb64cc41d93d54c31ac779f6b302d0db5166a1cabb23cb2aedc35"
+    },
+    {
+      "filename": "public/audio/night-city/hey.wav",
+      "sha256": "2737a4a4f7060a378d15b7dc38fde180531c1dd261dbe5c5937857d5d181f02f"
+    },
+    {
+      "filename": "public/audio/night-city/ah-a4.wav",
+      "sha256": "4a03bba7fe9fedf4533734152399bb2f7b92c9cacdabcddbd6cf2e34c5aef7f6"
+    },
+    {
+      "filename": "public/audio/night-city/ye-a4.wav",
+      "sha256": "77604b40ae9018668f6fefed38037b336c0634cc36664ff65f1e68aa51e0d36f"
+    },
+    {
+      "filename": "public/audio/night-city/choir-d4.wav",
+      "sha256": "ae99d96c25778ca41580894bb2ad2aea64cb066bad7b5f0947283f88bbc11d20"
+    },
+    {
+      "filename": "public/audio/night-city/reverse-a4.wav",
+      "sha256": "7b0c097a81f1f90eab18e19589421ee90a1326eb4348327a5b821e64709c43a0"
+    }
+  ]
+}

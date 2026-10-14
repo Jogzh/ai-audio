@@ -50,6 +50,8 @@ export interface MusicalEvent {
   velocity: number;
   drum?: DrumExpression;
   gesture?: 'rise' | 'fall';
+  /** A bundled original neural voice sample; speech is time-fitted, chops are pitched. */
+  sample?: import('./vocal-bank.ts').VocalSampleId;
 }
 
 export interface Section {
@@ -79,7 +81,7 @@ export interface TrackDefinition {
     description: string;
   };
   production: 'emotional-pop' | 'cinematic-guofeng' | 'ink-tide' | 'guofeng-club';
-  guofengClub?: { finalHook: HookBar[]; bridgeHook: HookBar[] };
+  guofengClub?: { finalHook: HookBar[]; bridgeHook: HookBar[]; vocals?: 'night-city' };
   /** Written melody, phrase-ending replies, and final/bridge development. */
   inkTide?: {
     response?: HookBar[];

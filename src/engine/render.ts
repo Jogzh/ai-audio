@@ -9,6 +9,7 @@ import { createInkTideInstruments } from './ink-tide';
 import { createGuofengClubInstruments } from './guofeng-club';
 import { preparePianoSamples } from './piano-samples';
 import { prepareAcousticSamples } from './acoustic-samples';
+import { prepareVocalSamples } from './vocal-samples';
 
 export const defaultOptions: RenderOptions = { version: 'full', bpm: 118, transpose: 0, seed: 260713 };
 let renderQueue: Promise<void> = Promise.resolve();
@@ -37,6 +38,7 @@ async function render(track: TrackDefinition, options: RenderOptions, selection:
   const arrangement = buildArrangement(track, options);
   const enabled = selectedTrackIds(arrangement, selection);
   if (track.production === 'ink-tide') await Promise.all([preparePianoSamples(), prepareAcousticSamples()]);
+  if (track.guofengClub?.vocals) await prepareVocalSamples();
   const secondsPerBeat = 60 / options.bpm;
   const musicalDuration = arrangement.beats * secondsPerBeat;
   const loop = options.version === 'loop';

@@ -4,6 +4,20 @@
 
 用 **Tone.js** 创作原创音乐，最新作品为国风 DJ《霓虹长安 / Neon Changan》：128 BPM、古筝与唢呐感主音、原生 48 kHz / 24 bit WAV，提供完整、精华、循环和 30 秒卡点四种成品。仓库还内置抒情原声《墨潮》、情绪流行电子《余温》《风起时》和中国风交响流行《山河醒》。默认试听作品仍为《余温》，新作可通过 `/?track=neon-changan&version=hook` 打开。
 
+## 人声 DJ：《霓虹长安 · 灯起》
+
+“**长安入夜，灯起！**”作为男女声口号，调音人声切片、唢呐和古筝交替领奏。新增呼吸和声、反向人声、酸性电子回答和八小节碎拍转身，保留原纯音乐版。中文人声由本地 **Kokoro** 神经语音生成并加工，文字原创；不是歌手实录或真人声音克隆。
+
+试听入口为 `/?track=neon-changan-vocal&version=hook`。成品在本地 `releases/neon-changan-vocal/`，提供 115 秒完整、15.65 秒主题、15 秒循环及 30 秒卡点版，均有 **48 kHz / PCM24 WAV** 和 **320 kbps MP3**。人声源为 **24 kHz**，处理后转换到混音的 48 kHz；升采样不等于增加原始细节。
+
+```bash
+npm run render:vocal -- --out releases/neon-changan-vocal
+npm run package:neon -- --dir releases/neon-changan-vocal
+node scripts/check-guofeng.mjs --vocal
+```
+
+音源随源码保存，网页可独奏或移除每一层；无需运行 Python 即可复现混音。重新生成神经人声的脚本和固定模型信息见[制作说明](docs/neon-changan-vocal-production.md)与[人声来源](public/audio/night-city/ATTRIBUTION.md)。没有核验当日抖音榜单或进行人工耳听，无法保证传播效果。
+
 ## 新作：《霓虹长安 / Neon Changan》
 
 **中国风 × Club House / 128 BPM / D 小调五声旋律 / 60 小节**。古筝从第一拍抛出 A–C–D 暗号，7.5 秒进入第一次 Drop；竹笛桥段加入半拍律动，最终 Drop 后八小节升高主题。唢呐感主音、古筝、竹笛、木鱼、堂鼓和锣均为原创合成音色，没有歌手录音、歌词或现成歌曲采样。

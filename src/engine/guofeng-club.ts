@@ -3,8 +3,11 @@ import { createRandom } from '../music/random';
 import { hashVoiceIdentity } from './ink-tide-voices';
 import { clubTracks } from '../music/arrangements/guofeng-club';
 import type { MixTrack, MusicalEvent } from '../music/types';
+import { getVocalSample } from './vocal-samples';
+import { vocalSamples } from '../music/vocal-bank';
+import { fitVocalPcm } from './vocal-time-fit';
 
-/** A separate, seeded club palette. No recording, song sample or singer imitation. */
+/** Seeded club synthesis with opt-in original neural speech and prepared vocal chops. */
 export function createGuofengClubInstruments(bpm: number, seed: number, tracks: MixTrack[] = clubTracks) {
   const context = Tone.getContext();
   const sr = context.sampleRate;
@@ -157,6 +160,48 @@ export function createGuofengClubInstruments(bpm: number, seed: number, tracks: 
     level.connect(colour); colour.connect(out);
     osc(bassWave, hz(midi), at, hold + .06, level);
   };
+  const acid = (midi: number, at: number, hold: number, velocity: number, out: AudioNode) => {
+    const level = gain(0), colour = filter('lowpass', 2400, 5.5);
+    envelope(level.gain, at, hold, velocity * .21, .003, .045, .26, .045);
+    colour.frequency.setValueAtTime(2800, at); colour.frequency.exponentialRampToValueAtTime(480, at + hold);
+    level.connect(colour); colour.connect(out);
+    const n = osc('sawtooth', hz(midi), at, hold + .055, level);
+    n.frequency.setValueAtTime(hz(midi - 5), at); n.frequency.exponentialRampToValueAtTime(hz(midi), at + .028);
+  };
+  const vocalBuffers = new Map<string, AudioBuffer>();
+  const vocal = (e: MusicalEvent, at: number, hold: number, out: AudioNode) => {
+    if (!e.sample || !Object.hasOwn(vocalSamples, e.sample)) throw new RangeError('缺少有效人声采样');
+    const spec = vocalSamples[e.sample], original = getVocalSample(e.sample);
+    const midi = e.notes?.[0] ?? spec.midi;
+    const rate = spec.midi === null ? 1 : 2 ** (((midi ?? spec.midi) - spec.midi) / 12);
+    if (!Number.isFinite(rate) || rate <= 0 || (midi !== null && (!Number.isFinite(midi) || midi < 0 || midi > 127))) throw new RangeError('人声音高无效');
+    let buffer = original;
+    if (spec.kind === 'speech' || spec.kind === 'texture') {
+      const frames = Math.round(hold * sr), key = `${e.sample}:${rate}:${frames}`;
+      const cached = vocalBuffers.get(key);
+      if (cached) buffer = cached;
+      else {
+        const data = original.getChannelData(0);
+        const step = rate * original.sampleRate / sr;
+        const pitched = new Float32Array(Math.max(1, Math.round(data.length / step)));
+        for (let i = 0; i < pitched.length; i++) {
+          const index = Math.min(data.length - 1, i * step), lo = Math.floor(index), fraction = index - lo;
+          pitched[i] = data[lo] * (1 - fraction) + (data[Math.min(data.length - 1, lo + 1)] * fraction);
+        }
+        buffer = context.createBuffer(1, frames, sr);
+        buffer.copyToChannel(fitVocalPcm(pitched, frames, sr), 0);
+        vocalBuffers.set(key, buffer);
+      }
+    }
+    const n = source(context.createBufferSource()), level = gain(0);
+    n.buffer = buffer; n.playbackRate.value = spec.kind === 'chop' ? rate : 1;
+    const end = Math.min(hold, buffer.duration / n.playbackRate.value);
+    const attack = Math.min(spec.kind === 'texture' ? .045 : .005, end * .15), release = Math.min(.018, end * .2);
+    const amplitude = e.velocity * (spec.kind === 'texture' ? .54 : .68);
+    level.gain.setValueAtTime(0, at); level.gain.linearRampToValueAtTime(amplitude, at + attack);
+    level.gain.setValueAtTime(amplitude, at + Math.max(attack, end - release)); level.gain.linearRampToValueAtTime(0, at + end);
+    n.connect(level); level.connect(out); n.start(at); n.stop(at + end + .002);
+  };
   const harmony = (notes: number[], at: number, hold: number, velocity: number, out: AudioNode, pad: boolean) => {
     for (const [index, midi] of notes.entries()) {
       const level = gain(0), colour = filter('lowpass', pad ? 1500 : 1900 + velocity * 1500), spread = pan((index % 2 ? 1 : -1) * (pad ? .55 : .25));
@@ -237,12 +282,13 @@ export function createGuofengClubInstruments(bpm: number, seed: number, tracks: 
     if (![at, e.duration, e.velocity].every(Number.isFinite) || at < 0 || e.duration <= 0 || e.velocity < 0 || e.velocity > 1) throw new RangeError('音符时间或力度无效');
     const hold = Math.max(.02, e.duration * beat);
     const random = createRandom(seed ^ hashVoiceIdentity(`${e.trackId}:${e.beat}:${e.notes?.join(',') ?? ''}`));
-    if (['guzheng', 'lead', 'dizi', 'bass', 'chord', 'pad'].includes(e.instrument)) {
+    if (e.instrument === 'vocal') vocal(e, at, hold, out);
+    else if (['guzheng', 'lead', 'dizi', 'bass', 'chord', 'pad'].includes(e.instrument)) {
       if (!e.notes?.length || e.notes.some(n => !Number.isFinite(n) || n < 0 || n > 127)) throw new RangeError('缺少有效音高');
       if (e.instrument === 'pad' || e.instrument === 'chord') harmony(e.notes, at, hold, e.velocity, out, e.instrument === 'pad');
       else for (const midi of e.notes) {
         if (e.instrument === 'guzheng') zheng(midi, at, hold, e.velocity, out);
-        else if (e.instrument === 'bass') bass(midi, at, hold, e.velocity, out);
+        else if (e.instrument === 'bass') (e.trackId === 'acid' ? acid : bass)(midi, at, hold, e.velocity, out);
         else wind(midi, at, hold, e.velocity, out, e.instrument === 'dizi', random);
       }
     } else percussion(e, at, hold, out, random);
@@ -257,7 +303,7 @@ export function createGuofengClubInstruments(bpm: number, seed: number, tracks: 
     if (disposed) return; disposed = true;
     for (const s of sources) { try { s.stop(); } catch { /* finished source */ } }
     for (const n of nodes.reverse()) { try { n.disconnect(); } catch { /* release remaining nodes */ } }
-    room.buffer = null; plucks.clear(); destinations.clear(); sources.length = 0; nodes.length = 0;
+    room.buffer = null; plucks.clear(); vocalBuffers.clear(); destinations.clear(); sources.length = 0; nodes.length = 0;
   };
   return { hit, duck, dispose };
 }

@@ -1,4 +1,5 @@
 import type { Arrangement, RenderSelection } from './types.ts';
+import { vocalSamples } from './vocal-bank.ts';
 
 /** Validate routing before constructing Web Audio nodes. */
 export function validateMixer(arrangement: Arrangement): void {
@@ -26,6 +27,7 @@ export function validateMixer(arrangement: Arrangement): void {
   for (const event of arrangement.events) {
     const track = event.trackId ? tracks.get(event.trackId) : undefined;
     if (!track || track.instrument !== event.instrument) throw new RangeError(`音符未连接匹配的混音轨道: ${event.trackId ?? event.instrument}`);
+    if (event.instrument === 'vocal' && (!event.sample || !Object.hasOwn(vocalSamples, event.sample))) throw new RangeError('人声事件必须引用已有采样');
   }
 }
 
