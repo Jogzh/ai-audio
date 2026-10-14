@@ -37,35 +37,44 @@ export function waveformPeaks(buffer: PCMBuffer, bins = 320): number[] {
   });
 }
 
-/** Standard little-endian interleaved PCM16 WAV. No resampling or fake MP3 headers. */
-export function encodeWav(buffer: PCMBuffer): ArrayBuffer {
+/** PCM16/24 WAV at the buffer's native rate. PCM24 receives deterministic TPDF dither. */
+export function encodeWav(buffer: PCMBuffer, bits: 16 | 24 = 16): ArrayBuffer {
+  if (![16, 24].includes(bits)) throw new RangeError('WAV 位深必须为 16 或 24');
   if (buffer.numberOfChannels < 1 || buffer.numberOfChannels > 2 || !buffer.length || !buffer.sampleRate) throw new RangeError('需要有效的单声道或立体声音频');
   const channels = Array.from({ length: buffer.numberOfChannels }, (_, channel) => buffer.getChannelData(channel));
-  const size = buffer.length * buffer.numberOfChannels * 2;
+  const bytesPerSample = bits / 8;
+  const size = buffer.length * buffer.numberOfChannels * bytesPerSample;
   if (size > 0xffffffff - 36) throw new RangeError('音频超过 RIFF WAV 大小上限');
-  const output = new ArrayBuffer(44 + size);
+  const padding = size % 2;
+  const output = new ArrayBuffer(44 + size + padding);
   const view = new DataView(output);
   const text = (at: number, value: string) => [...value].forEach((char, index) => view.setUint8(at + index, char.charCodeAt(0)));
   text(0, 'RIFF');
-  view.setUint32(4, 36 + size, true);
+  view.setUint32(4, 36 + size + padding, true);
   text(8, 'WAVE');
   text(12, 'fmt ');
   view.setUint32(16, 16, true);
   view.setUint16(20, 1, true);
   view.setUint16(22, buffer.numberOfChannels, true);
   view.setUint32(24, buffer.sampleRate, true);
-  view.setUint32(28, buffer.sampleRate * buffer.numberOfChannels * 2, true);
-  view.setUint16(32, buffer.numberOfChannels * 2, true);
-  view.setUint16(34, 16, true);
+  view.setUint32(28, buffer.sampleRate * buffer.numberOfChannels * bytesPerSample, true);
+  view.setUint16(32, buffer.numberOfChannels * bytesPerSample, true);
+  view.setUint16(34, bits, true);
   text(36, 'data');
   view.setUint32(40, size, true);
   let at = 44;
+  let ditherState = 0x4e454f4e;
+  const uniform = () => { ditherState = (Math.imul(ditherState, 1664525) + 1013904223) >>> 0; return ditherState / 0x100000000; };
   for (let frame = 0; frame < buffer.length; frame++) {
     for (const channel of channels) {
       if (!Number.isFinite(channel[frame])) throw new Error('音频包含非有限采样值');
       const sample = Math.max(-1, Math.min(1, channel[frame]));
-      view.setInt16(at, Math.round(sample * (sample < 0 ? 32768 : 32767)), true);
-      at += 2;
+      if (bits === 16) view.setInt16(at, Math.round(sample * (sample < 0 ? 32768 : 32767)), true);
+      else {
+        const value = Math.max(-8388608, Math.min(8388607, Math.round(sample * (sample < 0 ? 8388608 : 8388607) + uniform() - uniform())));
+        view.setUint8(at, value & 255); view.setUint8(at + 1, (value >> 8) & 255); view.setUint8(at + 2, (value >> 16) & 255);
+      }
+      at += bytesPerSample;
     }
   }
   return output;

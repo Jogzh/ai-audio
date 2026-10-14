@@ -7,7 +7,12 @@ import { createServer } from 'vite';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const ink = process.argv.includes('--ink-tide');
-const config = ink ? {
+const club = process.argv.includes('--neon-changan');
+const config = club ? {
+  id: 'neon-changan', engine: 'guofeng-club', exportName: 'neonChangan', factory: 'createGuofengClubInstruments',
+  title: '霓虹长安', bpm: 128, bars: 60, description: /古筝.*唢呐/,
+  seed: 261014, sampleRate: 48000, bitDepth: 24, mix: true, report: 'neon-changan-qa',
+} : ink ? {
   id: 'ink-tide', exportName: 'inkTide', factory: 'createInkTideInstruments',
   title: '墨潮', bpm: 92, bars: 40, description: /长笛.*钢琴/,
   seed: 261014,
@@ -69,8 +74,8 @@ try {
     const toneUrl = engineSource.match(/from ["']([^"']*tone[^"']*)["']/)?.[1];
     const Tone = await import(toneUrl);
     const original = Tone.getContext();
-    const options = { version: 'hook', bpm: track.meta.bpm, transpose: 0, seed: config.seed };
-    const mixTracks = config.id === 'ink-tide'
+    const options = { version: 'hook', bpm: track.meta.bpm, transpose: 0, seed: config.seed, ...(config.sampleRate ? { sampleRate: config.sampleRate } : {}) };
+    const mixTracks = config.id === 'ink-tide' || config.mix
       ? (await import('/src/music/arrange.ts')).buildArrangement(track, options).tracks.map(track => ({ ...track, automation: undefined }))
       : undefined;
     const [hook, repeat] = await Promise.all([renderTrack(track, options), renderTrack(track, options)]);
@@ -120,11 +125,11 @@ try {
       rendered = await Tone.Offline(() => {
         rig = createInstruments(config.bpm, config.seed, mixTracks);
         voices.forEach(({ event }, index) => rig.hit(event, index * 4));
-      }, voices.length * 4, 2, 44100);
+      }, voices.length * 4, 2, config.sampleRate ?? 44100);
       const buffer = rendered.get();
       palette = voices.map(({ name }, index) => ({ instrument: name, ...measureAudio({
-        numberOfChannels: 2, sampleRate: 44100, length: 44100,
-        getChannelData: channel => buffer.getChannelData(channel).subarray(index * 4 * 44100, (index * 4 + 1) * 44100),
+        numberOfChannels: 2, sampleRate: buffer.sampleRate, length: buffer.sampleRate,
+        getChannelData: channel => buffer.getChannelData(channel).subarray(index * 4 * buffer.sampleRate, (index * 4 + 1) * buffer.sampleRate),
       }) }));
     } finally { Tone.setContext(original); rig?.dispose(); rendered?.dispose(); }
     return {
@@ -144,12 +149,12 @@ try {
   await writeFile(`${root}/artifacts/audio/${config.report}/pcm-check.json`, JSON.stringify(checks, null, 2) + '\n');
   for (const result of checks.renders) {
     assert.equal(result.finite, true);
-    assert.equal(result.sampleRate, 44100);
+    assert.equal(result.sampleRate, config.sampleRate ?? 44100);
     assert.equal(result.channels, 2);
     assert.ok(result.stats.rms > 0.01 && result.stats.peak > 0.1);
     assert.equal(result.stats.clippedSamples, 0);
     assert.ok(result.stats.peakDb <= -1.19 && Math.abs(result.stats.dcOffset) < 0.001);
-    assert.ok(Math.abs(result.duration - result.expectedDuration) < 1 / 44100);
+    assert.ok(Math.abs(result.duration - result.expectedDuration) < 1 / result.sampleRate);
   }
   assert.ok(checks.repeat.maximum < 1 / 65536, `same seed maximum: ${checks.repeat.maximum}`);
   assert.ok(checks.repeat.rms < 1e-6, `same seed RMS: ${checks.repeat.rms}`);
@@ -180,7 +185,7 @@ try {
   await page.waitForFunction(() => document.querySelector('#render-badge')?.textContent === '合成完成', undefined, { timeout: 120000 });
   await page.waitForFunction(() => document.querySelector('#play-state')?.textContent === '正在播放', undefined, { timeout: 20000 });
   await page.waitForFunction(() => Number(document.querySelector('#seek')?.value) > 0.2);
-  assert.equal(await page.locator('#total-time').textContent(), ink ? '00:22' : '00:20');
+  assert.equal(await page.locator('#total-time').textContent(), club ? '00:15' : ink ? '00:22' : '00:20');
   await page.locator('#stop').click();
   const downloadPromise = page.waitForEvent('download');
   await page.locator('#export').click();
@@ -189,7 +194,8 @@ try {
   const bytes = await readFile(await download.path());
   assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
   assert.equal(bytes.readUInt16LE(22), 2);
-  assert.equal(bytes.readUInt32LE(24), 44100);
+  assert.equal(bytes.readUInt32LE(24), config.sampleRate ?? 44100);
+  assert.equal(bytes.readUInt16LE(34), config.bitDepth ?? 16);
   assert.equal(await page.locator('.timeline-section').count(), 1);
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);

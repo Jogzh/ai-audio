@@ -6,6 +6,7 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import test from 'node:test';
 import { exportAudio, inspectPcmWav, parseLoudnorm, requireAudioTools, secondPassFilter, validateExportOptions } from '../scripts/lib/audio-export.mjs';
+import { encodeWav } from '../src/audio/wav.ts';
 
 const execFileAsync = promisify(execFile);
 const repo = path.resolve(import.meta.dirname, '..');
@@ -146,4 +147,28 @@ test('explicit WAV loudness applies mastering while MP3 off retains source loudn
   assert.equal(mp3.files[0].mastered, false);
   assert.deepEqual(mp3.mastering.processing, {});
   assert.ok(Math.abs(mp3.mastering.after.mp3.integratedLufs - mp3.mastering.before.integratedLufs) < 0.15);
+});
+
+test('native 48 kHz PCM24 survives mastering, FFmpeg extensible WAV, and lossy encoding', async t => {
+  let binaries;
+  try { binaries = await requireAudioTools(); }
+  catch (error) { t.skip(error.message); return; }
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'ai-audio-24bit-test-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const pcm = Float32Array.from({ length: 48000 * 5 }, (_, i) => .08 * Math.sin(2 * Math.PI * 997 * i / 48000));
+  const sourcePath = path.join(directory, 'source24.wav');
+  await writeFile(sourcePath, new Uint8Array(encodeWav({ sampleRate: 48000, length: pcm.length, numberOfChannels: 2, getChannelData: () => pcm }, 24)));
+  const result = await exportAudio({ sourcePath, destinationDirectory: directory, stem: 'master24', format: 'both', master: 'loudness', binaries });
+  const mastered = await inspectPcmWav(path.join(directory, 'master24.wav'));
+  assert.equal(mastered.codec, 'pcm_s24le');
+  assert.equal(mastered.sampleRate, 48000);
+  assert.equal(mastered.bitsPerSample, 24);
+  assert.equal(mastered.durationSeconds, 5);
+  assert.equal(result.files.find(f => f.filename.endsWith('.mp3')).sampleRate, 48000);
+  assert.ok(Math.abs(result.mastering.after.wav.integratedLufs + 14) < .3);
+  // Reject the same extensible header with an IEEE-float subformat GUID.
+  const invalid = await readFile(path.join(directory, 'master24.wav'));
+  invalid.writeUInt32LE(3, 44);
+  await writeFile(path.join(directory, 'invalid-subformat.wav'), invalid);
+  await assert.rejects(inspectPcmWav(path.join(directory, 'invalid-subformat.wav')), /PCM16\/24/);
 });

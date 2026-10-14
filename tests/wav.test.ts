@@ -48,3 +48,22 @@ test('WAV handles mono, clamps out of range values and rejects non-finite PCM', 
   assert.throws(() => measureAudio(buffer([[Infinity]])));
   assert.throws(() => encodeWav(buffer([[]])));
 });
+
+test('PCM24 retains sub-16-bit signal, signed interleave, deterministic dither, and RIFF padding', () => {
+  const source = { ...buffer([[.00001, -.00001, 1, -1], [0, 0, -1, 1]]), sampleRate: 48000 };
+  const encoded = encodeWav(source, 24), bytes = new Uint8Array(encoded), view = new DataView(encoded);
+  assert.equal(view.getUint32(24, true), 48000);
+  assert.equal(view.getUint32(28, true), 288000);
+  assert.equal(view.getUint16(32, true), 6);
+  assert.equal(view.getUint16(34, true), 24);
+  const value = (at: number) => { const n = bytes[at] | (bytes[at + 1] << 8) | (bytes[at + 2] << 16); return n & 0x800000 ? n - 0x1000000 : n; };
+  assert.ok(Math.abs(value(44) - 84) <= 1);
+  assert.ok(Math.abs(value(50) + 84) <= 1);
+  assert.ok(value(56) >= 8388606 && value(59) <= -8388607);
+  assert.deepEqual(encoded, encodeWav(source, 24));
+  const mono = encodeWav(buffer([[.5]]), 24);
+  assert.equal(mono.byteLength, 48);
+  assert.equal(new DataView(mono).getUint32(4, true), 40);
+  assert.equal(new DataView(mono).getUint32(40, true), 3);
+  assert.equal(new Uint8Array(mono)[47], 0);
+});

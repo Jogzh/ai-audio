@@ -6,6 +6,7 @@ import { selectedTrackIds } from '../music/mixer';
 import { createEmotionalPopInstruments } from './emotional-pop';
 import { createCinematicGuofengInstruments } from './cinematic-guofeng';
 import { createInkTideInstruments } from './ink-tide';
+import { createGuofengClubInstruments } from './guofeng-club';
 import { preparePianoSamples } from './piano-samples';
 import { prepareAcousticSamples } from './acoustic-samples';
 
@@ -14,8 +15,9 @@ let renderQueue: Promise<void> = Promise.resolve();
 
 /** A loop has no tail; the other edits retain their release. */
 export function getTailSeconds(track: TrackDefinition, version: Version): number {
-  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
+  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide', 'guofeng-club'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
   if (version === 'loop') return 0;
+  if (track.production === 'guofeng-club') return { full: 2.5, hook: .65 }[version];
   if (track.production === 'ink-tide') return { full: 2.8, hook: 1.4 }[version];
   if (track.production === 'cinematic-guofeng') return { full: 3.6, hook: 1.6 }[version];
   return { full: 2.4, hook: 0.8 }[version];
@@ -39,7 +41,7 @@ async function render(track: TrackDefinition, options: RenderOptions, selection:
   const musicalDuration = arrangement.beats * secondsPerBeat;
   const loop = options.version === 'loop';
   const repetitions = loop ? 3 : 1;
-  const sampleRate = 44100;
+  const sampleRate = options.sampleRate ?? (track.production === 'guofeng-club' ? 48000 : 44100);
   const tail = getTailSeconds(track, options.version);
   const originalContext = Tone.getContext();
   let rig: ReturnType<typeof createEmotionalPopInstruments> | undefined;
@@ -47,7 +49,9 @@ async function render(track: TrackDefinition, options: RenderOptions, selection:
   try {
     try {
       offline = await Tone.Offline(() => {
-        rig = track.production === 'ink-tide'
+        rig = track.production === 'guofeng-club'
+          ? createGuofengClubInstruments(options.bpm, options.seed, arrangement.tracks)
+          : track.production === 'ink-tide'
           ? createInkTideInstruments(options.bpm, options.seed, arrangement.tracks, { cycleBeats: arrangement.beats, repetitions })
           : track.production === 'cinematic-guofeng'
           ? createCinematicGuofengInstruments(options.bpm, options.seed)

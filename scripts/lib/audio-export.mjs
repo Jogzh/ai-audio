@@ -93,12 +93,17 @@ export async function inspectPcmWav(filename) {
     if (start + size > bytes.length) throw new Error('WAV 数据不完整');
     if (type === 'fmt ' && size >= 16) {
       fmt = { encoding: bytes.readUInt16LE(start), channels: bytes.readUInt16LE(start + 2), sampleRate: bytes.readUInt32LE(start + 4), blockAlign: bytes.readUInt16LE(start + 12), bits: bytes.readUInt16LE(start + 14) };
+      // FFmpeg writes 24-bit WAV as WAVE_FORMAT_EXTENSIBLE. Accept only its PCM
+      // GUID and full valid-bit depth; compressed and float subformats stay rejected.
+      if (fmt.encoding === 0xfffe && size >= 40 && bytes.readUInt16LE(start + 16) >= 22
+        && bytes.readUInt16LE(start + 18) === fmt.bits
+        && bytes.subarray(start + 24, start + 40).toString('hex') === '0100000000001000800000aa00389b71') fmt.encoding = 1;
     }
     if (type === 'data') dataBytes = size;
     offset = start + size + (size % 2);
   }
-  if (!fmt || fmt.encoding !== 1 || fmt.bits !== 16 || !fmt.channels || !fmt.sampleRate || fmt.blockAlign !== fmt.channels * 2 || !dataBytes || dataBytes % fmt.blockAlign) throw new Error('输入必须是非空的 PCM16 WAV 文件');
-  return { codec: 'pcm_s16le', sampleRate: fmt.sampleRate, channels: fmt.channels, durationSeconds: dataBytes / fmt.blockAlign / fmt.sampleRate, durationSource: 'PCM frame count' };
+  if (!fmt || fmt.encoding !== 1 || ![16, 24].includes(fmt.bits) || !fmt.channels || !fmt.sampleRate || fmt.blockAlign !== fmt.channels * fmt.bits / 8 || !dataBytes || dataBytes % fmt.blockAlign) throw new Error('输入必须是非空的 PCM16/24 WAV 文件');
+  return { codec: `pcm_s${fmt.bits}le`, bitsPerSample: fmt.bits, sampleRate: fmt.sampleRate, channels: fmt.channels, durationSeconds: dataBytes / fmt.blockAlign / fmt.sampleRate, durationSource: 'PCM frame count' };
 }
 
 /** Export via temporary files; only verified complete audio is copied to destination. */
@@ -130,10 +135,10 @@ export async function exportAudio({ sourcePath, destinationDirectory, stem, form
         await copyFile(sourcePath, temporary);
       } else {
         const args = ['-hide_banner', '-nostats', '-y', '-i', sourcePath, '-map', '0:a:0', '-map_metadata', '-1'];
-        if (normalized) args.push('-af', secondPassFilter(beforeRaw));
+        if (normalized) args.push('-af', secondPassFilter(beforeRaw) + (outputFormat === 'wav' && source.bitsPerSample === 24 ? ',aresample=dither_method=triangular' : ''));
         args.push('-ar', String(source.sampleRate), '-ac', String(source.channels));
         if (outputFormat === 'mp3') args.push('-c:a', 'libmp3lame', '-b:a', '320k', '-write_xing', '1', '-id3v2_version', '3');
-        else args.push('-c:a', 'pcm_s16le');
+        else args.push('-c:a', source.codec);
         args.push(temporary);
         const result = await run(binaries.ffmpeg, args);
         if (normalized) {
@@ -143,7 +148,7 @@ export async function exportAudio({ sourcePath, destinationDirectory, stem, form
       }
       const info = outputFormat === 'wav' && !normalized ? await inspectPcmWav(temporary) : await probeAudio(temporary, binaries);
       if (needTools) after[outputFormat] = measurement(await analyze(temporary, binaries));
-      files.push({ filename, format: outputFormat === 'wav' ? 'PCM16 WAV' : 'MP3 320 kbps', ...info, audioContentDurationSeconds: source.durationSeconds, bytes: (await stat(temporary)).size, mastered: normalized });
+      files.push({ filename, format: outputFormat === 'wav' ? `PCM${source.bitsPerSample} WAV` : 'MP3 320 kbps', ...info, ...(outputFormat === 'wav' ? { bitsPerSample: source.bitsPerSample } : {}), audioContentDurationSeconds: source.durationSeconds, bytes: (await stat(temporary)).size, mastered: normalized });
     }
     // No destination is created until conversion and measurements have succeeded.
     await mkdir(destinationDirectory, { recursive: true });

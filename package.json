@@ -18,9 +18,11 @@
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts tests/*.test.mjs",
-    "test:browser": "node scripts/check-browser.mjs && node scripts/check-guofeng.mjs && node scripts/check-guofeng.mjs --ink-tide && node scripts/check-multitrack.mjs",
+    "test:browser": "node scripts/check-browser.mjs && node scripts/check-guofeng.mjs && node scripts/check-guofeng.mjs --ink-tide && node scripts/check-multitrack.mjs && node scripts/check-guofeng.mjs --neon-changan",
     "check": "npm test && npm run build",
     "render": "node scripts/render.mjs",
+    "render:neon": "node scripts/render.mjs --track neon-changan --seed 261014 --sample-rate 48000 --bit-depth 24 --format both --master loudness",
+    "package:neon": "node scripts/package-neon-changan.mjs",
     "render:stems": "node scripts/render-stems.mjs"
   },
   "dependencies": {

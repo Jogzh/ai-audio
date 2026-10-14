@@ -15,10 +15,11 @@ export function validateOptions(options: RenderOptions): void {
   if (!Number.isInteger(options.bpm) || options.bpm < 90 || options.bpm > 170) throw new RangeError('BPM 必须为 90–170 的整数');
   if (!Number.isInteger(options.transpose) || Math.abs(options.transpose) > 12) throw new RangeError('移调必须为 -12–12 的整数');
   if (!Number.isInteger(options.seed) || options.seed < 0 || options.seed > 0xffffffff) throw new RangeError('Seed 必须为 0–4294967295 的整数');
+  if (options.sampleRate !== undefined && ![44100, 48000].includes(options.sampleRate)) throw new RangeError('采样率必须为 44100 或 48000');
 }
 
 export function validateTrack(track: TrackDefinition): void {
-  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
+  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide', 'guofeng-club'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
   if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
   const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
   const validatePhrase = (phrase: HookBar[], name: string, withinBar = false) => {
@@ -33,6 +34,15 @@ export function validateTrack(track: TrackDefinition): void {
     }
   };
   validatePhrase(track.hook, 'Hook');
+  if (track.guofengClub !== undefined) {
+    if (track.production !== 'guofeng-club') throw new RangeError('guofengClub 配置需要对应制作风格');
+    validatePhrase(track.hook, 'Hook', true);
+    for (const name of ['finalHook', 'bridgeHook'] as const) {
+      const phrase = track.guofengClub[name];
+      if (!Array.isArray(phrase) || phrase.length !== track.hook.length) throw new RangeError(`${name} 小节数必须与 Hook 一致`);
+      validatePhrase(phrase, name, true);
+    }
+  }
   if (track.production === 'ink-tide') validatePhrase(track.hook, 'Hook', true);
   if (track.inkTide !== undefined) {
     const development = track.inkTide;

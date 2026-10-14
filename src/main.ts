@@ -57,7 +57,7 @@ app.innerHTML = `
           <div class="config-heading"><h3 id="config-title">塑造你的声音</h3><span>EDIT THE SIGNAL</span></div>
           <fieldset id="render-controls">
             <legend class="sr-only">合成版本与参数</legend>
-            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">原创情绪流行电子，完整、精华与循环三种版本。</p></div>
+            <div class="track-field"><label for="track-select">试听作品 <span>TRACK</span></label><select id="track-select"></select><p class="field-help">原创国风、舞曲与情绪配乐，完整、精华与循环三种版本。</p></div>
             <div class="field-heading"><span id="version-label">曲目版本</span><span>VERSION</span></div>
             <div class="version-switch" role="group" aria-labelledby="version-label"><button type="button" data-version="full" aria-pressed="true">完整 <small>FULL</small></button><button type="button" data-version="hook" aria-pressed="false">精华 <small>HOOK</small></button><button type="button" data-version="loop" aria-pressed="false">循环 <small>LOOP</small></button></div>
             <p id="version-description" class="field-help"></p>
@@ -65,7 +65,7 @@ app.innerHTML = `
             <div class="number-field seed-field"><label for="seed">随机种子 <span>SEED</span></label><input id="seed" type="number" min="0" max="4294967295" step="1" value="${defaultOptions.seed}" required><small>同一组参数，同一段原创声音。</small></div>
             <div id="track-audition" class="track-field" hidden><label for="audition-track">拆开听一层 <span>PART</span></label><select id="audition-track"><option value="">完整混音</option></select><label class="mute-choice"><input id="mute-track" type="checkbox">听其余声部，移除选中轨道</label><p class="field-help">比较加入与移除这一层的变化；导出会保留当前选择。</p></div>
           </fieldset>
-          <div class="export-area"><button id="export" class="export-button" type="button">${icons.download}<span>导出 WAV</span><span class="button-arrow" aria-hidden="true">↗</span></button><p>立体声 / 44.1 kHz / 16 bit PCM</p></div>
+          <div class="export-area"><button id="export" class="export-button" type="button">${icons.download}<span>导出 WAV</span><span class="button-arrow" aria-hidden="true">↗</span></button><p id="export-format">立体声 / 44.1 kHz / 16 bit PCM</p></div>
           <dl class="audio-metrics"><div><dt>峰值</dt><dd id="peak">— <small>dBFS</small></dd></div><div><dt>平均电平</dt><dd id="rms">— <small>dBFS</small></dd></div></dl>
         </aside>
       </div>
@@ -129,6 +129,12 @@ const versionCopy = {
   loop: ['循环片段 / LOOP EDIT', '适合反复聆听的循环片段，播放时自动循环。'],
 };
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
+  'guofeng-club': {
+    coverId: 'NC—009',
+    melody: '古筝抛出 A–C–D 三音暗号，唢呐感主音接住 Drop；竹笛在月下唱长句，最终主题升高再归弦。',
+    drums: '四拍底鼓和二四拍拍手建立舞池节奏，反拍开镲推动前进；木鱼填空，堂鼓接力，蓄力末尾留半拍空间。',
+    bass: '单声道弹跳低音错开底鼓起音，中频泛音照顾手机外放；切分和弦和短空间陪着主题前行。',
+  },
   'ink-tide': {
     coverId: 'IT—008',
     melody: '长笛唱出两小节的主题，钢琴用同一种分解和弦托住长句；高潮换位展开和声，旋律逐步升高，再沿长句落回 D 大调。',
@@ -156,7 +162,7 @@ const productionCopy: Record<string, { coverId: string; melody: string; drums: s
 };
 function syncTrack(): void {
   const { meta, arrangement } = selectedTrack;
-  const styleName = { 'cinematic-guofeng': '国风交响流行', 'ink-tide': '多轨电影配乐', 'emotional-pop': '电子流行' }[selectedTrack.production];
+  const styleName = { 'guofeng-club': '国风 DJ', 'cinematic-guofeng': '国风交响流行', 'ink-tide': '多轨电影配乐', 'emotional-pop': '电子流行' }[selectedTrack.production];
   element('.header-note').innerHTML = `<i aria-hidden="true"></i> 原创${styleName} · ${meta.title}`;
   const copy = productionCopy[meta.id] ?? productionCopy[selectedTrack.production];
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
@@ -179,6 +185,7 @@ function syncTrack(): void {
   element('#drum-description').textContent = copy.drums;
   element('#bass-description').textContent = copy.bass;
   trackSelect.value = meta.id;
+  element('#export-format').textContent = selectedTrack.production === 'guofeng-club' ? '立体声 / 48 kHz / 24 bit PCM' : '立体声 / 44.1 kHz / 16 bit PCM';
   document.title = `${meta.subtitle} / ${meta.title}`;
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
   element('.original-note').innerHTML = selectedTrack.production === 'ink-tide'
@@ -444,8 +451,8 @@ async function ensureTrack(options: RenderOptions, token: number): Promise<void>
     ? muteTrack.checked ? { muteTrackIds: [part] } : { soloTrackIds: [part] } : {});
   if (!active || token !== generation) return;
   if (!rendered.buffer.length || !Number.isFinite(rendered.buffer.duration) || rendered.buffer.duration <= 0) throw new Error('引擎未返回有效音频，请调整参数后重试。');
-  if (rendered.buffer.sampleRate !== 44100 || rendered.buffer.numberOfChannels !== 2) throw new Error('音频格式不符：需要立体声 44.1 kHz 音频。');
-  const bytes = encodeWav(rendered.buffer);
+  if (![44100, 48000].includes(rendered.buffer.sampleRate) || rendered.buffer.numberOfChannels !== 2) throw new Error('音频格式不符：需要立体声 44.1/48 kHz 音频。');
+  const bytes = encodeWav(rendered.buffer, selectedTrack.production === 'guofeng-club' ? 24 : 16);
   const blob = new Blob([bytes], { type: 'audio/wav' });
   const url = URL.createObjectURL(blob);
   track = rendered;
@@ -495,7 +502,7 @@ async function perform(action: 'play' | 'export'): Promise<void> {
       }
     } else {
       downloadBlob(wavBlob, track.filename);
-      setStatus(`已发起下载：${track.filename}。立体声 WAV / 44.1 kHz / 16 bit。`);
+      setStatus(`已发起下载：${track.filename}。${element('#export-format').textContent}。`);
     }
   } catch (error) {
     if (!active || token !== generation) return;

@@ -37,6 +37,8 @@ export interface RenderOptions {
   bpm: number;
   transpose: number;
   seed: number;
+  /** Native synthesis rate; omitted preserves the original 44.1 kHz renders. */
+  sampleRate?: 44100 | 48000;
 }
 
 export interface MusicalEvent {
@@ -47,6 +49,7 @@ export interface MusicalEvent {
   notes?: number[];
   velocity: number;
   drum?: DrumExpression;
+  gesture?: 'rise' | 'fall';
 }
 
 export interface Section {
@@ -75,7 +78,8 @@ export interface TrackDefinition {
     tags: string[];
     description: string;
   };
-  production: 'emotional-pop' | 'cinematic-guofeng' | 'ink-tide';
+  production: 'emotional-pop' | 'cinematic-guofeng' | 'ink-tide' | 'guofeng-club';
+  guofengClub?: { finalHook: HookBar[]; bridgeHook: HookBar[] };
   /** Written melody, phrase-ending replies, and final/bridge development. */
   inkTide?: {
     response?: HookBar[];

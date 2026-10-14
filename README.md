@@ -1,6 +1,30 @@
 # ai-audio
 
-用 **Tone.js** 创作原创音乐，最新作品为抒情原声配乐《墨潮 / Ink Tide》第六版，支持独立轨道混音。仓库还内置情绪流行电子《余温 / Afterglow》《风起时 / When the Wind Rises》，以及中国风交响流行《山河醒 / Mountains Awake》。默认作品《余温》面向短视频情绪片段：118 BPM、F# 小调，电钢琴与柔软电子主音交替陈述主题，保留轻 DJ 律动。首次主题从 beat 0 出现，完整版约 **4.07 秒**进入主段；hook / loop 从完整乐谱的第 3–10 小节裁切，再独立离线渲染。
+用 **Tone.js** 创作原创音乐，最新作品为国风 DJ《霓虹长安 / Neon Changan》：128 BPM、古筝与唢呐感主音、原生 48 kHz / 24 bit WAV，提供完整、精华、循环和 30 秒卡点四种成品。仓库还内置抒情原声《墨潮》、情绪流行电子《余温》《风起时》和中国风交响流行《山河醒》。默认试听作品仍为《余温》，新作可通过 `/?track=neon-changan&version=hook` 打开。
+
+## 新作：《霓虹长安 / Neon Changan》
+
+**中国风 × Club House / 128 BPM / D 小调五声旋律 / 60 小节**。古筝从第一拍抛出 A–C–D 暗号，7.5 秒进入第一次 Drop；竹笛桥段加入半拍律动，最终 Drop 后八小节升高主题。唢呐感主音、古筝、竹笛、木鱼、堂鼓和锣均为原创合成音色，没有歌手录音、歌词或现成歌曲采样。
+
+全部成品保存在 `releases/neon-changan/`，WAV 为原生合成 **48 kHz / PCM24**，MP3 为 **48 kHz / 320 kbps / 立体声**。四个版本都完成响度母带与最终文件测量。
+
+| 版本 | 内容时长 | MP3 | 高音质 WAV |
+| --- | ---: | --- | --- |
+| 完整版 | 115 s | [完整试听](releases/neon-changan/neon-changan-full-128bpm-t0-s261014.mp3) | [完整 PCM24](releases/neon-changan/neon-changan-full-128bpm-t0-s261014.wav) |
+| 主题版 | 15.65 s | [八小节主题](releases/neon-changan/neon-changan-hook-128bpm-t0-s261014.mp3) | [主题 PCM24](releases/neon-changan/neon-changan-hook-128bpm-t0-s261014.wav) |
+| 循环版 | 15 s | [循环试听](releases/neon-changan/neon-changan-loop-128bpm-t0-s261014.mp3) | [循环 PCM24](releases/neon-changan/neon-changan-loop-128bpm-t0-s261014.wav) |
+| 抖音卡点版 | 30 s | [最终 Drop](releases/neon-changan/neon-changan-douyin30-128bpm-t0-s261014.mp3) | [卡点 PCM24](releases/neon-changan/neon-changan-douyin30-128bpm-t0-s261014.wav) |
+
+30 秒版取完整作品 **75–105 秒**，第 **15 秒**进入旋律抬升。128 BPM 下，每拍 **0.46875 秒**、每小节 **1.875 秒**；可在第 15 秒安排变装或场景转换。循环剪辑优先导入 WAV，以避免剪辑软件对 MP3 编码填充的处理差异。制作与视频建议见[制作说明](docs/neon-changan-production.md)，最终响度、解码时长、SHA256 和源码指纹见 [release.json](releases/neon-changan/release.json)。没有核验当日热门榜单，也未进行人工耳听；客观检查不能替代听感评价，传播效果无法保证。
+
+新曲采用独立的 `guofeng-club` 编曲和音源模块，14 条独立路由，网页可单独试听或移除声部。WAV 编码与 CLI 新增原生 48 kHz / PCM24 支持，PCM24 编码使用确定性 TPDF 抖动。CLI 新曲默认 48 kHz / 24 bit，其余曲目继续默认 44.1 kHz / 16 bit。复现四种成品使用新目录：
+
+```bash
+npm run render:neon -- --out artifacts/audio/neon-changan
+npm run package:neon -- --dir artifacts/audio/neon-changan
+```
+
+第一条生成 full / hook / loop，第二条裁切 30 秒版并校验全部成品。`--master loudness` 对 WAV 和 MP3 都应用响度母带，不能把扩展位深或采样率本身当作听感提升的证明。
 
 ## 《墨潮 / Ink Tide》第六版：让高潮形成抬升
 
@@ -121,13 +145,15 @@ npm run render -- --version hook --format wav --out artifacts/audio/afterglow-wa
 npm run render -- --help
 ```
 
-CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；四首已交付作品的 MP3 保存在 `releases/` 对应曲目目录。只导出原始 WAV 时无需 FFmpeg。
+CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必先运行 `npm run dev`。重新渲染写入 **Git 忽略的 `artifacts/`**；五首作品的成品保存在 `releases/` 对应曲目目录。只导出原始 WAV 时无需 FFmpeg。
 
 | 参数 | 范围 / 含义 | 默认 |
 | --- | --- | --- |
-| `--track` | `afterglow`、`when-the-wind-rises`、`mountains-awake`、`ink-tide` | `afterglow` |
+| `--track` | `afterglow`、`when-the-wind-rises`、`mountains-awake`、`ink-tide`、`neon-changan` | `afterglow` |
 | `--version` | `all`、`full`、`hook`、`loop` | `all` |
-| `--bpm` | 90–170 整数 | 所选曲目 BPM；余温 118，风起时 114，山河醒 104，墨潮 92 |
+| `--bpm` | 90–170 整数 | 所选曲目 BPM；余温 118，风起时 114，山河醒 104，墨潮 92，霓虹长安 128 |
+| `--sample-rate` | 44100 或 48000；原生离线合成采样率 | 霓虹长安 48000，其余 44100 |
+| `--bit-depth` | WAV 的 16 或 24 bit | 霓虹长安 24，其余 16 |
 | `--transpose` | −12–12 整数，单位为半音 | 0 |
 | `--seed` | uint32 整数：0–4294967295 | 260713 |
 | `--out` | 相对当前工作目录或绝对路径 | `artifacts/audio` |
@@ -137,7 +163,7 @@ CLI 自行启动临时 Vite 服务，结束后关闭浏览器与服务，不必�
 
 负数参数使用等号，例如 `--transpose=-2`。默认生成全三版、118 BPM、移调 0、seed **260713**；《余温》《风起时》《山河醒》定稿使用 **261013**，《墨潮》使用 **261014**，复现相应版本需显式传入该 seed。引擎 `renderTrack(track)` 省略 options 时使用 full 和曲目 BPM，`defaultOptions.bpm` 为 118。
 
-输出为 320 kbps MP3 或 PCM16 WAV，均为立体声、44.1 kHz。默认拒绝覆盖已有音频、母带报告或 `manifest.json`；比较修订时用新 `--out`，需要替换时显式传 `--overwrite`。manifest 记录本次参数、段落、源 PCM 统计与各格式实际文件数据。
+输出为 320 kbps MP3 或 PCM16/24 WAV，立体声，采样率为原生渲染的 44.1/48 kHz。默认拒绝覆盖已有音频、母带报告或 `manifest.json`；比较修订时用新 `--out`，需要替换时显式传 `--overwrite`。manifest 记录本次参数、段落、源 PCM 统计与各格式实际文件数据。
 
 MP3 默认两遍 loudnorm 的项目目标为 **−14 LUFS / −1.5 dBTP / LRA 9**，编码后再次实测。这是制作选择，不是抖音或小红书官方标准；源动态与有损编码可能导致偏差。原始 WAV 默认保留引擎 PCM。模式与字段见 [MP3 导出说明](docs/mp3-export.md)。
 
@@ -149,14 +175,14 @@ MP3 默认两遍 loudnorm 的项目目标为 **−14 LUFS / −1.5 dBTP / LRA 9*
 
 ```text
 ai-audio/
-├── releases/                # 四首作品的 MP3、实测 manifest 与保留的旧版
+├── releases/                # 五首作品的成品、实测 manifest 与保留的旧版
 ├── public/audio/salamander/ # 墨潮的钢琴采样及 CC BY 3.0 署名
 ├── public/audio/vsco/       # 长笛、弦乐、竖琴采样及 CC0 来源说明
 ├── src/
-│   ├── tracks/              # 四首曲目定义与 registry.ts
+│   ├── tracks/              # 五首曲目定义与 registry.ts
 │   ├── music/               # 类型、校验、确定性随机源与编曲
 │   │   └── arrangements/     # emotional-pop / cinematic-guofeng / ink-tide
-│   ├── engine/              # 三种独立音源与 Offline 渲染
+│   ├── engine/              # 四种独立音源与 Offline 渲染
 │   ├── audio/wav.ts         # WAV 编码、PCM 电平与波形
 │   ├── main.ts              # 试听台
 │   └── style.css

@@ -1,0 +1,42 @@
+{
+  "mode": "loudness",
+  "method": "FFmpeg loudnorm / EBU R128, measured from source and decoded final files",
+  "target": {
+    "integratedLufs": -14,
+    "truePeakDbtp": -1.5,
+    "loudnessRangeLu": 9
+  },
+  "targetNote": "Project production target; no platform loudness standard is claimed. MP3 encoding can alter measured loudness/true peak.",
+  "before": {
+    "integratedLufs": -13.4,
+    "truePeakDbtp": -1.47,
+    "loudnessRangeLu": 0.4,
+    "thresholdLufs": -23.4
+  },
+  "after": {
+    "wav": {
+      "integratedLufs": -14,
+      "truePeakDbtp": -2.07,
+      "loudnessRangeLu": 0.4,
+      "thresholdLufs": -24
+    },
+    "mp3": {
+      "integratedLufs": -14,
+      "truePeakDbtp": -2.01,
+      "loudnessRangeLu": 0.4,
+      "thresholdLufs": -24
+    }
+  },
+  "processing": {
+    "wav": {
+      "passes": 2,
+      "normalizationType": "linear",
+      "requestedLinear": true
+    },
+    "mp3": {
+      "passes": 2,
+      "normalizationType": "linear",
+      "requestedLinear": true
+    }
+  }
+}
