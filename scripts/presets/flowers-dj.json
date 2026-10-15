@@ -1,0 +1,138 @@
+{
+  "title": "Flowers — Night Bloom DJ Edit",
+  "seed": 261015,
+  "sourceDirectory": "artifacts/audio/flowers-dj/source",
+  "sourceBpm": 117.98036703870679,
+  "introBpm": 118,
+  "targetBpm": 126,
+  "phraseStartSeconds": 13.45915055969478,
+  "bassMidi": [
+    33,
+    38,
+    31,
+    36,
+    33,
+    38,
+    31,
+    36,
+    33,
+    38,
+    31,
+    36
+  ],
+  "chordsMidi": [
+    [
+      57,
+      60,
+      64
+    ],
+    [
+      57,
+      62,
+      65
+    ],
+    [
+      55,
+      59,
+      62
+    ],
+    [
+      55,
+      60,
+      64
+    ],
+    [
+      57,
+      60,
+      64
+    ],
+    [
+      57,
+      62,
+      65
+    ],
+    [
+      55,
+      59,
+      62
+    ],
+    [
+      55,
+      60,
+      64
+    ],
+    [
+      57,
+      60,
+      64
+    ],
+    [
+      57,
+      62,
+      65
+    ],
+    [
+      55,
+      59,
+      62
+    ],
+    [
+      55,
+      60,
+      64
+    ]
+  ],
+  "teaserChops": [
+    [
+      18,
+      0.0,
+      1,
+      0.42
+    ],
+    [
+      18,
+      8,
+      0.5,
+      0.34
+    ],
+    [
+      18,
+      16,
+      2,
+      0.46
+    ],
+    [
+      18,
+      24,
+      1,
+      0.47
+    ],
+    [
+      18,
+      28,
+      0.5,
+      0.45
+    ],
+    [
+      18,
+      30,
+      0.25,
+      0.44
+    ]
+  ],
+  "hookSourceBeat": 18,
+  "breakSourceBeat": 16,
+  "sourceReference": {
+    "artist": "Miley Cyrus",
+    "track": "Flowers",
+    "trackViewUrl": "https://music.apple.com/us/album/flowers/1674691585?i=1674691586&uo=4",
+    "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/68/9e/f7/689ef7fe-14fe-a846-c87f-7d3b2d6344b1/mzaf_4167137058064023087.plus.aac.p.m4a",
+    "sourceType": "Apple/iTunes 30-second preview excerpt",
+    "note": "Unofficial local remix study; source recording is not part of the code license."
+  },
+  "notes": [
+    "0-based bar/beat indices in the renderer; no full-length recording required.",
+    "Machine-estimated beat grid and bass notes; not a listening review."
+  ],
+  "phraseBars": 8
+}

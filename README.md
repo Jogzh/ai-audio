@@ -1,8 +1,8 @@
 # ai-audio
 
-基于 Tone.js 的原创音乐生成与离线导出实验框架。仓库保留一首可运行的示例《余温 / Afterglow》，其余代码面向自由创作：可以替换曲目数据、调整 BPM、移调、随机种子，或组合已有声音配方。
+支持原创音乐生成、DJ Remix 制作与离线音频导出的实验项目。原创音乐使用 Tone.js，DJ Remix 使用 Python 音频处理工具，支持从歌曲高潮或其他片段分离人声、保留音高变速，重新编写鼓组、贝斯、和声与 Drop，并导出可播放的 MP3/WAV。仓库保留一首可运行的原创示例《余温 / Afterglow》，也可替换曲目数据、调整 BPM、移调、随机种子，或组合已有声音配方。
 
-成品 MP3/WAV 默认写入 Git 忽略的 `artifacts/` 或本地 `releases/` 目录。Git 只保留《余温》的源码和 `releases/afterglow/manifest.json`；采样库、合成器与导出工具属于可复用工程资源。
+成品 MP3/WAV 默认写入 Git 忽略的 `artifacts/` 或本地 `releases/` 目录。Git 保留源码、编曲预设、制作记录和 `releases/afterglow/manifest.json`；歌曲音源、分轨、模型与 DJ 成品音频在本地保存。采样库、合成器与导出工具属于可复用工程资源。
 
 ## 开始
 
@@ -36,6 +36,22 @@ npm run render -- --help
 - 使用 `src/music/validation.ts`、`src/music/mixer.ts` 和 `src/audio/wav.ts` 复用参数校验、分层路由与 WAV 测量。
 
 内置的 `emotional-pop`、`cinematic-guofeng`、`guofeng-club` 编曲与声音配方可以直接作为创作起点。它们描述的是合成方法和路由，不绑定某一首成品。
+
+## DJ Remix 制作
+
+可以选取副歌、高潮或其他合适的演唱片段制作 Remix，保留完整唱句，并用人声切片做节奏或旋律回应。制作流程包括人声分离、保留音高的变速、伴奏重编、Build / Drop 设计、侧链混音与 MP3/WAV 母带导出。具体歌曲的素材选择和编曲由制作脚本与预设控制。
+
+最新 DJ 改编为 [《Flowers — Glasshouse Flip》](docs/flowers-glasshouse-production.md)：分离副歌人声，完整保留一次 14 小节副歌，以新写的钢琴、贝斯、Hook 和鼓组替换原伴奏，编排 Piano House → UK Garage 两次 Drop。主版为 128 BPM、98 秒，另有 33.75 秒试听，MP3/WAV 保存在本地 `artifacts/audio/flowers-reimagined/`。来源、采样署名和素材准备要求见制作记录。
+
+准备好本地音源、分轨与采样后，可以复现编曲与母带：
+
+```bash
+artifacts/dj-tools/bin/python scripts/flowers_glasshouse.py all
+```
+
+`render` 与 `master` 可分别执行编曲和母带；Python 依赖见 `scripts/requirements-dj.txt`，另需 FFmpeg。
+
+此前的 [DJ 调研与首次片段版](docs/flowers-dj-research.md)、[整首保留版](docs/flowers-dj-full-production.md)仍保留，分别位于 `artifacts/audio/flowers-dj/` 和 `artifacts/audio/flowers-dj-full/`。通用工具 `scripts/dj_remix.py` 提供人声分离、保留音高的变速、渐速开场及 MP3/WAV 导出。
 
 ## 检查
 

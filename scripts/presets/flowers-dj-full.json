@@ -1,0 +1,39 @@
+{
+  "mode": "continuous",
+  "title": "Flowers — Night Bloom Full Song DJ Mix",
+  "outputStem": "flowers-night-bloom-full-song-dj",
+  "seed": 261015,
+  "sourceBpm": 118,
+  "introBpm": 118,
+  "targetBpm": 126,
+  "sourceFirstBeatSeconds": 0.39,
+  "minimumSourceSeconds": 180,
+  "introBars": 4,
+  "outroBars": 4,
+  "sourcePeak": 0.78,
+  "introChordMidi": [57, 60, 64],
+  "sourceReference": {
+    "artist": "Miley Cyrus",
+    "track": "Flowers",
+    "songPage": "https://www.qeecc.com/song/aXlnZHhkd3ln.html",
+    "searchPage": "https://www.qeecc.com/so/Flowers.html",
+    "sourceType": "Complete recording downloaded from the user-provided page's audio player",
+    "observedPlayerDurationSeconds": 200.573968,
+    "note": "Preserve all decoded audio; original recording is not covered by the code license."
+  },
+  "songSections": [
+    { "start": 0, "name": "原曲开场", "kind": "intro", "energy": 0.58 },
+    { "start": 8.06, "name": "第一段主歌", "kind": "verse", "energy": 0.68 },
+    { "start": 24.17, "name": "第一次蓄力", "kind": "prechorus", "energy": 0.78 },
+    { "start": 33.51, "name": "第一段副歌", "kind": "chorus", "energy": 1.0 },
+    { "start": 56.84, "name": "第一段副歌延展", "kind": "postchorus", "energy": 0.92 },
+    { "start": 69.01, "name": "第二段主歌", "kind": "verse", "energy": 0.7 },
+    { "start": 85.19, "name": "第二次蓄力", "kind": "prechorus", "energy": 0.8 },
+    { "start": 94.62, "name": "第二段副歌", "kind": "chorus", "energy": 1.0 },
+    { "start": 117.68, "name": "第二段副歌延展", "kind": "postchorus", "energy": 0.94 },
+    { "start": 138.74, "name": "桥段", "kind": "bridge", "energy": 0.5 },
+    { "start": 147.53, "name": "最后副歌", "kind": "chorus", "energy": 1.0 },
+    { "start": 170.76, "name": "最后副歌延展", "kind": "postchorus", "energy": 0.95 },
+    { "start": 196.099, "name": "原曲尾音", "kind": "outro", "energy": 0.6 }
+  ]
+}
