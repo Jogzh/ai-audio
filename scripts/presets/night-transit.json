@@ -1,0 +1,55 @@
+{
+  "title": "夜航线 / Night Transit",
+  "style": "DJ 主导 / Peak-time Bass Techno with Vocal Inserts",
+  "outputStem": "night-transit-club-original",
+  "seed": 26101504,
+  "bpm": 132,
+  "key": "C minor",
+  "bars": 64,
+  "tailSeconds": 1.2,
+  "bassRootsMidi": [36, 36, 36, 36, 32, 32, 34, 31],
+  "hook": [
+    [[0, 60, 0.35], [0.75, 60, 0.22], [1.5, 63, 0.28], [2.25, 67, 0.22], [2.75, 65, 0.22], [3.5, 63, 0.3]],
+    [[0, 62, 0.35], [0.75, 60, 0.28], [1.5, 58, 0.28], [2.25, 55, 0.35], [3, 60, 0.55]]
+  ],
+  "sections": [
+    {"name": "霓虹脉冲 / 原创动机", "startBar": 0, "endBar": 4},
+    {"name": "唱句闪现 / 第一次蓄力", "startBar": 4, "endBar": 8},
+    {"name": "器乐主段 A / FM Riff", "startBar": 8, "endBar": 24},
+    {"name": "短暂留白 / 英文唱句", "startBar": 24, "endBar": 28},
+    {"name": "第二次蓄力", "startBar": 28, "endBar": 32},
+    {"name": "器乐主段 B / 低八度与切分", "startBar": 32, "endBar": 48},
+    {"name": "高八度返回 / Acid 回答", "startBar": 48, "endBar": 56},
+    {"name": "DJ 退出 / 尾音", "startBar": 56, "endBar": 64}
+  ],
+  "vocalSource": "artifacts/audio/night-transit/source/snowflake-infinity-evolving-dry.flac",
+  "sourceBpm": 120,
+  "vocalInserts": [
+    {
+      "label": "you did the magic part",
+      "sourceSeconds": [33.96, 36.82],
+      "beat": 24.25,
+      "gain": 0.78
+    },
+    {
+      "label": "infinite starts with a broken heart",
+      "sourceSeconds": [42.46, 48.78],
+      "beat": 96.0,
+      "gain": 0.86
+    },
+    {
+      "label": "i did the tragic part",
+      "sourceSeconds": [37.34, 41.50],
+      "beat": 188.0,
+      "gain": 0.74
+    }
+  ],
+  "sourceCredit": {
+    "title": "Infinity Evolving",
+    "artist": "Madam Snowflake & spinningmerkaba",
+    "page": "https://ccmixter.org/files/snowflake/71146",
+    "license": "CC BY-NC 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "use": "Local noncommercial derivative study; credit and source license retained. No commercial clearance is implied."
+  }
+}
