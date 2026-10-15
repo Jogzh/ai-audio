@@ -1,6 +1,5 @@
 import type { Arrangement, Instrument, MixTrack, RenderOptions, TrackDefinition } from '../types.ts';
 import { createRandom } from '../random.ts';
-import { addNightCityArrangement, nightCityParts } from './night-city.ts';
 
 const strip = (id: string, name: string, instrument: Instrument, role: MixTrack['role'], gain: number, pan: number, highpass: number, lowpass: number, reverb = 0, delay = 0): MixTrack => ({ id, name, instrument, role, mix: { gain, pan, highpass, lowpass, reverb, delay } });
 export const clubTracks: MixTrack[] = [
@@ -112,9 +111,7 @@ export function buildGuofengClubArrangement(track: TrackDefinition, options: Ren
       if (outro && local === 0) add('drum', b, .7, .47, [38]);
     }
   }
-  const vocal = track.guofengClub?.vocals === 'night-city';
-  if (vocal) events = addNightCityArrangement(track, options, events);
-  const tracks = vocal ? [...clubTracks, ...nightCityParts] : clubTracks;
+  const tracks = clubTracks;
   events.sort((a, b) => a.beat - b.beat);
   if (options.version === 'full') return { tracks, events, beats: bar * 4, sections };
   const edit = track.edits![options.version];

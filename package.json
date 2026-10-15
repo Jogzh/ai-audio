@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Original emotional pop, cinematic Chinese music and offline MP3/WAV rendering with Tone.js",
+  "description": "Tone.js 音乐生成、声音配方与离线音频导出实验框架",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -18,13 +18,9 @@
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts tests/*.test.mjs",
-    "test:browser": "node scripts/check-browser.mjs && node scripts/check-guofeng.mjs && node scripts/check-guofeng.mjs --ink-tide && node scripts/check-multitrack.mjs && node scripts/check-guofeng.mjs --neon-changan && node scripts/check-guofeng.mjs --vocal",
+    "test:browser": "node scripts/check-browser.mjs",
     "check": "npm test && npm run build",
-    "render": "node scripts/render.mjs",
-    "render:neon": "node scripts/render.mjs --track neon-changan --seed 261014 --sample-rate 48000 --bit-depth 24 --format both --master loudness",
-    "package:neon": "node scripts/package-neon-changan.mjs",
-    "render:vocal": "node scripts/render.mjs --track neon-changan-vocal --seed 261014 --sample-rate 48000 --bit-depth 24 --format both --master loudness",
-    "render:stems": "node scripts/render-stems.mjs"
+    "render": "node scripts/render.mjs"
   },
   "dependencies": {
     "tone": "15.1.22"

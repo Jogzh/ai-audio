@@ -44,7 +44,6 @@ export function buildEmotionalPopArrangement(track: TrackDefinition, options: Re
           add(leadVoice, beat + note.offset, note.length, note.velocity * level, [note.note]);
           // A low, vowel-like response adds a distinct colour without masquerading as a singer.
           if (!development?.response && chorus && phrase % 2 === 1 && note.offset >= 2.5) {
-            add('vocal', beat + note.offset + 0.035, note.length + 0.12, 0.35 * fade, [note.note - 12]);
           }
           if (!development?.finalHook && final && local >= 8 && note.offset === 2) add('spark', beat + 3.25, 0.4, 0.22, [note.note + 12]);
         }
@@ -110,7 +109,6 @@ export function buildEmotionalPopArrangement(track: TrackDefinition, options: Re
       // One short inhale between sections, no stock sixteen-bar EDM noise riser.
       if (transition && section.energy !== 'tease') add('sweep', beat + 2.5, 1.45, bridge ? 0.24 : 0.18);
       if (chorus && local === 0) add('impact', beat, 0.6, 0.17);
-      if (bridge && local === 0 && !development?.bridgeHook) add('vocal', beat + 0.25, 3.1, 0.24, [resolution.root + 36]);
       if (ending) add('piano', beat, 3.5, 0.51, [resolution.root + 36]);
     }
   }

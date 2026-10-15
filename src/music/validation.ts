@@ -19,7 +19,7 @@ export function validateOptions(options: RenderOptions): void {
 }
 
 export function validateTrack(track: TrackDefinition): void {
-  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide', 'guofeng-club'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
+  if (!['emotional-pop', 'cinematic-guofeng', 'guofeng-club'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
   if (!track.harmony.length || !track.hook.length || !track.arrangement.length) throw new Error('曲目缺少和声、Hook 或编曲');
   const midi = (note: number) => Number.isInteger(note) && note >= 0 && note <= 127;
   const validatePhrase = (phrase: HookBar[], name: string, withinBar = false) => {
@@ -36,37 +36,11 @@ export function validateTrack(track: TrackDefinition): void {
   validatePhrase(track.hook, 'Hook');
   if (track.guofengClub !== undefined) {
     if (track.production !== 'guofeng-club') throw new RangeError('guofengClub 配置需要对应制作风格');
-    if (track.guofengClub.vocals !== undefined && track.guofengClub.vocals !== 'night-city') throw new RangeError('未知国风 DJ 人声音源');
     validatePhrase(track.hook, 'Hook', true);
     for (const name of ['finalHook', 'bridgeHook'] as const) {
       const phrase = track.guofengClub[name];
       if (!Array.isArray(phrase) || phrase.length !== track.hook.length) throw new RangeError(`${name} 小节数必须与 Hook 一致`);
       validatePhrase(phrase, name, true);
-    }
-  }
-  if (track.production === 'ink-tide') validatePhrase(track.hook, 'Hook', true);
-  if (track.inkTide !== undefined) {
-    const development = track.inkTide;
-    if (track.production !== 'ink-tide' || !development || typeof development !== 'object') throw new RangeError('ink-tide 需要有效旋律发展配置');
-    for (const name of ['response', 'finalResponse', 'finalHook', 'bridgeHook'] as const) {
-      const phrase = development[name];
-      if (phrase === undefined) continue;
-      if (!Array.isArray(phrase) || phrase.length !== track.hook.length) throw new RangeError(`${name} 小节数必须与 Hook 主题一致`);
-      validatePhrase(phrase, name, true);
-    }
-    if (development.finalResponse && !development.finalHook) throw new RangeError('finalResponse 需要最终旋律');
-    const replies = [
-      { melody: track.hook, response: development.response },
-      { melody: development.finalHook, response: development.finalResponse ?? development.response },
-    ];
-    for (const { melody, response } of replies) {
-      if (melody && response) {
-        melody.forEach((bar, index) => {
-          for (const reply of response[index]) {
-            if (bar.some(note => reply.offset < note.offset + note.length && reply.offset + reply.length > note.offset)) throw new RangeError('response 应答必须位于主旋律留白');
-          }
-        });
-      }
     }
   }
   if (track.cinematicGuofeng !== undefined) {

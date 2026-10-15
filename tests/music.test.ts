@@ -10,9 +10,9 @@ const options: RenderOptions = { version: 'full', bpm: 118, transpose: 0, seed: 
 
 test('registry selects afterglow by default and excludes retired demos', () => {
   assert.equal(defaultTrack, afterglow);
-  assert.ok(trackRegistry.includes(afterglow));
+  assert.deepEqual(trackRegistry, [afterglow]);
   assert.equal(findTrack('afterglow'), afterglow);
-  for (const id of ['velvet-hour', 'moonlit-sway', 'amber-tides', 'neon-rebound', 'missing']) assert.equal(findTrack(id), undefined);
+  for (const id of ['ink-tide', 'mountains-awake', 'neon-changan', 'when-the-wind-rises', 'missing']) assert.equal(findTrack(id), undefined);
   assert.equal(afterglow.production, 'emotional-pop');
   assert.equal(afterglow.meta.bpm, 118);
 });
@@ -110,7 +110,8 @@ test('afterglow presents the motif immediately and reaches its main section in a
     afterglow.hook.flatMap((bar, index) => bar.map(note => ({ beat: index * 4 + note.offset, notes: [note.note], duration: note.length }))));
   const key = new Set([1, 2, 4, 6, 8, 9, 11]); // F# natural minor
   const palette = new Set(full.events.map(event => event.instrument));
-  for (const instrument of ['piano', 'lead', 'vocal', 'chord', 'pad', 'kick', 'clap', 'hat', 'bass', 'sub', 'texture', 'sweep'] as const) assert.ok(palette.has(instrument), `${instrument} appears in the full composition`);
+  assert.ok(!full.events.some(event => event.instrument === 'vocal'), 'the default example is instrumental');
+  for (const instrument of ['piano', 'lead', 'chord', 'pad', 'kick', 'clap', 'hat', 'bass', 'sub', 'texture', 'sweep'] as const) assert.ok(palette.has(instrument), `${instrument} appears in the full composition`);
   for (const score of [full, hook]) {
     assert.ok(score.events.every(event => event.beat >= 0 && event.beat < score.beats && event.duration > 0 && event.velocity > 0 && event.velocity <= 1));
     assert.ok(score.events.every((event, index) => index === 0 || event.beat >= score.events[index - 1].beat));

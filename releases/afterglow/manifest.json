@@ -1,36 +1,35 @@
 {
   "track": "afterglow",
-  "title": "余温 / AFTERGLOW",
-  "sourceCommit": "7fa027f",
-  "generatedAt": "2026-10-13T09:51:45.824Z",
   "engine": "Tone.js 15.1.22 / Chromium OfflineAudioContext",
-  "format": "MP3 320 kbps",
+  "generatedAt": "2026-10-15T03:52:44.778Z",
+  "format": "PCM16 WAV + MP3 320 kbps",
   "masteringMode": "auto",
-  "masteringTarget": {
-    "integratedLufs": -14,
-    "truePeakDbtp": -1.5,
-    "loudnessRangeLu": 9
+  "tools": {
+    "ffmpeg": "ffmpeg",
+    "ffprobe": "ffprobe",
+    "ffmpegVersion": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobeVersion": "ffprobe version 9.0.2 Copyright (c) 2007-2026 the FFmpeg developers"
   },
-  "note": "Exact copies of the approved afterglow-v2 MP3 files. Loudness values are measured after encoding; the mastering target is a project choice. Only MP3 release files are tracked; regeneration outputs remain under artifacts/.",
-  "files": [
+  "note": "Source stats are sample peak/RMS. Integrated LUFS and oversampled true peak are measured by FFmpeg when available. MP3 container duration includes encoder padding; audioContentDurationSeconds is the rendered PCM frame duration. Loudness target is a project choice, not a claimed platform standard.",
+  "renders": [
     {
-      "version": "full",
+      "track": "afterglow",
       "filename": "afterglow-full-118bpm-t0-s261013.mp3",
-      "format": "MP3 320 kbps",
-      "codec": "mp3",
-      "sampleRate": 44100,
-      "channels": 2,
-      "durationSeconds": 83.755918,
-      "durationSource": "ffprobe container duration",
-      "audioContentDurationSeconds": 83.75591836734694,
-      "bytes": 3353120,
-      "mastered": true,
-      "sha256": "3c10cf837c68d681752cfe2bbf5756f0dd59aa6ed04ec653b4d447cf2b38334a",
+      "duration": 83.75591836734694,
       "options": {
         "bpm": 118,
         "transpose": 0,
         "seed": 261013,
+        "sampleRate": 44100,
         "version": "full"
+      },
+      "stats": {
+        "peak": 0.8709635734558105,
+        "rms": 0.13445880315235575,
+        "peakDb": -1.2000001645528333,
+        "rmsDb": -17.428215176312936,
+        "clippedSamples": 0,
+        "dcOffset": 3.3220144485529564e-8
       },
       "sections": [
         {
@@ -64,75 +63,98 @@
           "end": 81.35593220338983
         }
       ],
-      "loudness": {
-        "integratedLufs": -14.02,
-        "truePeakDbtp": -1.46,
-        "loudnessRangeLu": 6.8,
-        "thresholdLufs": -24.31
-      },
-      "decodedCheck": {
-        "filename": "afterglow-full-118bpm-t0-s261013.mp3",
-        "durationSeconds": 83.75591836734694,
-        "sampleRate": 44100,
-        "channels": 2,
-        "clippedSamples": 0,
-        "peakDbfs": -1.4594033179053876,
-        "rmsDbfs": -15.48184274085781,
-        "stereoCorrelation": 0.997697382710525,
-        "monoRmsChangeDb": -0.005004996031428252,
-        "loudness": {
-          "integratedLufs": -14.02,
-          "truePeakDbtp": -1.46,
-          "loudnessRangeLu": 6.8,
-          "thresholdLufs": -24.31
+      "sampleRate": 44100,
+      "bitDepth": 16,
+      "channels": 2,
+      "format": "MP3 320 kbps",
+      "actualDurationSeconds": 83.755918,
+      "files": [
+        {
+          "filename": "afterglow-full-118bpm-t0-s261013.wav",
+          "format": "PCM16 WAV",
+          "codec": "pcm_s16le",
+          "bitsPerSample": 16,
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 83.75591836734694,
+          "durationSource": "PCM frame count",
+          "audioContentDurationSeconds": 83.75591836734694,
+          "bytes": 14774588,
+          "mastered": false
         },
-        "sectionRmsDbfs": [
-          {
-            "name": "01 / 那句旋律",
-            "rmsDbfs": -16.789801343580724
+        {
+          "filename": "afterglow-full-118bpm-t0-s261013.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 83.755918,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 83.75591836734694,
+          "bytes": 3353120,
+          "mastered": true
+        }
+      ],
+      "sourceFilename": "afterglow-full-118bpm-t0-s261013.wav",
+      "sourceStatsNote": "stats measures source PCM sample peak/RMS; final-file integrated LUFS and true peak appear in mastering.after.",
+      "masteringFilename": "afterglow-full-118bpm-t0-s261013.mastering.json",
+      "mastering": {
+        "mode": "auto",
+        "method": "FFmpeg loudnorm / EBU R128, measured from source and decoded final files",
+        "target": {
+          "integratedLufs": -14,
+          "truePeakDbtp": -1.5,
+          "loudnessRangeLu": 9
+        },
+        "targetNote": "Project production target; no platform loudness standard is claimed. MP3 encoding can alter measured loudness/true peak.",
+        "before": {
+          "integratedLufs": -15.99,
+          "truePeakDbtp": -1.2,
+          "loudnessRangeLu": 8.5,
+          "thresholdLufs": -26.33
+        },
+        "after": {
+          "wav": {
+            "integratedLufs": -15.99,
+            "truePeakDbtp": -1.2,
+            "loudnessRangeLu": 8.5,
+            "thresholdLufs": -26.33
           },
-          {
-            "name": "02 / 余温",
-            "rmsDbfs": -13.872147645772056
-          },
-          {
-            "name": "03 / 走过街灯",
-            "rmsDbfs": -15.946705822000304
-          },
-          {
-            "name": "04 / 想起你",
-            "rmsDbfs": -21.378014421443098
-          },
-          {
-            "name": "05 / 再亮一点",
-            "rmsDbfs": -13.9350521121967
-          },
-          {
-            "name": "06 / 留在晚风里",
-            "rmsDbfs": -18.854792355210158
+          "mp3": {
+            "integratedLufs": -14.02,
+            "truePeakDbtp": -1.46,
+            "loudnessRangeLu": 6.8,
+            "thresholdLufs": -24.31
           }
-        ]
+        },
+        "processing": {
+          "mp3": {
+            "passes": 2,
+            "normalizationType": "dynamic",
+            "requestedLinear": true
+          }
+        }
       }
     },
     {
-      "version": "hook",
+      "track": "afterglow",
       "filename": "afterglow-hook-118bpm-t0-s261013.mp3",
-      "format": "MP3 320 kbps",
-      "codec": "mp3",
-      "sampleRate": 44100,
-      "channels": 2,
-      "durationSeconds": 17.071179,
-      "durationSource": "ffprobe container duration",
-      "audioContentDurationSeconds": 17.071179138321995,
-      "bytes": 685496,
-      "mastered": true,
-      "sha256": "333e893062462745f14f111edfffebed100a4e5c807b3b45c43ba4430fc29cfb",
+      "duration": 17.071179138321995,
       "options": {
         "bpm": 118,
         "transpose": 0,
         "seed": 261013,
+        "sampleRate": 44100,
         "version": "hook"
       },
+      "stats": {
+        "peak": 0.8709635734558105,
+        "rms": 0.15956220641840835,
+        "peakDb": -1.2000001645528333,
+        "rmsDb": -15.941399338355232,
+        "clippedSamples": 0,
+        "dcOffset": 3.5257711950387833e-7
+      },
       "sections": [
         {
           "name": "02 / 余温",
@@ -140,48 +162,97 @@
           "end": 16.271186440677965
         }
       ],
-      "loudness": {
-        "integratedLufs": -14.12,
-        "truePeakDbtp": -1.48,
-        "loudnessRangeLu": 2.6,
-        "thresholdLufs": -24.51
-      },
-      "decodedCheck": {
-        "filename": "afterglow-hook-118bpm-t0-s261013.mp3",
-        "durationSeconds": 17.071179138321995,
-        "sampleRate": 44100,
-        "channels": 2,
-        "clippedSamples": 0,
-        "peakDbfs": -1.4798093208384797,
-        "rmsDbfs": -15.30905446145232,
-        "stereoCorrelation": 0.9990794588511772,
-        "monoRmsChangeDb": -0.002029472189338827,
-        "loudness": {
-          "integratedLufs": -14.12,
-          "truePeakDbtp": -1.48,
-          "loudnessRangeLu": 2.6,
-          "thresholdLufs": -24.51
+      "sampleRate": 44100,
+      "bitDepth": 16,
+      "channels": 2,
+      "format": "MP3 320 kbps",
+      "actualDurationSeconds": 17.071179,
+      "files": [
+        {
+          "filename": "afterglow-hook-118bpm-t0-s261013.wav",
+          "format": "PCM16 WAV",
+          "codec": "pcm_s16le",
+          "bitsPerSample": 16,
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 17.071179138321995,
+          "durationSource": "PCM frame count",
+          "audioContentDurationSeconds": 17.071179138321995,
+          "bytes": 3011400,
+          "mastered": false
+        },
+        {
+          "filename": "afterglow-hook-118bpm-t0-s261013.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 17.071179,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 17.071179138321995,
+          "bytes": 685496,
+          "mastered": true
+        }
+      ],
+      "sourceFilename": "afterglow-hook-118bpm-t0-s261013.wav",
+      "sourceStatsNote": "stats measures source PCM sample peak/RMS; final-file integrated LUFS and true peak appear in mastering.after.",
+      "masteringFilename": "afterglow-hook-118bpm-t0-s261013.mastering.json",
+      "mastering": {
+        "mode": "auto",
+        "method": "FFmpeg loudnorm / EBU R128, measured from source and decoded final files",
+        "target": {
+          "integratedLufs": -14,
+          "truePeakDbtp": -1.5,
+          "loudnessRangeLu": 9
+        },
+        "targetNote": "Project production target; no platform loudness standard is claimed. MP3 encoding can alter measured loudness/true peak.",
+        "before": {
+          "integratedLufs": -14.72,
+          "truePeakDbtp": -1.2,
+          "loudnessRangeLu": 2.7,
+          "thresholdLufs": -25.16
+        },
+        "after": {
+          "wav": {
+            "integratedLufs": -14.72,
+            "truePeakDbtp": -1.2,
+            "loudnessRangeLu": 2.7,
+            "thresholdLufs": -25.16
+          },
+          "mp3": {
+            "integratedLufs": -14.1,
+            "truePeakDbtp": -1.46,
+            "loudnessRangeLu": 2.6,
+            "thresholdLufs": -24.54
+          }
+        },
+        "processing": {
+          "mp3": {
+            "passes": 2,
+            "normalizationType": "dynamic",
+            "requestedLinear": true
+          }
         }
       }
     },
     {
-      "version": "loop",
+      "track": "afterglow",
       "filename": "afterglow-loop-118bpm-t0-s261013.mp3",
-      "format": "MP3 320 kbps",
-      "codec": "mp3",
-      "sampleRate": 44100,
-      "channels": 2,
-      "durationSeconds": 16.271179,
-      "durationSource": "ffprobe container duration",
-      "audioContentDurationSeconds": 16.271179138321994,
-      "bytes": 653104,
-      "mastered": true,
-      "sha256": "fa92bf7e07d03abec11cf6243d0952f42a3644393bf97308cf224cc88e54287d",
+      "duration": 16.271179138321994,
       "options": {
         "bpm": 118,
         "transpose": 0,
         "seed": 261013,
+        "sampleRate": 44100,
         "version": "loop"
+      },
+      "stats": {
+        "peak": 0.8709635734558105,
+        "rms": 0.16687854409965489,
+        "peakDb": -1.2000001645528333,
+        "rmsDb": -15.55198995642426,
+        "clippedSamples": 0,
+        "dcOffset": 1.8741461547293713e-8
       },
       "sections": [
         {
@@ -190,27 +261,76 @@
           "end": 16.271186440677965
         }
       ],
-      "loudness": {
-        "integratedLufs": -14.16,
-        "truePeakDbtp": -1.49,
-        "loudnessRangeLu": 1.3,
-        "thresholdLufs": -24.16
-      },
-      "decodedCheck": {
-        "filename": "afterglow-loop-118bpm-t0-s261013.mp3",
-        "durationSeconds": 16.271179138321994,
-        "sampleRate": 44100,
-        "channels": 2,
-        "clippedSamples": 0,
-        "peakDbfs": -1.4983732911965344,
-        "rmsDbfs": -15.072060661794406,
-        "stereoCorrelation": 0.9990666086872253,
-        "monoRmsChangeDb": -0.0020598661055494694,
-        "loudness": {
-          "integratedLufs": -14.16,
-          "truePeakDbtp": -1.49,
-          "loudnessRangeLu": 1.3,
-          "thresholdLufs": -24.16
+      "sampleRate": 44100,
+      "bitDepth": 16,
+      "channels": 2,
+      "format": "MP3 320 kbps",
+      "actualDurationSeconds": 16.271179,
+      "files": [
+        {
+          "filename": "afterglow-loop-118bpm-t0-s261013.wav",
+          "format": "PCM16 WAV",
+          "codec": "pcm_s16le",
+          "bitsPerSample": 16,
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 16.271179138321994,
+          "durationSource": "PCM frame count",
+          "audioContentDurationSeconds": 16.271179138321994,
+          "bytes": 2870280,
+          "mastered": false
+        },
+        {
+          "filename": "afterglow-loop-118bpm-t0-s261013.mp3",
+          "format": "MP3 320 kbps",
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "durationSeconds": 16.271179,
+          "durationSource": "ffprobe container duration",
+          "audioContentDurationSeconds": 16.271179138321994,
+          "bytes": 653104,
+          "mastered": true
+        }
+      ],
+      "sourceFilename": "afterglow-loop-118bpm-t0-s261013.wav",
+      "sourceStatsNote": "stats measures source PCM sample peak/RMS; final-file integrated LUFS and true peak appear in mastering.after.",
+      "masteringFilename": "afterglow-loop-118bpm-t0-s261013.mastering.json",
+      "mastering": {
+        "mode": "auto",
+        "method": "FFmpeg loudnorm / EBU R128, measured from source and decoded final files",
+        "target": {
+          "integratedLufs": -14,
+          "truePeakDbtp": -1.5,
+          "loudnessRangeLu": 9
+        },
+        "targetNote": "Project production target; no platform loudness standard is claimed. MP3 encoding can alter measured loudness/true peak.",
+        "before": {
+          "integratedLufs": -14.62,
+          "truePeakDbtp": -1.2,
+          "loudnessRangeLu": 1.4,
+          "thresholdLufs": -24.66
+        },
+        "after": {
+          "wav": {
+            "integratedLufs": -14.62,
+            "truePeakDbtp": -1.2,
+            "loudnessRangeLu": 1.4,
+            "thresholdLufs": -24.66
+          },
+          "mp3": {
+            "integratedLufs": -14.15,
+            "truePeakDbtp": -1.49,
+            "loudnessRangeLu": 1.3,
+            "thresholdLufs": -24.19
+          }
+        },
+        "processing": {
+          "mp3": {
+            "passes": 2,
+            "normalizationType": "dynamic",
+            "requestedLinear": true
+          }
         }
       }
     }

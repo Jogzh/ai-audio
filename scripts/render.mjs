@@ -24,7 +24,7 @@ const { values } = parseArgs({ options: {
   help: { type: 'boolean', default: false },
 } });
 if (values.help) {
-  console.log('npm run render -- [--track neon-changan-vocal|neon-changan|ink-tide|mountains-awake|when-the-wind-rises|afterglow] [--version all|full|hook|loop] [--bpm 118] [--transpose 0] [--seed 260713] [--sample-rate 44100|48000] [--bit-depth 16|24] [--out artifacts/audio] [--format mp3|wav|both] [--master auto|off|loudness] [--overwrite]');
+  console.log('npm run render -- [--track afterglow] [--version all|full|hook|loop] [--bpm 118] [--transpose 0] [--seed 260713] [--sample-rate 44100|48000] [--bit-depth 16|24] [--out artifacts/audio] [--format mp3|wav|both] [--master auto|off|loudness] [--overwrite]');
   console.log('Defaults: registry default track, track BPM, MP3 320 kbps. auto masters MP3 with two-pass loudnorm (-14 LUFS / -1.5 dBTP / LRA 9) and preserves raw WAV. loudness also masters WAV; off disables mastering. Existing files require --overwrite.');
   process.exit(0);
 }

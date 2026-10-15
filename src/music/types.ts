@@ -50,8 +50,6 @@ export interface MusicalEvent {
   velocity: number;
   drum?: DrumExpression;
   gesture?: 'rise' | 'fall';
-  /** A bundled original neural voice sample; speech is time-fitted, chops are pitched. */
-  sample?: import('./vocal-bank.ts').VocalSampleId;
 }
 
 export interface Section {
@@ -80,16 +78,8 @@ export interface TrackDefinition {
     tags: string[];
     description: string;
   };
-  production: 'emotional-pop' | 'cinematic-guofeng' | 'ink-tide' | 'guofeng-club';
-  guofengClub?: { finalHook: HookBar[]; bridgeHook: HookBar[]; vocals?: 'night-city' };
-  /** Written melody, phrase-ending replies, and final/bridge development. */
-  inkTide?: {
-    response?: HookBar[];
-    /** Separate cadence replies when the developed melody has longer endings. */
-    finalResponse?: HookBar[];
-    finalHook?: HookBar[];
-    bridgeHook?: HookBar[];
-  };
+  production: 'emotional-pop' | 'cinematic-guofeng' | 'guofeng-club';
+  guofengClub?: { finalHook: HookBar[]; bridgeHook: HookBar[] };
   /** Written melody development for the separate cinematic Chinese palette. */
   cinematicGuofeng?: {
     finalHook?: HookBar[];

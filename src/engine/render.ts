@@ -5,21 +5,16 @@ import type { RenderedTrack, RenderOptions, RenderSelection, TrackDefinition, Ve
 import { selectedTrackIds } from '../music/mixer';
 import { createEmotionalPopInstruments } from './emotional-pop';
 import { createCinematicGuofengInstruments } from './cinematic-guofeng';
-import { createInkTideInstruments } from './ink-tide';
 import { createGuofengClubInstruments } from './guofeng-club';
-import { preparePianoSamples } from './piano-samples';
-import { prepareAcousticSamples } from './acoustic-samples';
-import { prepareVocalSamples } from './vocal-samples';
 
 export const defaultOptions: RenderOptions = { version: 'full', bpm: 118, transpose: 0, seed: 260713 };
 let renderQueue: Promise<void> = Promise.resolve();
 
 /** A loop has no tail; the other edits retain their release. */
 export function getTailSeconds(track: TrackDefinition, version: Version): number {
-  if (!['emotional-pop', 'cinematic-guofeng', 'ink-tide', 'guofeng-club'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
+  if (!['emotional-pop', 'cinematic-guofeng', 'guofeng-club'].includes(track.production)) throw new RangeError(`未知制作风格: ${track.production}`);
   if (version === 'loop') return 0;
   if (track.production === 'guofeng-club') return { full: 2.5, hook: .65 }[version];
-  if (track.production === 'ink-tide') return { full: 2.8, hook: 1.4 }[version];
   if (track.production === 'cinematic-guofeng') return { full: 3.6, hook: 1.6 }[version];
   return { full: 2.4, hook: 0.8 }[version];
 }
@@ -37,8 +32,6 @@ export function renderTrack(track: TrackDefinition, input: RenderOptions = { ...
 async function render(track: TrackDefinition, options: RenderOptions, selection: RenderSelection): Promise<RenderedTrack> {
   const arrangement = buildArrangement(track, options);
   const enabled = selectedTrackIds(arrangement, selection);
-  if (track.production === 'ink-tide') await Promise.all([preparePianoSamples(), prepareAcousticSamples()]);
-  if (track.guofengClub?.vocals) await prepareVocalSamples();
   const secondsPerBeat = 60 / options.bpm;
   const musicalDuration = arrangement.beats * secondsPerBeat;
   const loop = options.version === 'loop';
@@ -53,8 +46,6 @@ async function render(track: TrackDefinition, options: RenderOptions, selection:
       offline = await Tone.Offline(() => {
         rig = track.production === 'guofeng-club'
           ? createGuofengClubInstruments(options.bpm, options.seed, arrangement.tracks)
-          : track.production === 'ink-tide'
-          ? createInkTideInstruments(options.bpm, options.seed, arrangement.tracks, { cycleBeats: arrangement.beats, repetitions })
           : track.production === 'cinematic-guofeng'
           ? createCinematicGuofengInstruments(options.bpm, options.seed)
           : createEmotionalPopInstruments(options.bpm, options.seed);

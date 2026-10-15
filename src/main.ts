@@ -129,46 +129,28 @@ const versionCopy = {
   loop: ['循环片段 / LOOP EDIT', '适合反复聆听的循环片段，播放时自动循环。'],
 };
 const productionCopy: Record<string, { coverId: string; melody: string; drums: string; bass: string }> = {
-  'neon-changan-vocal': {
-    coverId: 'NCLO—010',
-    melody: '“长安入夜，灯起！”男女声口号先开场，调音人声切片唱出三音暗号，唢呐与古筝在下一句回答；月下桥段加入呼吸和声。',
-    drums: '四拍底鼓与二四拍拍手托住口号，每八小节用一次碎拍和短暂停顿转身；反向人声接进 Drop，末尾留出起跳空间。',
-    bass: '居中的弹跳低音给人声留出音区；酸性电子音只在古筝句尾接话，最终 Drop 后半段把人声与国风主题一起抬高。',
-  },
-  'guofeng-club': {
-    coverId: 'NC—009',
-    melody: '古筝抛出 A–C–D 三音暗号，唢呐感主音接住 Drop；竹笛在月下唱长句，最终主题升高再归弦。',
-    drums: '四拍底鼓和二四拍拍手建立舞池节奏，反拍开镲推动前进；木鱼填空，堂鼓接力，蓄力末尾留半拍空间。',
-    bass: '单声道弹跳低音错开底鼓起音，中频泛音照顾手机外放；切分和弦和短空间陪着主题前行。',
-  },
-  'ink-tide': {
-    coverId: 'IT—008',
-    melody: '长笛唱出两小节的主题，钢琴用同一种分解和弦托住长句；高潮换位展开和声，旋律逐步升高，再沿长句落回 D 大调。',
-    drums: '低鼓和刷鼓守住共同的节拍，沙锤到高潮后半段才进入；筒鼓在高潮抬升前轻轻接力，桥段收起节奏。',
-    bass: '低音沿着根音平稳前行，大提琴接住长和声；竖琴在段落之间点亮几个音，让主题有清楚的方向。',
-  },
-  'cinematic-guofeng': {
-    coverId: 'MA—007',
-    melody: '筝声与笛声各自领奏，二胡唱主歌；三音主题留出呼吸，弦乐逐步展开，最后一遍向更高处推进。',
-    drums: '稳定的一三拍底鼓与二四拍军鼓感建立流行律动，深鼓只用于转段；桥段卸去节奏，让主题再次展开。',
-    bass: '居中的低音根音与底鼓同拍，三声部和弦托住主旋律；减少叠层与回声，让节奏和旋律都更清楚。',
-  },
-  'when-the-wind-rises': {
-    coverId: 'WTWR—006',
-    melody: '独立问答电钢琴在柔软电子主音的留白里接话；后半段发展熟悉的主题，让旋律更明亮。',
-    drums: '切分轻鼓以两小节交替变化，细碎打击乐让节奏向前走，句尾和桥段留出呼吸。',
-    bass: '居中的温暖低音贴着和声前行，错开底鼓起音，让主题与律动都有空间。',
-  },
   'emotional-pop': {
     coverId: 'AG—005',
-    melody: '电钢琴先说出主题，柔软电子主音与合成元音接过应答；重复一句，再让尾句向上展开。',
+    melody: '电钢琴先说出主题，柔软电子主音接过应答；重复一句，再让尾句向上展开。',
     drums: '轻四拍与错位鼓点交替，拍手、细踩镲和短过渡推动情绪，桥段留出呼吸。',
     bass: '低频保持居中，轻侧链让出底鼓；温暖泛音让手机扬声器也能听清律动。',
+  },
+  'cinematic-guofeng': {
+    coverId: 'CG—001',
+    melody: '筝、笛与弦乐可以各自领奏；三音主题留出呼吸，最后一遍向更高处推进。',
+    drums: '稳定的流行律动建立骨架，深鼓只用于转段；桥段卸去节奏，让主题再次展开。',
+    bass: '低音根音与底鼓同拍，持续和声托住主旋律；减少叠层，让节奏和旋律都更清楚。',
+  },
+  'guofeng-club': {
+    coverId: 'GC—001',
+    melody: '古筝抛出短句，唢呐感主音与竹笛轮流回答；留出句尾空间，让旋律适合循环与改编。',
+    drums: '四拍底鼓和二四拍拍手建立舞池节奏，反拍开镲推动前进；木鱼、堂鼓和锣负责转段。',
+    bass: '单声道弹跳低音错开底鼓起音，中频泛音照顾手机外放；切分和弦陪着主题前行。',
   },
 };
 function syncTrack(): void {
   const { meta, arrangement } = selectedTrack;
-  const styleName = { 'guofeng-club': '国风 DJ', 'cinematic-guofeng': '国风交响流行', 'ink-tide': '多轨电影配乐', 'emotional-pop': '电子流行' }[selectedTrack.production];
+  const styleName = { 'guofeng-club': '国风 DJ', 'cinematic-guofeng': '国风交响流行', 'emotional-pop': '电子流行' }[selectedTrack.production];
   element('.header-note').innerHTML = `<i aria-hidden="true"></i> 原创${styleName} · ${meta.title}`;
   const copy = productionCopy[meta.id] ?? productionCopy[selectedTrack.production];
   const bars = arrangement.reduce((sum, section) => sum + section.bars, 0);
@@ -194,11 +176,7 @@ function syncTrack(): void {
   element('#export-format').textContent = selectedTrack.production === 'guofeng-club' ? '立体声 / 48 kHz / 24 bit PCM' : '立体声 / 44.1 kHz / 16 bit PCM';
   document.title = `${meta.subtitle} / ${meta.title}`;
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
-  element('.original-note').innerHTML = selectedTrack.guofengClub?.vocals
-    ? '<span aria-hidden="true">//</span> 原创词曲 · 神经语音与合成音色 <span class="note-end">ORIGINAL WORDS / NEURAL VOICES & SYNTHESIS.</span>'
-    : selectedTrack.production === 'ink-tide'
-    ? '<span aria-hidden="true">//</span> 原创编曲 · 实录与合成音色 <span class="note-end">ORIGINAL SCORE / RECORDED & SYNTHESIZED SOUNDS.</span>'
-    : '<span aria-hidden="true">//</span> 原创编曲 · 原创合成音色 <span class="note-end">ORIGINAL SCORE / SYNTHESIZED SOUNDS.</span>';
+  element('.original-note').innerHTML = '<span aria-hidden="true">//</span> 原创编曲 · 可复用合成音色配方 <span class="note-end">ORIGINAL SCORE / SYNTHESIZED SOUND RECIPES.</span>';
   syncMixTracks();
 }
 
