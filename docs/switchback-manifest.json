@@ -1,0 +1,640 @@
+{
+  "title": "折返频率 / Switchback",
+  "style": "DJ 主导 / Driving Club Tool with Transformed Vocal Inserts",
+  "bpm": 136,
+  "key": "F minor",
+  "sourceCredit": {
+    "type": "Original text, local synthetic spoken voice",
+    "text": [
+      "灯暗下来。",
+      "让频率接管。",
+      "别回头。",
+      "现在。",
+      "走。"
+    ],
+    "generator": "Kokoro-82M-v1.1-zh",
+    "modelPage": "https://huggingface.co/hexgrad/Kokoro-82M-v1.1-zh",
+    "voice": "zm_010, transformed with pitch, tempo, filtering and reslicing",
+    "modelLicense": "Apache-2.0",
+    "nativeSampleRate": 24000,
+    "note": "New synthetic spoken inserts, not sung vocals or an imitation of a named performer. No recording from Night Transit is included."
+  },
+  "voiceProvenance": {
+    "created_date": "2026-10-16",
+    "source_type": "locally synthesized original spoken text",
+    "generator": "Kokoro local inference",
+    "model_repo": "hexgrad/Kokoro-82M-v1.1-zh",
+    "model_file": "artifacts/vocal-model/kokoro-v1_1-zh.pth",
+    "model_sha256": "b1d8410fa44dfb5c15471fd6c4225ea6b4e9ac7fa03c98e8bea47a9928476e2b",
+    "config_sha256": "bc333efa5ce4ceff433c8c8e5d027a1eca0166001e4e4a62bea2d26ff7a46890",
+    "voice": "zm_010",
+    "voice_file": "artifacts/vocal-model/zm_010.pt",
+    "voice_sha256": "d2eeba86192eee269f600ca6821038034abd017532a1fe68ff7b0e86c2983b2a",
+    "seed": 20261016,
+    "device": "cpu",
+    "torch_version": "2.8.0",
+    "sample_rate": 24000,
+    "processing": "Silence trimming only. No pitch/time FX, dynamics, normalization, reverb, or EQ.",
+    "items": [
+      {
+        "file": "voice-lights.wav",
+        "text": "灯暗下来。",
+        "phonemes": [
+          "ㄉㄥ1ㄢ4/ㄒ压4ㄌㄞ5."
+        ],
+        "sample_rate": 24000,
+        "channels": 1,
+        "subtype": "PCM_24",
+        "speed": 1.0,
+        "pitch_shift_semitones": 0,
+        "raw_samples": 44400,
+        "trim": {
+          "method": "absolute amplitude threshold -55 dBFS with 25 ms margin",
+          "start_sample": 4848,
+          "end_sample_exclusive": 30834,
+          "removed_head_seconds": 0.202,
+          "removed_tail_seconds": 0.56525
+        },
+        "samples": 25986,
+        "duration_seconds": 1.08275,
+        "peak_dbfs": -4.4169182777404785,
+        "sha256": "5dbd172200a4076c0a8cd7e88a8cfb8e32e7c2b1e218fd946c9df641bbf6e528"
+      },
+      {
+        "file": "voice-frequency.wav",
+        "text": "让频率接管。",
+        "phonemes": [
+          "ㄖㄤ4/ㄆ阴2ㄌㄩ4/ㄐㄝ1ㄍ万3."
+        ],
+        "sample_rate": 24000,
+        "channels": 1,
+        "subtype": "PCM_24",
+        "speed": 1.0,
+        "pitch_shift_semitones": 0,
+        "raw_samples": 54000,
+        "trim": {
+          "method": "absolute amplitude threshold -55 dBFS with 25 ms margin",
+          "start_sample": 5245,
+          "end_sample_exclusive": 39440,
+          "removed_head_seconds": 0.21854166666666666,
+          "removed_tail_seconds": 0.6066666666666667
+        },
+        "samples": 34195,
+        "duration_seconds": 1.4247916666666667,
+        "peak_dbfs": -4.991098880767822,
+        "sha256": "ae421226068a84c39e01a1ac556c71534444f8d243802d07b1ee3bae0f0dcc54"
+      },
+      {
+        "file": "voice-dont-look-back.wav",
+        "text": "别回头。",
+        "phonemes": [
+          "ㄅㄝ2/ㄏ为2ㄊㄡ2."
+        ],
+        "sample_rate": 24000,
+        "channels": 1,
+        "subtype": "PCM_24",
+        "speed": 1.0,
+        "pitch_shift_semitones": 0,
+        "raw_samples": 41400,
+        "trim": {
+          "method": "absolute amplitude threshold -55 dBFS with 25 ms margin",
+          "start_sample": 4876,
+          "end_sample_exclusive": 28006,
+          "removed_head_seconds": 0.20316666666666666,
+          "removed_tail_seconds": 0.5580833333333334
+        },
+        "samples": 23130,
+        "duration_seconds": 0.96375,
+        "peak_dbfs": -11.238967895507812,
+        "sha256": "ff5dc966cd1135734a5bf89dd722112aba92674474d22724ed371d7d46d512aa"
+      },
+      {
+        "file": "voice-now.wav",
+        "text": "现在。",
+        "phonemes": [
+          "ㄒ言4ㄗㄞ4."
+        ],
+        "sample_rate": 24000,
+        "channels": 1,
+        "subtype": "PCM_24",
+        "speed": 1.0,
+        "pitch_shift_semitones": 0,
+        "raw_samples": 30000,
+        "trim": {
+          "method": "absolute amplitude threshold -55 dBFS with 25 ms margin",
+          "start_sample": 4349,
+          "end_sample_exclusive": 20302,
+          "removed_head_seconds": 0.18120833333333333,
+          "removed_tail_seconds": 0.40408333333333335
+        },
+        "samples": 15953,
+        "duration_seconds": 0.6647083333333333,
+        "peak_dbfs": -5.123711585998535,
+        "sha256": "4b1fc195b0b09eaebeb010178a23368e8807c8f44b343c5df36346fdab92b79e"
+      },
+      {
+        "file": "voice-go.wav",
+        "text": "走。",
+        "phonemes": [
+          "ㄗㄡ3."
+        ],
+        "sample_rate": 24000,
+        "channels": 1,
+        "subtype": "PCM_24",
+        "speed": 1.0,
+        "pitch_shift_semitones": 0,
+        "raw_samples": 21000,
+        "trim": {
+          "method": "absolute amplitude threshold -55 dBFS with 25 ms margin",
+          "start_sample": 3830,
+          "end_sample_exclusive": 20296,
+          "removed_head_seconds": 0.15958333333333333,
+          "removed_tail_seconds": 0.029333333333333333
+        },
+        "samples": 16466,
+        "duration_seconds": 0.6860833333333334,
+        "peak_dbfs": -7.313020706176758,
+        "sha256": "ad0941ebf6269f916d1a7cf4da5d4e5fce42d6cd5e2482b756890a327ddcd8f1"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "before": {
+        "input_i": "-15.93",
+        "input_tp": "-2.28",
+        "input_lra": "6.30",
+        "input_thresh": "-26.23",
+        "output_i": "-12.92",
+        "output_tp": "-1.70",
+        "output_lra": "5.00",
+        "output_thresh": "-23.08",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.08"
+      },
+      "postMasterGainCorrectionsDb": [
+        -0.42999999999999994
+      ],
+      "files": [
+        {
+          "filename": "switchback-club-tool.wav",
+          "bytes": 37725834,
+          "sha256": "e037f589eb3c69e94ec3529d88bcbc9624e6da5462de47916a6c54d8f57072f1",
+          "audioDurationSeconds": 142.57646258503402,
+          "sampleRate": 44100,
+          "channels": 2,
+          "integratedLufs": -13.42,
+          "truePeakDbtp": -1.95,
+          "loudnessRangeLu": 5.7,
+          "clippedSamples": 0,
+          "finite": true,
+          "stereoCorrelation": 0.9744170083312935
+        },
+        {
+          "filename": "switchback-club-tool.mp3",
+          "bytes": 5706298,
+          "sha256": "3b7f16b43cc1ef53b2f7f1e0c72927ab0da35d2d0e40389b5ba6aa81fa9806bc",
+          "audioDurationSeconds": 142.57739229024943,
+          "sampleRate": 44100,
+          "channels": 2,
+          "integratedLufs": -13.42,
+          "truePeakDbtp": -1.71,
+          "loudnessRangeLu": 5.7,
+          "clippedSamples": 0,
+          "finite": true,
+          "stereoCorrelation": 0.9743463909891008
+        }
+      ]
+    },
+    {
+      "before": {
+        "input_i": "-16.35",
+        "input_tp": "-2.27",
+        "input_lra": "8.50",
+        "input_thresh": "-26.87",
+        "output_i": "-12.44",
+        "output_tp": "-1.70",
+        "output_lra": "3.20",
+        "output_thresh": "-22.44",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.56"
+      },
+      "postMasterGainCorrectionsDb": [
+        -0.3799999999999999
+      ],
+      "files": [
+        {
+          "filename": "switchback-club-tool-middle-preview.wav",
+          "bytes": 7471158,
+          "sha256": "be33052b475c473dd3b641cb533065d92068097eeca6976c3524653fe6771068",
+          "audioDurationSeconds": 28.235283446712018,
+          "sampleRate": 44100,
+          "channels": 2,
+          "integratedLufs": -12.97,
+          "truePeakDbtp": -1.95,
+          "loudnessRangeLu": 3.1,
+          "clippedSamples": 0,
+          "finite": true,
+          "stereoCorrelation": 0.9441722855481538
+        },
+        {
+          "filename": "switchback-club-tool-middle-preview.mp3",
+          "bytes": 1131750,
+          "sha256": "95339eb248af0636b6748f6e76e6163505d503d0f8ae628f5f777670eeac31c7",
+          "audioDurationSeconds": 28.235283446712018,
+          "sampleRate": 44100,
+          "channels": 2,
+          "integratedLufs": -12.97,
+          "truePeakDbtp": -1.8,
+          "loudnessRangeLu": 3.1,
+          "clippedSamples": 0,
+          "finite": true,
+          "stereoCorrelation": 0.9440894738388308
+        }
+      ]
+    }
+  ],
+  "subjectiveListeningReview": "未进行人工耳听；文件测量和浏览器播放属于客观验证。",
+  "outputDirectory": "artifacts/audio/switchback",
+  "voiceProcessing": {
+    "method": "Actual resampling + compensating atempo; transformed samples saved before EQ and slicing.",
+    "assets": [
+      {
+        "source": "lights",
+        "drySeconds": 1.082766439909297,
+        "processedSecondsBeforeSlice": 1.2233333333333334,
+        "pitchSemitones": -5,
+        "speedFactor": 0.9,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-28fa9fd6a177b30d.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.48662131519274376,
+        "pitchSemitones": 7,
+        "speedFactor": 1.3,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-cecc120416a46205.wav"
+      },
+      {
+        "source": "frequency",
+        "drySeconds": 1.4248072562358276,
+        "processedSecondsBeforeSlice": 1.6553061224489796,
+        "pitchSemitones": -5,
+        "speedFactor": 0.86,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-b8bd1e802320f980.wav"
+      },
+      {
+        "source": "dont-look-back",
+        "drySeconds": 0.9637641723356009,
+        "processedSecondsBeforeSlice": 1.0587301587301587,
+        "pitchSemitones": -5,
+        "speedFactor": 0.92,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-66c3ac6020ef24b9.wav"
+      },
+      {
+        "source": "frequency",
+        "drySeconds": 1.4248072562358276,
+        "processedSecondsBeforeSlice": 1.095124716553288,
+        "pitchSemitones": 7,
+        "speedFactor": 1.28,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-ecce6dacdbd10ab4.wav"
+      },
+      {
+        "source": "dont-look-back",
+        "drySeconds": 0.9637641723356009,
+        "processedSecondsBeforeSlice": 0.8463718820861678,
+        "pitchSemitones": -2,
+        "speedFactor": 1.15,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-5935fa352233c1d5.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.6157596371882086,
+        "pitchSemitones": 0,
+        "speedFactor": 1.1,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-e4f2fad113d0c737.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.558843537414966,
+        "pitchSemitones": 3,
+        "speedFactor": 1.1800000000000002,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-72bc419f15175820.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.5083673469387755,
+        "pitchSemitones": 7,
+        "speedFactor": 1.26,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-f3265a90f9ef48a4.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.47956916099773245,
+        "pitchSemitones": 7,
+        "speedFactor": 1.34,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-a92163f49edc30dc.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.4578458049886621,
+        "pitchSemitones": 10,
+        "speedFactor": 1.4200000000000002,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-c6ec0f544db6f730.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.4322675736961451,
+        "pitchSemitones": 12,
+        "speedFactor": 1.5,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-6856b4a85895055b.wav"
+      },
+      {
+        "source": "go",
+        "drySeconds": 0.6860997732426304,
+        "processedSecondsBeforeSlice": 0.5271655328798186,
+        "pitchSemitones": -2,
+        "speedFactor": 1.35,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-e606e2198a1b6c7f.wav"
+      },
+      {
+        "source": "now",
+        "drySeconds": 0.6647165532879818,
+        "processedSecondsBeforeSlice": 0.4742403628117914,
+        "pitchSemitones": 7,
+        "speedFactor": 1.35,
+        "path": "artifacts/audio/switchback/work/pitch-tempo-5a6e39638554c71a.wav"
+      }
+    ],
+    "humanListening": false
+  },
+  "arrangement": {
+    "bars": 80,
+    "durationSeconds": 142.57646258503402,
+    "sections": [
+      {
+        "name": "接入 / 鼓与暗色动机",
+        "startBar": 0,
+        "endBar": 4,
+        "startSeconds": 0.0,
+        "endSeconds": 7.0588235294117645
+      },
+      {
+        "name": "第一次蓄力 / 低调呼叫",
+        "startBar": 4,
+        "endBar": 8,
+        "startSeconds": 7.0588235294117645,
+        "endSeconds": 14.117647058823529
+      },
+      {
+        "name": "主段 A / 空心 FM 与滚动低音",
+        "startBar": 8,
+        "endBar": 24,
+        "startSeconds": 14.117647058823529,
+        "endSeconds": 42.35294117647059
+      },
+      {
+        "name": "主段 A 发展 / 金属回答",
+        "startBar": 24,
+        "endBar": 32,
+        "startSeconds": 42.35294117647059,
+        "endSeconds": 56.470588235294116
+      },
+      {
+        "name": "中场 / 降调电台人声",
+        "startBar": 32,
+        "endBar": 36,
+        "startSeconds": 56.470588235294116,
+        "endSeconds": 63.529411764705884
+      },
+      {
+        "name": "重组 / 升调切片与停带",
+        "startBar": 36,
+        "endBar": 40,
+        "startSeconds": 63.529411764705884,
+        "endSeconds": 70.58823529411765
+      },
+      {
+        "name": "主段 B / 低八度与切分",
+        "startBar": 40,
+        "endBar": 56,
+        "startSeconds": 70.58823529411765,
+        "endSeconds": 98.8235294117647
+      },
+      {
+        "name": "主段 B 发展 / Acid 与声码回答",
+        "startBar": 56,
+        "endBar": 64,
+        "startSeconds": 98.8235294117647,
+        "endSeconds": 112.94117647058823
+      },
+      {
+        "name": "最后推进 / 高八度回归",
+        "startBar": 64,
+        "endBar": 72,
+        "startSeconds": 112.94117647058823,
+        "endSeconds": 127.05882352941177
+      },
+      {
+        "name": "DJ 退出 / 八小节",
+        "startBar": 72,
+        "endBar": 80,
+        "startSeconds": 127.05882352941177,
+        "endSeconds": 141.1764705882353
+      }
+    ],
+    "vocalCoverage": {
+      "directPhraseSeconds": 9.33461984793915,
+      "percentOfFile": 6.5470973810785145,
+      "intervalsSeconds": [
+        [
+          7.9411764705882355,
+          9.164509803921568
+        ],
+        [
+          12.352941176470587,
+          12.839562491663331
+        ],
+        [
+          57.35294117647059,
+          59.008247298919564
+        ],
+        [
+          60.88235294117647,
+          61.94108309990663
+        ],
+        [
+          63.970588235294116,
+          65.0657129518474
+        ],
+        [
+          65.73529411764706,
+          66.08824196345205
+        ],
+        [
+          66.61764705882352,
+          66.90440442843803
+        ],
+        [
+          67.27941176470588,
+          67.50000133386688
+        ],
+        [
+          67.72058823529412,
+          67.91911431239163
+        ],
+        [
+          68.05147058823529,
+          68.20589235694277
+        ],
+        [
+          68.2720588235294,
+          68.39559623849539
+        ],
+        [
+          69.15441176470588,
+          70.1470588235294
+        ],
+        [
+          98.05147058823529,
+          98.36029144991329
+        ],
+        [
+          110.29411764705883,
+          111.140489529145
+        ],
+        [
+          126.28676470588235,
+          126.61764905962384
+        ]
+      ],
+      "includesEffectTails": false,
+      "note": "Duration is a compositional measurement, not a copyright exemption."
+    },
+    "preview": {
+      "startSeconds": 56.470589569161,
+      "endSeconds": 84.70587301587301,
+      "description": "Central low-pitched call, sped-up answer, slices, tape stop and second drop."
+    }
+  },
+  "verification": {
+    "humanListening": false,
+    "finalFilesVerifiedBySha256": true,
+    "independentSignalResult": "No objective signal or timing failures found in inspected final outputs.",
+    "lowFrequencyStereo": {
+      "filter": "4th order Butterworth, zero phase, low-pass 120 Hz",
+      "midRms": 0.1649169859222495,
+      "sideRms": 0.0003087714962184466,
+      "sideToMidDb": -54.55256373253104,
+      "lowBandCorrelation": 0.999992989589612
+    },
+    "dropKickTiming": [
+      {
+        "name": "dropA",
+        "beats": [
+          32,
+          128
+        ],
+        "expectedEvents": 95,
+        "independentlyDetectedLowBandPeaks": 95,
+        "matchedWithin100ms": 95,
+        "medianPeakOffsetMs": 26.96145124716587,
+        "maxAbsolutePeakOffsetMs": 26.972122182208125,
+        "medianBeatIntervalSeconds": 0.4411791383219956,
+        "expectedBeatIntervalSeconds": 0.4411764705882353
+      },
+      {
+        "name": "dropB",
+        "beats": [
+          160,
+          288
+        ],
+        "expectedEvents": 125,
+        "independentlyDetectedLowBandPeaks": 125,
+        "matchedWithin100ms": 125,
+        "medianPeakOffsetMs": 26.96145124716054,
+        "maxAbsolutePeakOffsetMs": 26.97212218220102,
+        "medianBeatIntervalSeconds": 0.4411791383219992,
+        "expectedBeatIntervalSeconds": 0.4411764705882353
+      }
+    ],
+    "browserDecodedFiles": 4,
+    "browserPlaybackPositions": 26,
+    "voiceDspCheck": {
+      "method": "Known 440 Hz signal passed through actual production DSP, measured independently by periodogram. Not listening.",
+      "pitchTempo": [
+        {
+          "pitchSemitones": -5,
+          "speedFactor": 0.86,
+          "measuredHz": 329.625,
+          "expectedHz": 329.6275569128699,
+          "pitchErrorCents": -0.013429192119275209,
+          "durationSeconds": 3.488707482993197,
+          "expectedDurationSeconds": 3.488372093023256,
+          "durationErrorSeconds": 0.0003353899699414242
+        },
+        {
+          "pitchSemitones": 7,
+          "speedFactor": 1.28,
+          "measuredHz": 659.125,
+          "expectedHz": 659.2551138257398,
+          "pitchErrorCents": -0.3417185737925802,
+          "durationSeconds": 2.3380498866213153,
+          "expectedDurationSeconds": 2.34375,
+          "durationErrorSeconds": -0.005700113378684701
+        },
+        {
+          "pitchSemitones": -2,
+          "speedFactor": 1.15,
+          "measuredHz": 392.0,
+          "expectedHz": 391.99543598174927,
+          "pitchErrorCents": 0.02015670865839516,
+          "durationSeconds": 2.6098412698412696,
+          "expectedDurationSeconds": 2.608695652173913,
+          "durationErrorSeconds": 0.0011456176673565466
+        },
+        {
+          "pitchSemitones": 12,
+          "speedFactor": 1.5,
+          "measuredHz": 879.625,
+          "expectedHz": 880.0,
+          "pitchErrorCents": -0.7378990162431994,
+          "durationSeconds": 1.991700680272109,
+          "expectedDurationSeconds": 2.0,
+          "durationErrorSeconds": -0.008299319727891108
+        }
+      ],
+      "tapeStop": {
+        "startPlaybackRate": 1.5481543346925388,
+        "measuredHzEarlyMiddleLate": [
+          529.0,
+          276.125,
+          85.125
+        ],
+        "durationSeconds": 0.9926530612244898,
+        "finite": true
+      },
+      "passed": true
+    },
+    "reports": [
+      {
+        "path": "artifacts/audio/switchback/qa/independent-signal-review.json",
+        "sha256": "c766ae3336743e9e56127d155fe789d93e5172dc57165cb0481e2f68b77022a0"
+      },
+      {
+        "path": "artifacts/audio/switchback/qa/browser-playback.json",
+        "sha256": "ba51e9ce2ddb48727f0ca3bb6f3c1f50a8380f03ac15817357853dea131df69d"
+      },
+      {
+        "path": "artifacts/audio/switchback/qa/voice-dsp-check.json",
+        "sha256": "d4f950ed8a7d85219f15b6bae1399b383f2aed0725156c19cf017f2f86cc105f"
+      }
+    ]
+  }
+}

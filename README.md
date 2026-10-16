@@ -53,6 +53,8 @@ artifacts/dj-tools/bin/python scripts/flowers_glasshouse.py all
 
 新增的 [《夜航线 / Night Transit》](docs/night-transit-production.md) 展示另一种 DJ 主导风格：原创 Peak-time Bass Techno 器乐贯穿全曲，只在蓄力、Break 和 Drop 尾部插入少量有许可的英文干声。主版为 132 BPM、117.56 秒，音频保存在本地 `artifacts/audio/night-transit/`；使用 `artifacts/dj-tools/bin/python scripts/club_dj.py all` 可复现。该示例使用 CC BY-NC 4.0 音源，仅按非商业本地实验记录，短句占比少不等于版权豁免。
 
+后续的 [《折返频率 / Switchback》](docs/switchback-production.md) 为 136 BPM、142.58 秒的 Club Tool：重新写作器乐动机与 80 小节编排，中段改用新写的中文合成男声，经过降调电台声、升调加速切片、声码与停带处理。直接人声约占 6.55%；完整 MP3/WAV 和 28.24 秒中场试听保存在本地 `artifacts/audio/switchback/`。准备好本地干声后，使用 `artifacts/dj-tools/bin/python scripts/switchback.py all` 复现；来源与客观验证见制作记录。
+
 此前的 [DJ 调研与首次片段版](docs/flowers-dj-research.md)、[整首保留版](docs/flowers-dj-full-production.md)仍保留，分别位于 `artifacts/audio/flowers-dj/` 和 `artifacts/audio/flowers-dj-full/`。通用工具 `scripts/dj_remix.py` 提供人声分离、保留音高的变速、渐速开场及 MP3/WAV 导出。
 
 ## 检查

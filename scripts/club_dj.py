@@ -350,8 +350,8 @@ class ClubDJ:
             n = filt(self.rng.normal(0, 1, (len(t), 2)), 6500, "highpass")
             self.put("fx", fade(n * np.exp(-t * 8)[:, None], .002, .1), beat, .04)
 
-    def mix(self):
-        # Rumble is a tightly filtered kick-derived room, then heavily ducked.
+    def rumble(self):
+        """Kick-derived room, kept mono below 125 Hz before mix sidechain."""
         rumble_source = np.zeros((self.frames, 2), np.float32)
         for beat in self.kicks:
             a = round(beat * self.spb * SR)
@@ -360,8 +360,10 @@ class ClubDJ:
             rumble_source[a:b] += k[:b - a] * .55
         wet = room(rumble_source, .65, .045, 145)
         wet = filt(filt(wet, 38, "highpass"), 125)
-        # The rumble remains mono below 125 Hz.
-        self.buses["rumble"] = stereo(wet.mean(axis=1)) * .42
+        return stereo(wet.mean(axis=1)) * .42
+
+    def mix(self):
+        self.buses["rumble"] = self.rumble()
         self.buses["fx"] += room(self.buses["riff"] + self.buses["acid"], .55, .022, 146) * .065
         self.buses["fx"] += room(self.buses["vocals"], .8, .032, 147) * .055
         for name, depth in [("bass", .61), ("rumble", .87), ("riff", .40), ("acid", .34), ("chords", .55), ("fx", .32)]:

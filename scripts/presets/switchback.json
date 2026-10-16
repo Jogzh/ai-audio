@@ -1,0 +1,47 @@
+{
+  "title": "折返频率 / Switchback",
+  "style": "DJ 主导 / Driving Club Tool with Transformed Vocal Inserts",
+  "outputStem": "switchback-club-tool",
+  "seed": 26101607,
+  "bpm": 136,
+  "key": "F minor",
+  "bars": 80,
+  "tailSeconds": 1.4,
+  "bassRootsMidi": [29, 29, 29, 32, 29, 29, 37, 39],
+  "hook": [
+    [[0, 65, 0.18], [0.75, 65, 0.16], [1.5, 68, 0.18], [2.75, 63, 0.20], [3.5, 72, 0.17]],
+    [[0.25, 65, 0.20], [1, 60, 0.16], [1.75, 63, 0.16], [2.5, 65, 0.23], [3.25, 68, 0.22]]
+  ],
+  "sections": [
+    {"name": "接入 / 鼓与暗色动机", "startBar": 0, "endBar": 4},
+    {"name": "第一次蓄力 / 低调呼叫", "startBar": 4, "endBar": 8},
+    {"name": "主段 A / 空心 FM 与滚动低音", "startBar": 8, "endBar": 24},
+    {"name": "主段 A 发展 / 金属回答", "startBar": 24, "endBar": 32},
+    {"name": "中场 / 降调电台人声", "startBar": 32, "endBar": 36},
+    {"name": "重组 / 升调切片与停带", "startBar": 36, "endBar": 40},
+    {"name": "主段 B / 低八度与切分", "startBar": 40, "endBar": 56},
+    {"name": "主段 B 发展 / Acid 与声码回答", "startBar": 56, "endBar": 64},
+    {"name": "最后推进 / 高八度回归", "startBar": 64, "endBar": 72},
+    {"name": "DJ 退出 / 八小节", "startBar": 72, "endBar": 80}
+  ],
+  "previewBeats": [128, 192],
+  "voiceDirectory": "artifacts/audio/switchback/source",
+  "vocalInserts": [
+    {"source": "lights", "label": "灯暗下来 / 降调", "beat": 18, "pitchSemitones": -5, "speed": 0.9, "color": "radio", "gain": 0.68},
+    {"source": "now", "label": "现在 / 升调预告", "beat": 28, "pitchSemitones": 7, "speed": 1.3, "color": "bright", "gain": 0.40},
+    {"source": "frequency", "label": "让频率接管 / 中场呼叫", "beat": 130, "pitchSemitones": -5, "speed": 0.86, "color": "radio", "gain": 0.82},
+    {"source": "dont-look-back", "label": "别回头 / 中场回答", "beat": 138, "pitchSemitones": -5, "speed": 0.92, "color": "radio", "gain": 0.78},
+    {"source": "frequency", "label": "让频率接管 / 加速升调", "beat": 145, "pitchSemitones": 7, "speed": 1.28, "color": "bright", "gain": 0.52},
+    {"source": "dont-look-back", "label": "别回头 / 声码回答", "beat": 250, "pitchSemitones": -2, "speed": 1.15, "color": "vocoder", "gain": 0.62}
+  ],
+  "sourceCredit": {
+    "type": "Original text, local synthetic spoken voice",
+    "text": ["灯暗下来。", "让频率接管。", "别回头。", "现在。", "走。"],
+    "generator": "Kokoro-82M-v1.1-zh",
+    "modelPage": "https://huggingface.co/hexgrad/Kokoro-82M-v1.1-zh",
+    "voice": "zm_010, transformed with pitch, tempo, filtering and reslicing",
+    "modelLicense": "Apache-2.0",
+    "nativeSampleRate": 24000,
+    "note": "New synthetic spoken inserts, not sung vocals or an imitation of a named performer. No recording from Night Transit is included."
+  }
+}
