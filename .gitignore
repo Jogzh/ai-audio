@@ -13,7 +13,7 @@ test-results/
 __pycache__/
 *.py[cod]
 
-# 成品音频仅本地保存；仓库只保留余温的 manifest 与源码
+# 成品音频仅本地保存；仓库只保留源码、谱面、可复用采样与余温的 manifest
 /releases/**
 !/releases/afterglow/
 !/releases/afterglow/manifest.json

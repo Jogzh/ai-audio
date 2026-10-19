@@ -37,6 +37,12 @@ npm run render -- --help
 
 内置的 `emotional-pop`、`cinematic-guofeng`、`guofeng-club` 编曲与声音配方可以直接作为创作起点。它们描述的是合成方法和路由，不绑定某一首成品。
 
+最新的独立器乐 [《风经过的地方 / Where the Wind Passes》](docs/wind-passes-production.md) 是一首 84 BPM、3 分 46.86 秒的钢琴抒情曲：D 大调写作，最终副歌整体上移两个半音到 E 大调；钢琴、弦乐、大提琴、长笛、竖琴使用本项目采样，贝斯、pad、合唱垫、钟琴与部分鼓组由 Python 合成。它不经过 Tone.js 页面，谱面在 `scripts/presets/wind-passes.json`，由 `scripts/wind_passes.py` 离线渲染、混音并导出 320 kbps MP3 / 24-bit WAV，音频保存在本地 `releases/wind-passes/`。复现命令：
+
+```bash
+artifacts/dj-tools/bin/python scripts/wind_passes.py all
+```
+
 ## DJ Remix 制作
 
 可以选取副歌、高潮或其他合适的演唱片段制作 Remix，保留完整唱句，并用人声切片做节奏或旋律回应。制作流程包括人声分离、保留音高的变速、伴奏重编、Build / Drop 设计、侧链混音与 MP3/WAV 母带导出。具体歌曲的素材选择和编曲由制作脚本与预设控制。

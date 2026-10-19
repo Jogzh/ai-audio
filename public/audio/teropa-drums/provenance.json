@@ -1,0 +1,23 @@
+{
+  "library": "@teropa/drumkit",
+  "version": "1.1.0",
+  "repository": "https://github.com/teropa/drumkit",
+  "package": "https://registry.npmjs.org/@teropa/drumkit/-/drumkit-1.1.0.tgz",
+  "originalCollection": "https://freesound.org/people/DWSD/packs/11575/?page=1#sound",
+  "originalAuthor": "DWSD",
+  "sampleLicense": "Creative Commons Attribution, as stated by the upstream README; specific version not asserted",
+  "codeLicense": "MIT; does not supersede the sample license",
+  "files": [
+    {
+      "file": "hatClosed.wav",
+      "sha256": "5ee32eebadf1a40ad9320d79c9d765ff1a42e83751779cd7bf9308366c634ccb",
+      "derivative": "Decoded from the upstream MP3 to 24-bit 44100 Hz PCM; no pitch, length or level processing"
+    },
+    {
+      "file": "hatOpen.wav",
+      "sha256": "3a021aee04a3feb7378cdd2398efc05d7e9f7468fe32f7993998c1c571ce9dd6",
+      "derivative": "Decoded from the upstream MP3 to 24-bit 44100 Hz PCM; no pitch, length or level processing"
+    }
+  ],
+  "usedBy": "scripts/wind_passes.py — light closed/open hi-hats in 《风经过的地方》"
+}
