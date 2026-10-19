@@ -77,6 +77,10 @@ npm run test:browser
 
 通用钢琴和原声采样位于 `public/audio/`，各目录的署名与许可说明随采样保存。只在需要对应配方时加载它们，新增曲目时请继续保留来源与授权记录。
 
+新增 [声音素材库 01](docs/sound-palette.md)：**43 项 CC0 音频**，包括 VSCO 马林巴/木琴与实录打击乐、原创电钢琴/Sub/Reese/Pad、转场、三组 8 小节鼓与编曲循环，以及 Lo-fi Soul / UK Garage / Ambient Mallets 的可播放示例。运行开发服务后打开 **`/palette.html`** 或使用创作台页脚链接，即可分类试听和下载；资产位于 `public/audio/palette/`，音高、BPM、SHA-256、来源和测量保存在该目录 `manifest.json`。
+
+复现使用 `scripts/build_sound_palette.py build`，离线验证使用 `verify`；轻量 Python 依赖见 `scripts/requirements-palette.txt`，另需 FFmpeg。浏览器检查运行 `npm run test:palette`。新目录的 CC0 许可只覆盖其中的素材，详见 [署名与许可](public/audio/palette/ATTRIBUTION.md)。这些素材已做客观检查，人工耳听尚未完成。
+
 ## 目录
 
 ```text

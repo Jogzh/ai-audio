@@ -19,6 +19,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts tests/*.test.mjs",
     "test:browser": "node scripts/check-browser.mjs",
+    "test:palette": "node scripts/check-palette.mjs",
     "check": "npm test && npm run build",
     "render": "node scripts/render.mjs"
   },

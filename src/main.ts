@@ -75,7 +75,7 @@ app.innerHTML = `
     <section class="layers" aria-labelledby="layers-title"><div class="section-heading"><div><span class="section-number">02 /</span><h2 id="layers-title">拆开这段律动</h2></div><span class="section-aside">各层配合，段落展开。</span></div><div class="layer-list"><article class="layer"><div class="layer-art melody-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">01 / MELODY</span><h3>旋律 <span>主题与应答</span></h3><p id="melody-description"></p></div></article><article class="layer"><div class="layer-art drum-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div><span class="layer-index">02 / DRUMS</span><h3>鼓 <span>节奏里的呼吸</span></h3><p id="drum-description"></p></div></article><article class="layer"><div class="layer-art bass-art" aria-hidden="true"><i></i><i></i><i></i></div><div><span class="layer-index">03 / BASS</span><h3>低音 <span>托住情绪</span></h3><p id="bass-description"></p></div></article></div></section>
     <section id="mix-tracks" class="mix-tracks" aria-labelledby="mix-title" hidden><div class="section-heading"><div><span class="section-number">03 /</span><h2 id="mix-title">编曲声部</h2></div><span id="mix-count" class="section-aside"></span></div><p class="field-help">亮起的段落表示该声部有演奏。可以在工作台单独试听，或移除一层比较。</p><div id="mix-track-list" class="mix-track-list"></div></section>
   </main>
-  <footer><span class="footer-brand" id="footer-title"></span><span>原创编曲 / 合成音色 · 请以舒适音量聆听</span><a href="#main">回到顶部 ↑</a></footer>
+  <footer><span class="footer-brand" id="footer-title"></span><span>原创编曲 / 合成音色 · 请以舒适音量聆听</span><a href="./palette.html">声音素材库 ↗</a><a href="#main">回到顶部 ↑</a></footer>
 `;
 
 function element<T extends HTMLElement>(selector: string): T {

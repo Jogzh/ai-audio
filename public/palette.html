@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111b1a">
+  <title>声音素材库 · AI Audio</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,sans-serif;color:#edf2e9;background:#111b1a;color-scheme:dark}
+    *{box-sizing:border-box}body{margin:0}main{max-width:1150px;margin:auto;padding:45px 24px 70px}
+    a{color:#c5eb9f;text-underline-offset:4px}header{display:flex;justify-content:space-between;gap:20px;align-items:center;border-bottom:1px solid #34413a;padding-bottom:20px}
+    .eyebrow{font-size:12px;letter-spacing:.18em;color:#b3c2b3}h1{font-size:clamp(40px,8vw,76px);letter-spacing:-.06em;line-height:1.1;margin:38px 0 20px}
+    .intro{max-width:750px;color:#b9c5bd;line-height:1.85}.summary{color:#c5eb9f;margin:24px 0}
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin:30px 0 20px}button{font:inherit;cursor:pointer;border:1px solid #536052;background:transparent;color:inherit;padding:10px 18px;border-radius:24px}
+    button[aria-pressed=true]{background:#d1efa9;color:#182219;border-color:#d1efa9}button:focus-visible,a:focus-visible{outline:3px solid #f2cc8c;outline-offset:4px}
+    #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:14px}.card{padding:22px;background:#1b2824;border:1px solid #35453a;border-radius:13px;min-width:0}
+    .category{color:#b2ca9b;font-size:11px;letter-spacing:.12em;text-transform:uppercase}h2{font-size:20px;margin:12px 0}.facts{color:#bdcabc;font-size:13px;line-height:1.7;min-height:42px}
+    audio{display:block;width:100%;height:40px;margin:18px 0}.links{display:flex;justify-content:space-between;gap:12px;font-size:13px}.note{font-size:13px;color:#b6c2b9;line-height:1.8;margin-top:28px}
+    #status{line-height:1.7;color:#e9cca2}.count{color:#b9c5bd;font-size:13px}footer{margin-top:36px;border-top:1px solid #34413a;padding-top:20px;color:#b9c5bd;font-size:12px}
+  </style>
+</head>
+<body>
+  <main>
+    <header><span class="eyebrow">AI AUDIO / SOUND PALETTE 01</span><a href="./">返回创作台 ↗</a></header>
+    <h1>让下一首歌，<br>多一种可能。</h1>
+    <p class="intro">实录打击乐、合成音色、转场与八小节风格循环。先听 Lo-fi Soul、UK Garage 或 Ambient Mallets，再挑选单音和鼓组，拖进你的下一份编曲。</p>
+    <p class="summary">44.1 kHz · 24-bit WAV / MP3 试听 · 本页素材 CC0</p>
+    <nav aria-label="素材分类" id="filters"></nav>
+    <p class="count" id="count"></p><p id="status" role="status">正在读取素材目录…</p>
+    <div id="grid"></div>
+    <p class="note">WAV 循环可按标注 BPM / 8 小节拼接；MP3 示例带淡出，用于试听。合成音色是程序生成，未使用商业歌曲或音色库。峰值、时长与循环边界已做客观检查，人工耳听尚未完成。</p>
+    <footer><a href="audio/palette/ATTRIBUTION.md">来源、处理与许可</a> · <a href="audio/palette/manifest.json">完整素材目录</a></footer>
+  </main>
+  <script type="module">
+    const labels = {previews:'风格试听',recorded:'实录打击乐',synth:'合成音色',fx:'转场音效',loops:'循环素材'};
+    const grid = document.querySelector('#grid');
+    const status = document.querySelector('#status');
+    const count = document.querySelector('#count');
+    const filters = document.querySelector('#filters');
+    let assets = [], active = 'previews';
+    for (const [category,label] of Object.entries({...labels,all:'全部素材'})) {
+      const button = document.createElement('button');
+      button.textContent = label;
+      button.type = 'button';
+      button.dataset.category = category;
+      button.setAttribute('aria-pressed', String(active === category));
+      button.addEventListener('click', () => {
+        active = category;
+        for (const item of filters.children) item.setAttribute('aria-pressed', String(item === button));
+        render();
+      });
+      filters.append(button);
+    }
+    function render() {
+      for (const audio of grid.querySelectorAll('audio')) audio.pause();
+      grid.replaceChildren();
+      const visible = assets.filter(asset => active === 'all' || asset.category === active);
+      count.textContent = `${visible.length} 项 / 共 ${assets.length} 项`;
+      for (const asset of visible) {
+        const card = document.createElement('article');card.className = 'card';
+        const category = document.createElement('span');category.className = 'category';category.textContent = labels[asset.category];
+        const title = document.createElement('h2');title.textContent = asset.name;
+        const facts = document.createElement('p');facts.className = 'facts';
+        facts.textContent = [asset.bpm && `${asset.bpm} BPM`,asset.key,
+          Number.isInteger(asset.rootMidi) && `MIDI ${asset.rootMidi}`,
+          asset.bars && `${asset.bars} 小节`,`${asset.seconds.toFixed(2)} 秒`,
+          asset.loop && '可循环'].filter(Boolean).join(' · ');
+        const audio = document.createElement('audio');audio.controls = true;audio.preload = 'none';
+        audio.src = `audio/palette/${asset.file}`;audio.loop = asset.loop ?? false;
+        audio.setAttribute('aria-label', `试听 ${asset.name}`);
+        audio.addEventListener('play', () => {for (const other of grid.querySelectorAll('audio')) if (other !== audio) other.pause();});
+        const links = document.createElement('div');links.className = 'links';
+        const download = document.createElement('a');download.href = audio.src;download.download = asset.file.split('/').pop();
+        download.textContent = `下载 ${asset.file.endsWith('.wav') ? 'WAV' : 'MP3'}`;
+        const license = document.createElement('a');license.href = 'audio/palette/ATTRIBUTION.md';license.textContent = 'CC0 · 来源';
+        links.append(download,license);card.append(category,title,facts,audio,links);grid.append(card);
+      }
+    }
+    try {
+      const response = await fetch('audio/palette/manifest.json');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      assets = (await response.json()).assets;
+      status.hidden = true;render();
+    } catch(error) {
+      status.textContent = `素材目录读取失败，请刷新后重试。${error.message}`;
+    }
+  </script>
+</body>
+</html>
